@@ -1,0 +1,14 @@
+<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/pager"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    tools:context="co.example.junjen.mobileinstagram.TabbedDrawer" >
+
+    <android.support.v4.view.PagerTabStrip
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:textColor="#FFFFFF"
+        android:background="#000000"
+        android:focusable="false" />
+
+</android.support.v4.view.ViewPager>
