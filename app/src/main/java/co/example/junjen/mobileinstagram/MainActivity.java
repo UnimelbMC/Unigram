@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void actionBar(View v){
-        Intent intent = new Intent(MainActivity.this, TabbedDrawer.class);
+        Intent intent = new Intent(MainActivity.this, NavigationBar.class);
         MainActivity.this.startActivity(intent);
     }
 
