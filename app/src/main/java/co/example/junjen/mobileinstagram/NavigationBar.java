@@ -30,7 +30,7 @@ public class NavigationBar extends AppCompatActivity {
         profileFragment = new ProfileFragment();
 
         // set default fragment to User Feed
-        RadioButton userFeedButton = (RadioButton) findViewById(R.id.userFeed_rbutton);
+        RadioButton userFeedButton = (RadioButton) findViewById(R.id.userfeed_button);
         userFeedButton.setChecked(true);
         getSupportFragmentManager().beginTransaction().add(R.id.view1, userFeedFragment).commit();
 
@@ -41,19 +41,19 @@ public class NavigationBar extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
-                    case R.id.userFeed_rbutton:
+                    case R.id.userfeed_button:
                         ft.replace(R.id.view1, userFeedFragment);
                         break;
-                    case R.id.discover_rbutton:
+                    case R.id.discover_button:
                         ft.replace(R.id.view1, discoverFragment);
                         break;
-                    case R.id.camera_rbutton:
+                    case R.id.camera_button:
                         ft.replace(R.id.view1, cameraFragment);
                         break;
-                    case R.id.activityFeed_rbutton:
+                    case R.id.activityfeed_button:
                         ft.replace(R.id.view1, activityFeedFragment);
                         break;
-                    case R.id.profile_rbutton:
+                    case R.id.profile_button:
                         ft.replace(R.id.view1, profileFragment);
                         break;
                 }

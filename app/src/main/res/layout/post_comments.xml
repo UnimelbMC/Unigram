@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/post_margin">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_comment_count"
+        android:text="View all comments"
+        android:layout_margin="@dimen/post_margin"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_comment_1"
+        android:text="Comment 1"
+        android:layout_margin="@dimen/post_margin"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_comment_2"
+        android:text="Comment 2"
+        android:layout_margin="@dimen/post_margin"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_comment_3"
+        android:text="Comment 3"
+        android:layout_margin="@dimen/post_margin"/>
+    
+</LinearLayout>

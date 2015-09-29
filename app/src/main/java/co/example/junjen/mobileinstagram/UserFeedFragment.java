@@ -1,11 +1,13 @@
 package co.example.junjen.mobileinstagram;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
@@ -57,6 +59,21 @@ public class UserFeedFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+//        View userFeedView = getView().findViewById(R.id.fragment_user_feed);
+//        userFeedView.
+
+//        LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View v = vi.inflate(R.layout.post, null);
+//
+//        // fill in any details dynamically here
+//        TextView textView = (TextView) v.findViewById(R.id.post_header_username);
+//        textView.setText("jun jen");
+//
+//        // insert into main view
+//        ViewGroup insertPoint = (ViewGroup) getView().findViewById(R.id.fragment_user_feed);
+//        insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+
     }
 
     @Override

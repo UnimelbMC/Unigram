@@ -18,8 +18,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        editText = (EditText) findViewById(R.id.editText);
-        editText2 = (EditText) findViewById(R.id.editText2);
+        editText = (EditText) findViewById(R.id.login_username_editText);
+        editText2 = (EditText) findViewById(R.id.login_password_editText);
 
         editText.setHint("Username");
         editText2.setHint("Password");

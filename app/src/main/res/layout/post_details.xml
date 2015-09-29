@@ -1,0 +1,52 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/post_margin">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/like_count_line"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/post_margin">
+
+        <!-- Like icon -->
+        <TextView
+            android:id="@+id/heart_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="@string/icon_heart"
+            android:typeface="serif"
+            android:textSize="@dimen/heart_icon_size" />
+
+        <!-- Number of likes -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/like_count"
+            android:layout_toRightOf="@id/heart_icon"
+            android:layout_toEndOf="@id/heart_icon"
+            android:text="Number of likes"
+            android:layout_marginLeft="@dimen/post_margin"
+            android:layout_centerVertical="true"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- Post caption -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_caption"
+        android:text="Post caption"
+        android:layout_below="@id/like_count_line"
+        android:layout_margin="@dimen/post_margin"/>
+
+    <!-- Post comments -->
+
+
+</RelativeLayout>

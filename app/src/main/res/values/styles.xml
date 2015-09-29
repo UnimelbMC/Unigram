@@ -5,12 +5,22 @@
         <!-- Customize your theme here. -->
     </style>
 
-
+    <!-- Navigation bar -->
     <style name="navbar_button">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:button">@null</item>
         <item name="android:background">@drawable/radiobutton_selector</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <!-- Post image options (Like and Comment button -->
+    <style name="post_image_options">
+        <item name="android:layout_width">@dimen/like_button_width</item>
+        <item name="android:layout_height">@dimen/like_button_width</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@color/main_background</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:layout_weight">1</item>
     </style>
