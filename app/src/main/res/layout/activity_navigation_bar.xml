@@ -5,48 +5,55 @@
     android:layout_height="match_parent"
     tools:context="co.example.junjen.mobileinstagram.NavigationBar">
 
-    <RadioGroup
-        android:id="@+id/nav_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_bar_height"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:background="#000000"
-        >
-        <RadioButton
-            android:id="@+id/userFeed_rbutton"
-            style="@style/navbar_button"
-            android:drawableTop="@drawable/userfeed_selector"
-            android:text="All"
-            android:clickable="true" />
-        <RadioButton
-            android:id="@+id/discover_rbutton"
-            style="@style/navbar_button"
-            android:drawableTop="@drawable/discover_selector"
-            android:text="Pictures"
-            android:layout_marginLeft="5dp"
-            />
-        <RadioButton
-            android:id="@+id/camera_rbutton"
-            style="@style/navbar_button"
-            android:drawableTop="@drawable/camera_selector"
-            android:text="Videos"
-            android:layout_marginLeft="5dp"
-            />
-        <RadioButton
-            android:id="@+id/activityFeed_rbutton"
-            style="@style/navbar_button"
-            android:drawableTop="@drawable/activityfeed_selector"
-            android:text="Files"
-            android:layout_marginLeft="5dp"
-            />
-        <RadioButton
-            android:id="@+id/profile_rbutton"
-            style="@style/navbar_button"
-            android:drawableTop="@drawable/profile_selector"
-            android:text="Files"
-            android:layout_marginLeft="5dp"
-            />
-    </RadioGroup>
+        tools:context="co.example.junjen.mobileinstagram.NavigationBar">
 
+        <RadioGroup
+            android:id="@+id/nav_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="#000000"
+            >
+            <RadioButton
+                android:id="@+id/userFeed_rbutton"
+                style="@style/navbar_button"
+                android:drawableTop="@drawable/userfeed_selector"
+                android:text="User Feed"
+                android:clickable="true" />
+            <RadioButton
+                android:id="@+id/discover_rbutton"
+                style="@style/navbar_button"
+                android:drawableTop="@drawable/discover_selector"
+                android:text="Discover"
+                android:layout_marginLeft="5dp"
+                />
+            <RadioButton
+                android:id="@+id/camera_rbutton"
+                style="@style/navbar_button"
+                android:drawableTop="@drawable/camera_selector"
+                android:text="Camera"
+                android:layout_marginLeft="@dimen/nav_button_margin"
+                />
+            <RadioButton
+                android:id="@+id/activityFeed_rbutton"
+                style="@style/navbar_button"
+                android:drawableTop="@drawable/activityfeed_selector"
+                android:text="Activity Feed"
+                android:layout_marginLeft="@dimen/nav_button_margin"
+                />
+            <RadioButton
+                android:id="@+id/profile_rbutton"
+                style="@style/navbar_button"
+                android:drawableTop="@drawable/profile_selector"
+                android:text="Profile"
+                android:layout_marginLeft="@dimen/nav_button_margin"
+                />
+        </RadioGroup>
+    </RelativeLayout>
 </RelativeLayout>

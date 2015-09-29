@@ -22,16 +22,19 @@ public class NavigationBar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_bar);
 
+        // create fragments
         userFeedFragment = new UserFeedFragment();
         discoverFragment = new DiscoverFragment();
         cameraFragment = new CameraFragment();
         activityFeedFragment = new ActivityFeedFragment();
         profileFragment = new ProfileFragment();
 
+        // set default fragment to User Feed
         RadioButton userFeedButton = (RadioButton) findViewById(R.id.userFeed_rbutton);
         userFeedButton.setChecked(true);
         getSupportFragmentManager().beginTransaction().add(R.id.view1, userFeedFragment).commit();
 
+        // set listener for navigation bar
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.nav_bar);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
