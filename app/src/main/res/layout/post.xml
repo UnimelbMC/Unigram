@@ -29,6 +29,7 @@
         android:id="@+id/post_image_options"
         android:layout_below="@id/post_image"/>
 
+    <!-- Post details (No. of likes and caption) -->
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,6 +37,7 @@
         android:id="@+id/post_details"
         android:layout_below="@id/post_image_options"/>
 
+    <!-- Post comments -->
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,6 +45,7 @@
         android:id="@+id/post_comments"
         android:layout_below="@id/post_details"/>
 
+    <!-- Space between posts -->
     <Space
         android:layout_width="1dp"
         android:layout_height="@dimen/post_margin_bottom"

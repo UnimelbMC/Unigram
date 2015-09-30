@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import co.example.junjen.mobileinstagram.elements.Post;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,8 +79,24 @@ public class UserFeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_feed, container, false);
+
+        View userFeedFragment = (View) inflater.inflate(R.layout.fragment_user_feed, container, false);
+        ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
+        View postView = inflater.inflate(R.layout.post, userFeedView, false);
+
+        // TODO: get data fields and fill into Post(arg,..) constructor
+
+        // fill in any details dynamically here
+        TextView textView = (TextView) postView.findViewById(R.id.post_header_username);
+        textView.setText("jun jen");
+
+        // insert into main view
+        userFeedView.addView(postView, 0);
+
+        return userFeedFragment;
+
+//        // Inflate the layout for this fragment
+//        return inflater.inflate(R.layout.fragment_user_feed, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

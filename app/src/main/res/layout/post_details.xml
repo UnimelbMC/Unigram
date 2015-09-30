@@ -15,7 +15,7 @@
 
         <!-- Like icon -->
         <TextView
-            android:id="@+id/heart_icon"
+            android:id="@+id/number_of_likes_heart_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/like_count"
-            android:layout_toRightOf="@id/heart_icon"
-            android:layout_toEndOf="@id/heart_icon"
+            android:layout_toRightOf="@id/number_of_likes_heart_icon"
+            android:layout_toEndOf="@id/number_of_likes_heart_icon"
             android:text="Number of likes"
             android:layout_marginLeft="@dimen/post_margin"
             android:layout_centerVertical="true"
@@ -45,8 +45,5 @@
         android:text="Post caption"
         android:layout_below="@id/like_count_line"
         android:layout_margin="@dimen/post_margin"/>
-
-    <!-- Post comments -->
-
 
 </RelativeLayout>
