@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+
 import co.example.junjen.mobileinstagram.elements.Post;
 
 /**
@@ -59,45 +62,49 @@ public class UserFeedFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-//        View userFeedView = getView().findViewById(R.id.fragment_user_feed);
-//        userFeedView.
-
-//        LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View v = vi.inflate(R.layout.post, null);
-//
-//        // fill in any details dynamically here
-//        TextView textView = (TextView) v.findViewById(R.id.post_header_username);
-//        textView.setText("jun jen");
-//
-//        // insert into main view
-//        ViewGroup insertPoint = (ViewGroup) getView().findViewById(R.id.fragment_user_feed);
-//        insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View userFeedFragment = (View) inflater.inflate(R.layout.fragment_user_feed, container, false);
+        View userFeedFragment = inflater.inflate(R.layout.fragment_user_feed, container, false);
         ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
-        View postView = inflater.inflate(R.layout.post, userFeedView, false);
 
-        // TODO: get data fields and fill into Post(arg,..) constructor
+        // get posts
+        ArrayList<Post> posts = getUserFeedPosts(inflater, userFeedView);
 
-        // fill in any details dynamically here
-        TextView textView = (TextView) postView.findViewById(R.id.post_header_username);
-        textView.setText("jun jen");
+        // add posts to view
+        int size = posts.size();
+        int i;
+        for (i = 0; i < size; i++){
+            userFeedView.addView(posts.get(i).getPostView(), i);
+        }
 
-        // insert into main view
-        userFeedView.addView(postView, 0);
+        // TODO: reload another bunch of posts at bottom of ScrollView
 
         return userFeedFragment;
-
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_user_feed, container, false);
     }
+
+    private ArrayList<Post> getUserFeedPosts(LayoutInflater inflater, ViewGroup parentView){
+        ArrayList<Post> posts = new ArrayList<>();
+
+        int maxPosts = 10;
+        int i = 0;
+        while (i < 10){
+            i++;
+
+            // TODO: use getPost(..) method from Data Object class
+
+            posts.add(new Post(inflater, parentView));
+
+        }
+
+        // TODO: arrange posts by timeSince
+
+        return posts;
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

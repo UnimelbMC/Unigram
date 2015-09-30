@@ -7,25 +7,25 @@ package co.example.junjen.mobileinstagram.elements;
  */
 public class Comment {
 
-    private String username;
+    private Username username;
     private String comment;
     private TimeSince timeSince;
 
     public Comment(){
         // test constructor to create 'empty' comment objects
 
-        this.username = "<username>";
-        this.comment = "<comment>";
+        this.username = new Username("username");
+        this.comment = "comment";
         this.timeSince = new TimeSince();
     }
 
     public Comment(String username, String comment, TimeSince timeSince){
-        this.username = username;
+        this.username = new Username(username);
         this.comment = comment;
         this.timeSince = timeSince;
     }
 
-    public String getUsername() {
+    public Username getUsername() {
         return username;
     }
 

@@ -7,22 +7,22 @@ package co.example.junjen.mobileinstagram.elements;
  */
 public class Like {
 
-    private String username;
+    private Username username;
     private TimeSince timeSince;
 
     public Like(){
         // test constructor to create 'empty' Like objects
 
-        this.username = "<username>";
+        this.username = new Username("username");
         this.timeSince = new TimeSince();
     }
 
     public Like(String username, TimeSince timeSince){
-        this.username = username;
+        this.username = new Username(username);
         this.timeSince = timeSince;
     }
 
-    public String getUsername() {
+    public Username getUsername() {
         return username;
     }
 

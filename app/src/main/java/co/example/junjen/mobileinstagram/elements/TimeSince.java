@@ -13,7 +13,7 @@ public class TimeSince {
     public TimeSince(){
         // test constructor to create 'empty' TimeSince objects
 
-        this.timeSince = "<timeSince";
+        this.timeSince = "timeSince";
     }
 
     public TimeSince(String timeSince){
@@ -23,4 +23,6 @@ public class TimeSince {
     public String getTimeSince() {
         return timeSince;
     }
+
+    // TODO: convert time since from Data Object to appropriate string
 }

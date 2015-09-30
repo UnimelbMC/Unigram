@@ -1,10 +1,10 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_margin="@dimen/post_margin">
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/post_optional_items"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
+    <!-- Post likes -->
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/like_count_line"
@@ -32,8 +32,8 @@
             android:layout_toRightOf="@id/number_of_likes_heart_icon"
             android:layout_toEndOf="@id/number_of_likes_heart_icon"
             android:text="Number of likes"
-            android:layout_marginLeft="@dimen/post_margin"
             android:layout_marginStart="@dimen/post_margin"
+            android:layout_marginLeft="@dimen/post_margin"
             android:layout_centerVertical="true"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -47,4 +47,25 @@
         android:layout_below="@id/like_count_line"
         android:layout_margin="@dimen/post_margin"/>
 
-</RelativeLayout>
+    <!-- Post comments -->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_comment_count"
+        android:text="View all 0 comments"
+        android:layout_margin="@dimen/post_margin"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_comment"
+        android:text="I am a comment"
+        android:layout_margin="@dimen/post_margin"/>
+
+    <!-- Space between posts -->
+    <Space
+    android:layout_width="1dp"
+    android:layout_height="@dimen/post_margin_bottom"/>
+
+</merge>

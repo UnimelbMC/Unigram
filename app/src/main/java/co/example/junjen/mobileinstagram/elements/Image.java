@@ -1,5 +1,7 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by junjen on 30/09/2015.
  *
@@ -12,7 +14,7 @@ public class Image {
     public Image(){
         // test constructor to create 'empty' Image objects
 
-        this.imageString = "<image>";
+        this.imageString = null;
     }
 
     public Image(String imageString){
@@ -21,5 +23,13 @@ public class Image {
 
     public String getImageString() {
         return imageString;
+    }
+
+    public Drawable getImage(){
+        // TODO: Fill appropriate image return type
+
+        Drawable image = null;
+
+        return image;
     }
 }
