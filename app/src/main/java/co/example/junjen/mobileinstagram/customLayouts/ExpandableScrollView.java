@@ -2,6 +2,7 @@ package co.example.junjen.mobileinstagram.customLayouts;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
 
@@ -27,11 +28,14 @@ public class ExpandableScrollView extends ScrollView {
         super(context, attrs, defStyleAttr);
     }
 
+    public void setScrollViewListener(ScrollViewListener scrollViewListener) {
+        this.scrollViewListener = scrollViewListener;
+    }
+
     // checks if bottom of a Scroll View has been reached
     @Override
     protected void onScrollChanged(int x, int y, int oldx, int oldy) {
-
-        View view = (View) getChildAt(getChildCount() - 1);
+        View view = getChildAt(getChildCount() - 1);
         int diff = (view.getBottom() - (getHeight() + getScrollY()));
         if (diff == 0) { // if diff is zero, then the bottom has been reached
             if (scrollViewListener != null) {

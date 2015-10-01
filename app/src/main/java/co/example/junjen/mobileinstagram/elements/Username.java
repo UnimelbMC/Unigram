@@ -2,6 +2,7 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.text.Html;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -26,7 +27,6 @@ public class Username {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // TODO:respond to click
                 v.setVisibility(View.GONE);
             }

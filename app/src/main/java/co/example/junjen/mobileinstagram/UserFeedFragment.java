@@ -2,7 +2,9 @@ package co.example.junjen.mobileinstagram;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.print.PrintDocumentAdapter;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +35,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     private String mParam1;
     private String mParam2;
 
-
-    private TimeSince timeSinceLastPost;
-
+    // keep track of timeSince last post generated to generate new set of posts
+    private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,20 +75,12 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View userFeedFragment = inflater.inflate(R.layout.fragment_user_feed, container, false);
-        ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
+        ExpandableScrollView userFeedFragment = (ExpandableScrollView)
+                inflater.inflate(R.layout.fragment_user_feed, container, false);
 
-        // get posts
-        ArrayList<Post> posts = getUserFeedPosts(inflater, userFeedView);
+        userFeedFragment.setScrollViewListener(this);
 
-        // add posts to view
-        int size = posts.size();
-        int i;
-        for (i = 0; i < size; i++){
-            userFeedView.addView(posts.get(i).getPostView(), i);
-        }
-
-        // TODO: reload another bunch of posts at bottom of ScrollView
+        getUserFeedPosts(inflater, userFeedFragment);
 
         return userFeedFragment;
     }
@@ -95,14 +88,18 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     // loads another chunk of posts when at the bottom of a user feed's scroll view
     @Override
     public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
-        // TODO: get next chunk of posts based on timeSince
 
+        LayoutInflater inflater = (LayoutInflater)
+                this.getContext().getSystemService(this.getContext().LAYOUT_INFLATER_SERVICE);
 
-
+        getUserFeedPosts(inflater, scrollView);
     }
 
     // loads a chunk of posts on the user feed view
-    private ArrayList<Post> getUserFeedPosts(LayoutInflater inflater, ViewGroup parentView){
+    private View getUserFeedPosts(LayoutInflater inflater, View userFeedFragment){
+
+        ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
+
         ArrayList<Post> posts = new ArrayList<>();
 
         int maxPosts = Parameters.postsToLoad;
@@ -112,16 +109,22 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
             // TODO: use getPost(..) method from Data Object class
 
-            posts.add(new Post(inflater, parentView));
+            posts.add(new Post(inflater, userFeedView));
 
         }
 
-        // TODO: arrange posts by timeSince
+        // TODO: arrange ArrayList of posts by timeSince
 
         // TODO: change this.timeSinceLastPost to actual timeSince of last post
         this.timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
 
-        return posts;
+        // add posts to view
+        int size = posts.size();
+        for (i = 0; i < size; i++){
+            userFeedView.addView(posts.get(i).getPostView(), i);
+        }
+
+        return userFeedView;
     }
 
 

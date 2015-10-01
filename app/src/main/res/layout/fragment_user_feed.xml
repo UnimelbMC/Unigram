@@ -12,11 +12,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/userfeed_view"
         android:orientation="vertical">
-        <!--&lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/hello_user_feed_fragment" />-->
     </LinearLayout>
 
 </co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView>
