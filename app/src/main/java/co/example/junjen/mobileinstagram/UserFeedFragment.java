@@ -117,7 +117,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             i++;
 
             // TODO: use getPost(..) method from Data Object class
-
+            // if timeSinceLastPost is default, get latest posts
+            // else get posts later than timeSinceLastPost
             posts.add(new Post(inflater, userFeedView));
 
         }
@@ -125,13 +126,26 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
         // TODO: arrange ArrayList of posts by timeSince
 
         // TODO: change this.timeSinceLastPost to actual timeSince of last post
-        this.timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
+        this.timeSinceLastPost = posts.get(posts.size() - 1).getTimeSince();
 
         // add posts to view
+        Post post;
+        View postView;
         int size = posts.size();
         for (i = 0; i < size; i++){
-            userFeedView.addView(posts.get(i).getPostView(), i + postCount);
+            post = posts.get(i);
+            postView = post.getPostView();
+            int index = i + postCount;
+
+            //TESTING
+            TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+            if(post.getTimeSince().getTimeSince().equals(Parameters.default_timeSince)){
+                timeSince.setText(Integer.toString(index) + "s ago");
+            }
+
+            userFeedView.addView(postView, index);
         }
+
         postCount += Parameters.postsToLoad;
         loadPosts = true;
         return userFeedView;

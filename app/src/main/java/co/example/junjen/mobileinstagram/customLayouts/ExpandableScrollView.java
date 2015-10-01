@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 public class ExpandableScrollView extends ScrollView {
 
     private ScrollViewListener scrollViewListener = null;
+    private int counter = 0;    // counter to prevent 2 consecutive cases of onScrollChanged
 
     public ExpandableScrollView(Context context) {
         super(context);
@@ -38,9 +39,12 @@ public class ExpandableScrollView extends ScrollView {
         View view = getChildAt(getChildCount() - 1);
         int diff = (view.getBottom() - (getHeight() + getScrollY()));
         if (diff == 0) { // if diff is zero, then the bottom has been reached
-            if (scrollViewListener != null) {
+            if (scrollViewListener != null && counter == 0) {
+                counter++;
                 scrollViewListener.onScrollEnded(this, x, y, oldx, oldy);
             }
+        } else {
+            counter = 0;
         }
         super.onScrollChanged(x, y, oldx, oldy);
     }
