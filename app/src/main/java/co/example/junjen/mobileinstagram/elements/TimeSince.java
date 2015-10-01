@@ -1,5 +1,9 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import android.content.res.Resources;
+
+import co.example.junjen.mobileinstagram.R;
+
 /**
  * Created by junjen on 30/09/2015.
  *
@@ -9,12 +13,6 @@ package co.example.junjen.mobileinstagram.elements;
 public class TimeSince {
 
     private String timeSince;
-
-    public TimeSince(){
-        // test constructor to create 'empty' TimeSince objects
-
-        this.timeSince = "timeSince";
-    }
 
     public TimeSince(String timeSince){
         this.timeSince = timeSince;

@@ -18,9 +18,7 @@ public class Username {
 
     public Username(String username) {
         this.username = username;
-
         String username_link = "<b>"+this.username+"</b>";
-
         this.username_link = StringFactory.createLink(Html.fromHtml(username_link), getOnClickListener());
     }
 
@@ -28,7 +26,9 @@ public class Username {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 // TODO:respond to click
+                v.setVisibility(View.GONE);
             }
         };
         return onClickListener;
@@ -45,8 +45,4 @@ public class Username {
     public String toString() {
         return this.username;
     }
-
-    // TODO: onClickListener for username
-
-
 }

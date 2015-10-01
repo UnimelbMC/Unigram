@@ -1,4 +1,4 @@
-package co.example.junjen.mobileinstagram.elements;
+package co.example.junjen.mobileinstagram.customLayouts;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,17 +1,19 @@
 package co.example.junjen.mobileinstagram;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
+import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
+import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
+import co.example.junjen.mobileinstagram.elements.TimeSince;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,7 +23,7 @@ import co.example.junjen.mobileinstagram.elements.Post;
  * Use the {@link UserFeedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserFeedFragment extends Fragment {
+public class UserFeedFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,6 +32,10 @@ public class UserFeedFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    private TimeSince timeSinceLastPost;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -86,12 +92,22 @@ public class UserFeedFragment extends Fragment {
         return userFeedFragment;
     }
 
+    // loads another chunk of posts when at the bottom of a user feed's scroll view
+    @Override
+    public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
+        // TODO: get next chunk of posts based on timeSince
+
+
+
+    }
+
+    // loads a chunk of posts on the user feed view
     private ArrayList<Post> getUserFeedPosts(LayoutInflater inflater, ViewGroup parentView){
         ArrayList<Post> posts = new ArrayList<>();
 
-        int maxPosts = 10;
+        int maxPosts = Parameters.postsToLoad;
         int i = 0;
-        while (i < 10){
+        while (i < maxPosts){
             i++;
 
             // TODO: use getPost(..) method from Data Object class
@@ -101,6 +117,9 @@ public class UserFeedFragment extends Fragment {
         }
 
         // TODO: arrange posts by timeSince
+
+        // TODO: change this.timeSinceLastPost to actual timeSince of last post
+        this.timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
 
         return posts;
     }
@@ -112,6 +131,8 @@ public class UserFeedFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this

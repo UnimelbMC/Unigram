@@ -6,11 +6,10 @@ package co.example.junjen.mobileinstagram.elements;
  * This class creates Post objects.
  */
 
-import android.text.Html;
-import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,21 +37,31 @@ public class Post {
     public Post(LayoutInflater inflater, ViewGroup parentView){
         // test constructor to create 'empty' Post objects
 
-        this.userImage = new Image();
-        this.username = new Username("username");
-        this.timeSince = new TimeSince();
-        this.postImage = new Image();
-        this.caption = "caption";
+        this.userImage = new Image(Parameters.default_image);
+        this.username = new Username(Parameters.default_username);
+        this.timeSince = new TimeSince(Parameters.default_timeSince);
+        this.postImage = new Image(Parameters.default_image);
+        this.caption = Parameters.default_caption;
 
         this.likes = new ArrayList<>();
-        this.likes.add(new Like("username1", new TimeSince()));
-        this.likes.add(new Like("username2", new TimeSince()));
-        this.likes.add(new Like("username3", new TimeSince()));
-
         this.comments = new ArrayList<>();
-        this.comments.add(new Comment("username4", "comment1", new TimeSince()));
-        this.comments.add(new Comment("username5", "comment2", new TimeSince()));
-        this.comments.add(new Comment("username6", "comment3", new TimeSince()));
+
+        int i;
+        String username;
+        String comment;
+
+        // create 20 empty likes
+        for (i = 0; i < 20; i++){
+            username = Parameters.default_username + (i + 1);
+            this.likes.add(new Like(username, new TimeSince(Parameters.default_timeSince)));
+        }
+        // create 10 comments
+        for (i = 0; i < 10; i++){
+            username = Parameters.default_username + (i + 1);
+            comment = Parameters.default_comment + (i + 1);
+            this.comments.add(new Comment(username, comment,
+                    new TimeSince(Parameters.default_timeSince)));
+        }
 
         this.postView = createPostView(inflater, parentView);
     }
@@ -71,6 +80,7 @@ public class Post {
         this.comments = createCommentsList(comments);
 
         this.postView = createPostView(inflater, parentView);
+
     }
 
     private ArrayList<Like> createLikesList(String likes_string){
@@ -96,13 +106,13 @@ public class Post {
         // TextView t2 = (TextView) findViewById(R.id.text2);
         // t2.setMovementMethod(LinkMovementMethod.getInstance());
 
-        ViewGroup postView = (ViewGroup) inflater.inflate(R.layout.post, parentView, false);
+        RelativeLayout postView = (RelativeLayout) inflater.inflate(R.layout.post, parentView, false);
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
         /** Fixed parameters **/
 
         // User image
-        if(this.userImage.getImageString() != null) {
+        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
             ImageView userImage = (ImageView) postView.findViewById(R.id.post_header_user_image);
             // TODO: Determine set image type
             userImage.setImageDrawable(this.userImage.getImage());
@@ -120,7 +130,7 @@ public class Post {
         timeSince.setText(this.timeSince.getTimeSince());
 
         // Post image
-        if(this.postImage.getImageString() != null) {
+        if(!this.postImage.getImageString().equals(Parameters.default_image)) {
             ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
             // TODO: Determine set image type
             postImage.setImageDrawable(this.postImage.getImage());
@@ -137,7 +147,8 @@ public class Post {
         if (this.likes != null){
             TextView likes = (TextView) postView.findViewById(R.id.like_count);
             int likeCount = this.likes.size();
-            if(likeCount > 10){
+            int likeThreshold = Parameters.likeThreshold;
+            if(likeCount > likeThreshold){
                 likes.setText(likeCount + " likes");
             }
             else {
@@ -168,16 +179,14 @@ public class Post {
         }
 
         // Comments
+
         TextView commentCountText = (TextView) postView.findViewById(R.id.post_comment_count);
-        TextView comment1 = (TextView) postView.findViewById(R.id.post_comment_1);
-        TextView comment2 = (TextView) postView.findViewById(R.id.post_comment_2);
-        TextView comment3 = (TextView) postView.findViewById(R.id.post_comment_3);
-        TextView[] comments = {comment1, comment2, comment3};
         if (this.comments != null){
 
             // add link to show all comments is more than 3 comments
             int commentCount = this.comments.size();
-            if (commentCount > 3){
+            int commentThreshold = Parameters.commentThreshold;
+            if (commentCount > commentThreshold){
                 commentCountText.setText("View all " + commentCount + " comments");
 
                 // TODO: onClickListener
@@ -185,19 +194,45 @@ public class Post {
             } else {
                 commentCountText.setVisibility(View.GONE);
             }
+
+            // dynamically add preview of maximum 3 comments below commentCountText
+            int aboveID = commentCountText.getId();
+            ViewGroup commentView = (ViewGroup) postView.findViewById(R.id.post_comments);
+            ArrayList<TextView> commentViews = new ArrayList<>();
+
             int i;
-            for (i = 0; i < 3; i++){
+            for (i = 0; i < commentThreshold; i++){
                 if (commentCount > i) {
-                    comments[i].setText("");    // remove default text
+
+                    // get post_comment layout
+                    View comments = inflater.inflate(R.layout.post_comment, null, false);
+                    commentViews.add((TextView) comments.findViewById(R.id.post_comment));
+                    TextView comment_test = commentViews.get(i);
+
+                    // add layout params for comments to appear below the previous one
+                    LayoutParams layoutParams = (LayoutParams) comment_test.getLayoutParams();
+                    layoutParams.addRule(RelativeLayout.BELOW, aboveID);
+
+                    comment_test.setText("");    // remove default text
                     Comment comment = this.comments.get(i);
                     stringComponents.add(comment.getUsername().getUsername_link());
                     stringComponents.add(" " + comment.getComment());
-                    StringFactory.stringBuilder(comments[i], stringComponents);
+                    StringFactory.stringBuilder(comment_test, stringComponents);
                     stringComponents.clear();
+                    ((ViewGroup) comment_test.getParent()).removeView(comment_test);
+
+                    // add comment below previous one
+                    commentView.addView(comment_test, layoutParams);
+                    commentViews.get(i).setId(aboveID + 1);
+                    aboveID = commentViews.get(i).getId();
                 } else {
-                    comments[i].setVisibility(View.GONE);
+                    break;
                 }
             }
+            // add comments block into postView
+            ((ViewGroup) commentView.getParent()).removeView(commentView);
+            LayoutParams layoutParams = (LayoutParams) commentView.getLayoutParams();
+            postView.addView(commentView, layoutParams);
         }
         return postView;
     }

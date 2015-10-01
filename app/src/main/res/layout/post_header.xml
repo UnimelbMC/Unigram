@@ -19,19 +19,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Username"
+        android:text="@string/default_username"
         android:id="@+id/post_header_username"
         android:layout_toEndOf="@+id/post_header_user_image"
         android:layout_toRightOf="@+id/post_header_user_image"
         android:layout_centerVertical="true"
-        android:layout_margin="@dimen/post_margin"
-        android:textStyle="bold"/>
+        android:layout_margin="@dimen/post_margin"/>
 
     <!-- Time since posted -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="some time ago"
+        android:text="@string/default_timeSince"
         android:id="@+id/post_header_time_since"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

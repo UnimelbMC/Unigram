@@ -31,6 +31,8 @@ public class StringFactory {
 
         // This line makes the link clickable!
         makeLinksFocusable(tv);
+
+        args.clear();   // clear
     }
 
     public static SpannableString createLink (CharSequence link_string, View.OnClickListener onClickListener) {

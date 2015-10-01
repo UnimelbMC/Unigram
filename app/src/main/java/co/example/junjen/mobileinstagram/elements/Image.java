@@ -11,12 +11,6 @@ public class Image {
 
     private String imageString;
 
-    public Image(){
-        // test constructor to create 'empty' Image objects
-
-        this.imageString = null;
-    }
-
     public Image(String imageString){
         this.imageString = imageString;
     }

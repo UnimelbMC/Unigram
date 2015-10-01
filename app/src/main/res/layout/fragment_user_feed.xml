@@ -1,4 +1,5 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_user_feed"
     android:layout_width="match_parent"
@@ -11,11 +12,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/userfeed_view"
         android:orientation="vertical">
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_user_feed_fragment" />
+        <!--&lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/hello_user_feed_fragment" />-->
     </LinearLayout>
 
-</ScrollView>
+</co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView>

@@ -11,14 +11,6 @@ public class Comment {
     private String comment;
     private TimeSince timeSince;
 
-    public Comment(){
-        // test constructor to create 'empty' comment objects
-
-        this.username = new Username("username");
-        this.comment = "comment";
-        this.timeSince = new TimeSince();
-    }
-
     public Comment(String username, String comment, TimeSince timeSince){
         this.username = new Username(username);
         this.comment = comment;
