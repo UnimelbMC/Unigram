@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -37,6 +38,12 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
     // keep track of timeSince last post generated to generate new set of posts
     private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
+
+    // flag to check if posts are being loaded before loading new ones
+    private boolean loadPosts;
+
+    // counter for new posts to be placed in the right order when loaded
+    private int postCount = 0;
 
     private OnFragmentInteractionListener mListener;
 
@@ -88,18 +95,20 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     // loads another chunk of posts when at the bottom of a user feed's scroll view
     @Override
     public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
+        // load new posts if no posts are currently being loaded
+        if(loadPosts){
+            LayoutInflater inflater = (LayoutInflater)
+                    this.getContext().getSystemService(this.getContext().LAYOUT_INFLATER_SERVICE);
 
-        LayoutInflater inflater = (LayoutInflater)
-                this.getContext().getSystemService(this.getContext().LAYOUT_INFLATER_SERVICE);
-
-        getUserFeedPosts(inflater, scrollView);
+            getUserFeedPosts(inflater, scrollView);
+        }
     }
 
     // loads a chunk of posts on the user feed view
     private View getUserFeedPosts(LayoutInflater inflater, View userFeedFragment){
 
+        loadPosts = false;
         ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
-
         ArrayList<Post> posts = new ArrayList<>();
 
         int maxPosts = Parameters.postsToLoad;
@@ -121,9 +130,10 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
         // add posts to view
         int size = posts.size();
         for (i = 0; i < size; i++){
-            userFeedView.addView(posts.get(i).getPostView(), i);
+            userFeedView.addView(posts.get(i).getPostView(), i + postCount);
         }
-
+        postCount += Parameters.postsToLoad;
+        loadPosts = true;
         return userFeedView;
     }
 
