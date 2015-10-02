@@ -29,19 +29,18 @@ public class MainActivity extends AppCompatActivity {
     public void actionBar(View v){
         Intent intent = new Intent(MainActivity.this, NavigationBar.class);
 
+        // get username and password input
         EditText usernameInput = (EditText) this.findViewById(R.id.login_username_editText);
         String loginUsername = usernameInput.getText().toString();
         EditText passwordInput = (EditText) this.findViewById(R.id.login_password_editText);
-        String loginPassword = passwordInput.getText().toString();
+        char[] loginPassword = passwordInput.getText().toString().toCharArray();
 
-        // TODO: pass username and password to fragments
-//        Bundle b = new Bundle();
-//        b.putInt("key", 1); //Your id
-//        intent.putExtras(b); //Put your id to your next Intent
-//
-//        Bundle b = getIntent().getExtras();
-//        int value = b.getInt("key");
-
+        // pass username and password into Navigation screen creation
+        Bundle b = new Bundle();
+        b.putString("username", loginUsername);
+        b.putCharArray("password", loginPassword);  // used char[] for added security
+        intent.putExtras(b);
+        b.clear();  // clear username and password
         MainActivity.this.startActivity(intent);
     }
 

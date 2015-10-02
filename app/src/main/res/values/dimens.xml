@@ -3,6 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- Login screen -->
+    <dimen name="login_user_image_width">150dp</dimen>
+
     <!-- Nav bar -->
     <dimen name="nav_bar_height">40dp</dimen>
     <dimen name="nav_button_margin">5dp</dimen>
