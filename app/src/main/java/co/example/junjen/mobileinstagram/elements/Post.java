@@ -91,7 +91,7 @@ public class Post {
     private ArrayList<Like> createLikesList(String likes_string){
         ArrayList<Like> likes = new ArrayList<>();
 
-        // TODO: method to convert likes_string into ArrayList<Like>
+        // TODO: method to convert JSON likes_string into ArrayList<Like>
 
         return likes;
     }
@@ -99,7 +99,7 @@ public class Post {
     private ArrayList<Comment> createCommentsList(String comments_string){
         ArrayList<Comment> comments = new ArrayList<>();
 
-        // TODO: method to convert comments_string into ArrayList<Comment>
+        // TODO: method to convert JSON comments_string into ArrayList<Comment>
 
         return comments;
     }

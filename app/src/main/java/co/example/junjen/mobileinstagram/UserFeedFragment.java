@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -35,6 +36,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ExpandableScrollView userFeedFragment;
 
     // keep track of timeSince last post generated to generate new set of posts
     private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
@@ -82,12 +85,15 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ExpandableScrollView userFeedFragment = (ExpandableScrollView)
-                inflater.inflate(R.layout.fragment_user_feed, container, false);
+        // initialise userFeedFragment if not created yet
+        if(userFeedFragment == null){
+            userFeedFragment = (ExpandableScrollView)
+                    inflater.inflate(R.layout.fragment_user_feed, container, false);
 
-        userFeedFragment.setScrollViewListener(this);
+            userFeedFragment.setScrollViewListener(this);
 
-        getUserFeedPosts(inflater, userFeedFragment);
+            getUserFeedPosts(inflater, userFeedFragment);
+        }
 
         return userFeedFragment;
     }
@@ -95,11 +101,12 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     // loads another chunk of posts when at the bottom of a user feed's scroll view
     @Override
     public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
+
+        Log.w("test",Integer.toString(postCount));
+
         // load new posts if no posts are currently being loaded
         if(loadPosts){
-            LayoutInflater inflater = (LayoutInflater)
-                    this.getContext().getSystemService(this.getContext().LAYOUT_INFLATER_SERVICE);
-
+            LayoutInflater inflater = LayoutInflater.from(this.getContext());
             getUserFeedPosts(inflater, scrollView);
         }
     }
@@ -108,6 +115,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     private View getUserFeedPosts(LayoutInflater inflater, View userFeedFragment){
 
         loadPosts = false;
+
         ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
         ArrayList<Post> posts = new ArrayList<>();
 
@@ -150,7 +158,6 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
         loadPosts = true;
         return userFeedView;
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
