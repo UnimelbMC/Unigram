@@ -3,9 +3,20 @@ package co.example.junjen.mobileinstagram;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
+import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
+import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.Post;
+import co.example.junjen.mobileinstagram.elements.Profile;
+import co.example.junjen.mobileinstagram.elements.TimeSince;
 
 
 /**
@@ -16,7 +27,7 @@ import android.view.ViewGroup;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -25,6 +36,17 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ExpandableScrollView profileFragment;
+
+    // keep track of timeSince last post generated to generate new set of posts
+    private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
+
+    // flag to check if posts are being loaded before loading new ones
+    private boolean loadPosts;
+
+    // counter for new posts to be placed in the right order when loaded
+    private int postCount = 0;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,8 +84,72 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+
+        // initialise userFeedFragment if not created yet
+        if(profileFragment == null){
+            profileFragment = (ExpandableScrollView)
+                    inflater.inflate(R.layout.fragment_profile, container, false);
+
+            profileFragment.setScrollViewListener(this);
+
+            Profile profile = new Profile();
+
+            profile.getProfileView(inflater, profileFragment);
+        }
+        return profileFragment;
+    }
+
+    // loads another chunk of posts when at the bottom of the profile ScrollView
+    @Override
+    public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
+
+        Log.w("test", Integer.toString(postCount));
+
+        // load new posts if no posts are currently being loaded
+        if(loadPosts){
+            LayoutInflater inflater = LayoutInflater.from(this.getContext());
+            getProfilePosts(inflater, scrollView);
+        }
+    }
+
+    // loads a chunk of posts on the user feed view
+    private View getProfilePosts(LayoutInflater inflater, View profileFragment){
+
+        loadPosts = false;
+
+        ViewGroup profileView = (ViewGroup) profileFragment.findViewById(R.id.profile_post_icons);
+
+        int maxPosts = Parameters.postIconsToLoad;
+        int i = 0;
+        int index;
+        Post post;
+        View postView;
+        for (i = 0; i < maxPosts; i++){
+
+            // TODO: use getPost(..) method from Data Object class based on timeSinceLastPost
+            // if timeSinceLastPost is default, get latest posts
+            // else get posts later than timeSinceLastPost
+            // add an if (getPost != null) condition
+            post = new Post();
+
+            postView = post.getPostView(inflater, profileView);
+
+            index = i + postCount;
+
+            //TESTING
+            TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+            if(post.getTimeSince().getTimeSince().equals(Parameters.default_timeSince)){
+                timeSince.setText(Integer.toString(index) + "s ago");
+            }
+
+            profileView.addView(postView, index);
+
+            this.timeSinceLastPost = post.getTimeSince();
+        }
+
+        postCount += Parameters.postIconsToLoad;
+        loadPosts = true;
+        return profileView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

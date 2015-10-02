@@ -32,10 +32,7 @@ public class Post {
     private ArrayList<Like> likes;
     private ArrayList<Comment> comments;
 
-    // post View
-    private View postView;
-
-    public Post(LayoutInflater inflater, ViewGroup parentView){
+    public Post(){
         // test constructor to create 'empty' Post objects
 
         this.userImage = new Image(Parameters.default_image);
@@ -57,20 +54,17 @@ public class Post {
             username = Parameters.default_username + (i + 1);
             this.likes.add(new Like(username, new TimeSince(Parameters.default_timeSince)));
         }
-        // create 10 comments
+        // create 10 empty comments
         for (i = 0; i < 10; i++){
             username = Parameters.default_username + (i + 1);
             comment = Parameters.default_comment + (i + 1);
             this.comments.add(new Comment(username, comment,
                     new TimeSince(Parameters.default_timeSince)));
         }
-
-        this.postView = createPostView(inflater, parentView);
     }
 
     public Post(String userImage, String username, String location, String timeSince,
-                String postImage, String caption, String likes, String comments,
-                LayoutInflater inflater, ViewGroup parentView){
+                String postImage, String caption, String likes, String comments){
 
         // TODO: Assumes strings as parameters. Set appropriately later on.
 
@@ -83,9 +77,6 @@ public class Post {
 
         this.likes = createLikesList(likes);
         this.comments = createCommentsList(comments);
-
-        this.postView = createPostView(inflater, parentView);
-
     }
 
     private ArrayList<Like> createLikesList(String likes_string){
@@ -99,12 +90,12 @@ public class Post {
     private ArrayList<Comment> createCommentsList(String comments_string){
         ArrayList<Comment> comments = new ArrayList<>();
 
-        // TODO: method to convert JSON comments_string into ArrayList<Comment>
+        // TODO: method to convert comments_string into ArrayList<Comment>
 
         return comments;
     }
 
-    public View createPostView(LayoutInflater inflater, ViewGroup parentView){
+    public View getPostView(LayoutInflater inflater, ViewGroup parentView){
 
         // TODO: set 'onClickListener" for any applicable views
         // Example:
@@ -253,6 +244,8 @@ public class Post {
         return postView;
     }
 
+
+
     public Image getUserImage() {
         return userImage;
     }
@@ -276,9 +269,4 @@ public class Post {
     public ArrayList<Like> getLikes() {
         return likes;
     }
-
-    public View getPostView() {
-        return postView;
-    }
-
 }

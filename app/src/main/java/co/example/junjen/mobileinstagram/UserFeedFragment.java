@@ -94,15 +94,12 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
             getUserFeedPosts(inflater, userFeedFragment);
         }
-
         return userFeedFragment;
     }
 
-    // loads another chunk of posts when at the bottom of a user feed's scroll view
+    // loads another chunk of posts when at the bottom of the user feed ScrollView
     @Override
     public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
-
-        Log.w("test",Integer.toString(postCount));
 
         // load new posts if no posts are currently being loaded
         if(loadPosts){
@@ -117,33 +114,23 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
         loadPosts = false;
 
         ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
-        ArrayList<Post> posts = new ArrayList<>();
 
         int maxPosts = Parameters.postsToLoad;
         int i = 0;
-        while (i < maxPosts){
-            i++;
-
-            // TODO: use getPost(..) method from Data Object class
-            // if timeSinceLastPost is default, get latest posts
-            // else get posts later than timeSinceLastPost
-            posts.add(new Post(inflater, userFeedView));
-
-        }
-
-        // TODO: arrange ArrayList of posts by timeSince
-
-        // TODO: change this.timeSinceLastPost to actual timeSince of last post
-        this.timeSinceLastPost = posts.get(posts.size() - 1).getTimeSince();
-
-        // add posts to view
+        int index;
         Post post;
         View postView;
-        int size = posts.size();
-        for (i = 0; i < size; i++){
-            post = posts.get(i);
-            postView = post.getPostView();
-            int index = i + postCount;
+        for (i = 0; i < maxPosts; i++){
+
+            // TODO: use getPost(..) method from Data Object class based on timeSinceLastPost
+            // if timeSinceLastPost is default, get latest posts
+            // else get posts later than timeSinceLastPost
+            // add an if (getPost != null) condition
+            post = new Post();
+
+            postView = post.getPostView(inflater, userFeedView);
+
+            index = i + postCount;
 
             //TESTING
             TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
@@ -152,6 +139,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             }
 
             userFeedView.addView(postView, index);
+
+            this.timeSinceLastPost = post.getTimeSince();
         }
 
         postCount += Parameters.postsToLoad;

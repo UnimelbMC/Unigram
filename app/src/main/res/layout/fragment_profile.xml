@@ -7,10 +7,15 @@
     tools:context="co.example.junjen.mobileinstagram.ProfileFragment">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/profile_view"
         android:orientation="vertical">
+
+        <!-- Profile -->
+        <include
+            layout="@layout/profile">
+        </include>
+
     </LinearLayout>
 
 </co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView>

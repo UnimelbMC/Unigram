@@ -3,6 +3,7 @@ package co.example.junjen.mobileinstagram;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void actionBar(View v){
         Intent intent = new Intent(MainActivity.this, NavigationBar.class);
+
+        EditText usernameInput = (EditText) this.findViewById(R.id.login_username_editText);
+        String loginUsername = usernameInput.getText().toString();
+        EditText passwordInput = (EditText) this.findViewById(R.id.login_password_editText);
+        String loginPassword = passwordInput.getText().toString();
+
+        // TODO: pass username and password to fragments
+//        Bundle b = new Bundle();
+//        b.putInt("key", 1); //Your id
+//        intent.putExtras(b); //Put your id to your next Intent
+//
+//        Bundle b = getIntent().getExtras();
+//        int value = b.getInt("key");
+
         MainActivity.this.startActivity(intent);
     }
 
