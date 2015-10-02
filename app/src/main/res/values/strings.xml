@@ -23,6 +23,7 @@
     <!-- Post -->
     <string name="icon_heart">&#x2665;</string>
     <string name="default_username">Username</string>
+    <string name="default_location">Location</string>
     <string name="default_timeSince">TimeSince</string>
 
 </resources>

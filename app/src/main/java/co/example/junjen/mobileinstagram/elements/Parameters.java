@@ -10,6 +10,7 @@ public class Parameters {
 
     // Post parameters
     public static final String default_username = "Username";
+    public static final String default_location = "Location";
     public static final String default_timeSince = "TimeSince";
     public static final String default_caption = "Caption";
     public static final String default_comment = "Comment";

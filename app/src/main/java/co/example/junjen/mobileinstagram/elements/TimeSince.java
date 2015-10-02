@@ -22,5 +22,13 @@ public class TimeSince {
         return timeSince;
     }
 
-    // TODO: convert time since from Data Object to appropriate string
+    // TODO: convert time since from Data Object to appropriate variables
+
+    public static double timeDiff(TimeSince timeFrom, TimeSince timeTo){
+        // TODO: method for calculating time difference
+
+        double timeDiff = 0;
+
+        return timeDiff;
+    }
 }

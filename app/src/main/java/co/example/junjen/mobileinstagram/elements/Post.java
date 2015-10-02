@@ -23,6 +23,7 @@ public class Post {
     // post header
     private Image userImage;
     private Username username;
+    private Location location;
     private TimeSince timeSince;
 
     // post content
@@ -39,6 +40,7 @@ public class Post {
 
         this.userImage = new Image(Parameters.default_image);
         this.username = new Username(Parameters.default_username);
+        this.location = new Location(Parameters.default_location);
         this.timeSince = new TimeSince(Parameters.default_timeSince);
         this.postImage = new Image(Parameters.default_image);
         this.caption = Parameters.default_caption;
@@ -66,12 +68,15 @@ public class Post {
         this.postView = createPostView(inflater, parentView);
     }
 
-    public Post(String userImage, String username, String timeSince, String postImage,
-                String caption, String likes, String comments, LayoutInflater inflater,
-                ViewGroup parentView){
+    public Post(String userImage, String username, String location, String timeSince,
+                String postImage, String caption, String likes, String comments,
+                LayoutInflater inflater, ViewGroup parentView){
+
+        // TODO: Assumes strings as parameters. Set appropriately later on.
 
         this.userImage = new Image(userImage);
         this.username = new Username(username);
+        this.location = new Location(location);
         this.timeSince = new TimeSince(timeSince);
         this.postImage = new Image(postImage);
         this.caption = caption;
@@ -141,6 +146,17 @@ public class Post {
         /** Optional parameters **/
 
         // TODO: Confirm for 'null' return type if optional params do not exist
+
+        // Location
+        TextView location = (TextView) postView.findViewById(R.id.post_header_location);
+        if (this.location != null){
+            location.setText("");    // remove default text
+            stringComponents.add(this.location.getLocation());
+            StringFactory.stringBuilder(location, stringComponents);
+            stringComponents.clear();
+        } else {
+            location.setVisibility(View.GONE);
+        }
 
         // Likes
         RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
