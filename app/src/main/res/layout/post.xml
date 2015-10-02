@@ -1,9 +1,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="0px"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <!-- Post header -->
     <include
@@ -19,7 +17,7 @@
         android:layout_below="@+id/post_header"
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
-        android:contentDescription="Posted Image"/>
+        android:contentDescription="Post Image"/>
 
     <!-- Post image options (Like and Comment buttons) -->
     <include
@@ -29,13 +27,24 @@
         android:id="@+id/post_image_options"
         android:layout_below="@id/post_image"/>
 
+    <!-- Post divider -->
+    <View
+        android:id="@+id/post_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@id/post_image_options"
+        android:layout_marginLeft="@dimen/post_divider_margin"
+        android:layout_marginRight="@dimen/post_divider_margin"
+        android:layout_marginBottom="@dimen/post_margin"/>
+
     <!-- Post details (No. of likes and caption) -->
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/post_details"
         android:id="@+id/post_details"
-        android:layout_below="@id/post_image_options"/>
+        android:layout_below="@id/post_divider"/>
 
     <!-- Post comments -->
     <include
@@ -48,7 +57,7 @@
     <!-- Space between posts -->
     <Space
         android:layout_width="1dp"
-        android:layout_height="@dimen/post_margin_bottom"
+        android:layout_height="@dimen/space_between_posts"
         android:layout_below="@id/post_comments"/>
 
 </RelativeLayout>

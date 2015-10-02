@@ -26,4 +26,10 @@
     <string name="default_location">Location</string>
     <string name="default_timeSince">TimeSince</string>
 
+    <!-- Profile -->
+    <string name="profile_post_count_label">posts</string>
+    <string name="profile_follower_count_label">followers</string>
+    <string name="profile_following_count_label">following</string>
+    <string name="profile_no_post_flag">No posts</string>
+
 </resources>

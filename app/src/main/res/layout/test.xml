@@ -1,63 +1,45 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="@dimen/post_header_height"
+    android:id="@+id/profile_post_icons"
     android:orientation="vertical"
-    android:layout_margin="@dimen/post_margin">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/profile_no_post_flag">
 
-    <!-- User image -->
-    <ImageView
-        android:layout_width="@dimen/post_header_user_image_width"
-        android:layout_height="@dimen/post_header_user_image_width"
-        android:id="@+id/post_header_user_image"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/post_header_user_image"
-        android:layout_margin="@dimen/post_margin"/>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <!-- Time since posted -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/default_timeSince"
-        android:id="@+id/post_header_time_since"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_vertical"
-        android:layout_margin="@dimen/post_margin"/>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/post_header_user_image"
-        android:layout_toEndOf="@id/post_header_user_image"
-        android:layout_toLeftOf="@id/post_header_time_since"
-        android:layout_toStartOf="@id/post_header_time_since"
-        android:layout_margin="@dimen/post_margin">
-
-        <!-- Location -->
-        <TextView
-            android:layout_width="fill_parent"
+        <ImageView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/default_location"
-            android:id="@+id/post_header_location"
-            android:layout_alignParentBottom="true"
-            android:singleLine="true"/>
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:src="@drawable/post_image"
+            android:adjustViewBounds="true"
+            android:layout_margin="@dimen/post_icon_margin"/>
 
-        <!-- Username -->
-        <TextView
-            android:layout_width="fill_parent"
+        <ImageView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/default_username"
-            android:id="@+id/post_header_username"
-            android:layout_alignParentTop="true"
-            android:layout_above="@id/post_header_location"
-            android:gravity="center_vertical"
-            android:layout_alignWithParentIfMissing="true"
-            android:singleLine="true"/>
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:src="@drawable/post_header_user_image"
+            android:adjustViewBounds="true"
+            android:layout_margin="@dimen/post_icon_margin"/>
 
-    </RelativeLayout>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:src="@drawable/post_image"
+            android:adjustViewBounds="true"
+            android:layout_margin="@dimen/post_icon_margin"/>
 
-</RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

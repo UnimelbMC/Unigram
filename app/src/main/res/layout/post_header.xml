@@ -1,9 +1,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="@dimen/post_header_height"
-    android:orientation="vertical"
-    android:layout_margin="@dimen/post_margin">
+    android:padding="@dimen/post_margin">
 
     <!-- User image -->
     <ImageView
@@ -13,7 +12,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:src="@drawable/post_header_user_image"
-        android:layout_margin="@dimen/post_margin"/>
+        android:adjustViewBounds="true"
+        android:layout_margin="@dimen/post_margin"
+        android:contentDescription="Post User Image"/>
 
     <!-- Time since posted -->
     <TextView

@@ -221,7 +221,7 @@ public class Post {
                 if (commentCount > i) {
 
                     // get post_comment layout
-                    View comments = inflater.inflate(R.layout.post_comment, null, false);
+                    View comments = inflater.inflate(R.layout.post_comment, commentView, true);
                     commentViews.add((TextView) comments.findViewById(R.id.post_comment));
                     TextView comment_test = commentViews.get(i);
 

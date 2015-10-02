@@ -1,0 +1,39 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Profile header -->
+    <include
+        layout="@layout/profile_header"
+        android:id="@+id/profile_header"/>
+
+    <!-- Profile divider -->
+    <View
+        android:id="@+id/profile_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@id/profile_header"/>
+
+    <!-- No Post Flag -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/profile_no_post_flag"
+        android:text="@string/profile_no_post_flag"
+        android:gravity="center"
+        android:layout_below="@id/profile_divider"/>
+
+    <!-- Profile posts -->
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/profile_post_icons"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_no_post_flag">
+    </LinearLayout>
+
+</RelativeLayout>
