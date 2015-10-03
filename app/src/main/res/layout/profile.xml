@@ -20,11 +20,13 @@
     <!-- No Post Flag -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/profile_no_post_flag"
         android:text="@string/profile_no_post_flag"
         android:gravity="center"
-        android:layout_below="@id/profile_divider"/>
+        android:layout_below="@id/profile_divider"
+        android:layout_marginTop="@dimen/space_between_posts"
+        android:layout_marginBottom="@dimen/space_between_posts"/>
 
     <!-- Profile posts -->
     <LinearLayout

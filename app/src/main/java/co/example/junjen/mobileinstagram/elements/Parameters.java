@@ -5,6 +5,12 @@ package co.example.junjen.mobileinstagram.elements;
  */
 public class Parameters {
 
+    // Login screen parameters
+    public static final String loginUsername_key = "username";
+    public static final String loginPassword_key = "password";
+    public static final String loginUserImage_key = "loginUserImage";
+    public static final String loginToken_key = "token";
+
     // Post parameters
     public static final String default_username = "username";
     public static final String default_location = "Location";

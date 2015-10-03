@@ -18,7 +18,7 @@ public class NavigationBar extends AppCompatActivity {
     CameraFragment cameraFragment;
     ActivityFeedFragment activityFeedFragment;
     ProfileFragment profileFragment;
-    String username;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +31,10 @@ public class NavigationBar extends AppCompatActivity {
             if(extras == null) {
                 finish();
             } else {
-                username = extras.getString("username");
-                String password = String.valueOf(extras.getCharArray("password"));
-                boolean authenticated = false;
+                // TODO: get token type
+                token = extras.getString("token");
 
-                // TODO: authenticate username with password
-                authenticated = true;
-
-                password = null;
-
-                if(!authenticated){
-                    finish();
-                }
-
-                // TODO: determine arguments required for creating fragments
+                // TODO: pass token for creating fragments
                 // create fragments
                 createFragments();
 
@@ -54,8 +44,8 @@ public class NavigationBar extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().add(R.id.view1, userFeedFragment).commit();
             }
         } else {
-            // recreate fragments from previous username
-            username = savedInstanceState.getString("username");
+            // recreate fragments from previous token
+            token = savedInstanceState.getString("token");
             createFragments();
         }
 
@@ -96,10 +86,10 @@ public class NavigationBar extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.w("test", "saved");
+        Log.w("test", "nav bar saved");
 
         // Save the user's current game state
-        savedInstanceState.putString("username", username);
+        savedInstanceState.putString("token", token);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -107,7 +97,7 @@ public class NavigationBar extends AppCompatActivity {
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.w("test","restored");
+        Log.w("test","nav bar restored");
 
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.

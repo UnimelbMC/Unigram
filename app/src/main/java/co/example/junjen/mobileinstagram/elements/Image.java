@@ -2,12 +2,14 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.graphics.drawable.Drawable;
 
+import java.io.Serializable;
+
 /**
  * Created by junjen on 30/09/2015.
  *
  * This class handles user's profile images and post images.
  */
-public class Image {
+public class Image implements Serializable {
 
     private String imageString;
 
