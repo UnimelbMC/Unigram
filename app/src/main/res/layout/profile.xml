@@ -32,9 +32,7 @@
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/profile_post_icons"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/post_icon_list"
         android:layout_below="@id/profile_no_post_flag">
     </LinearLayout>
 

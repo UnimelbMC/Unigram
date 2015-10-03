@@ -9,6 +9,7 @@ package co.example.junjen.mobileinstagram.elements;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -32,6 +33,9 @@ public class Post {
     private String caption;
     private ArrayList<Like> likes;
     private ArrayList<Comment> comments;
+
+    // post view
+    private RelativeLayout postView;
 
     public Post(){
         // test constructor to create 'empty' Post objects
@@ -103,7 +107,7 @@ public class Post {
         // TextView t2 = (TextView) findViewById(R.id.text2);
         // t2.setMovementMethod(LinkMovementMethod.getInstance());
 
-        RelativeLayout postView = (RelativeLayout)
+        postView = (RelativeLayout)
                 inflater.inflate(R.layout.post, parentView, false);
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
@@ -113,6 +117,7 @@ public class Post {
         if(!this.userImage.getImageString().equals(Parameters.default_image)) {
             UserImageView userImage = (UserImageView)
                     postView.findViewById(R.id.post_header_user_image);
+
             // TODO: Determine set image type
             userImage.setImageDrawable(this.userImage.getImage());
         }
@@ -247,7 +252,15 @@ public class Post {
         return postView;
     }
 
+    public static void getPostIcons(LayoutInflater inflater, LinearLayout postIconsList,
+                                    ArrayList<Post> posts, int startIndex){
 
+        int postIconsPerRow = Parameters.postIconsPerRow;
+
+        
+
+
+    }
 
     public Image getUserImage() {
         return userImage;

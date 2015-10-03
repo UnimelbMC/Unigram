@@ -93,6 +93,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         if(profileFragment == null){
 
             // TODO: get Profile based on Data Object and pass into fragment constructor
+            // currently being created in nav bar activity
 //            profile = new Profile();
 
             setTitle();

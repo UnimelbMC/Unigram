@@ -94,6 +94,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/profile_name"
         android:text="Profile name"
         android:layout_margin="@dimen/post_margin"
         android:textStyle="bold"/>
@@ -102,6 +103,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/profile_description"
         android:text="Profile Description"
         android:layout_margin="@dimen/post_margin"/>
 

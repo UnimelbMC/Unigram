@@ -29,6 +29,7 @@ public class Parameters {
     public static final int commentThreshold = 3;
     public static final int postsToLoad = 10;
     public static final int postIconsToLoad = 10;
+    public static final int postIconsPerRow = 3;
 
     // Profile parameters
     public static final String default_profName = "Username";

@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -29,12 +30,17 @@ public class Profile implements Serializable{
     private ArrayList<Username> followers;
     private ArrayList<Username> following;
 
+    // Profile view
+    private ExpandableScrollView profileView;
+    private int postIconCount;
+
+
     public Profile(){
         // test constructor to create 'empty' Profile objects
 
         this.username = new Username(Parameters.default_username);
         this.userImage = new Image(Parameters.default_image);
-        this.profName = Parameters.default_username;
+        this.profName = Parameters.default_profName;
         this.profDescrp = Parameters.default_profDescrp;
 
         this.posts = new ArrayList<>();
@@ -93,46 +99,73 @@ public class Profile implements Serializable{
 
     public ExpandableScrollView getProfileView(LayoutInflater inflater){
 
-        ExpandableScrollView profileView = (ExpandableScrollView)
+        profileView = (ExpandableScrollView)
                 inflater.inflate(R.layout.fragment_profile, null, false);
 
-//        /** Fixed parameters **/
-//
-//        // Username
-//        TextView username = (TextView) profileView.findViewById(R.id.post_header_username);
-//        username.setText("");   // remove default text
-//        stringComponents.add(this.username.getUsername_link());
-//        StringFactory.stringBuilder(username, stringComponents);
-//        stringComponents.clear();
-//
-//        // User image
-//        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
-//            UserImageView userImage = (UserImageView)
-//                    profileView.findViewById(R.id.profile_user_image);
-//            // TODO: Determine set image type
-//            userImage.setImageDrawable(this.userImage.getImage());
-//        }
-//
-//        // Time since posted
-//        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
-//        timeSince.setText(this.timeSince.getTimeSince());
-//
-//        // Post image
-//        if(!this.postImage.getImageString().equals(Parameters.default_image)) {
-//            ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-//            // TODO: Determine set image type
-//            postImage.setImageDrawable(this.postImage.getImage());
-//        }
-//
-//        // TODO: Handle clicks for like button
+        /** Fixed parameters **/
 
+        // User image
+        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
+            UserImageView userImage = (UserImageView)
+                    profileView.findViewById(R.id.profile_user_image);
 
+            // TODO: Determine set image type
+            userImage.setImageDrawable(this.userImage.getImage());
+        }
+
+        // Profile name
+        TextView profName = (TextView) profileView.findViewById(R.id.profile_name);
+        profName.setText(this.profName);
+
+        // Profile description
+        TextView profDescrp = (TextView) profileView.findViewById(R.id.profile_description);
+        profDescrp.setText(this.profDescrp);
+
+        // Post count
+        TextView postCount = (TextView) profileView.findViewById(R.id.profile_post_count);
+        int postsSize = this.posts.size();
+        postCount.setText(Integer.toString(postsSize));
+
+        // Follower count
+        TextView followerCount = (TextView) profileView.findViewById(R.id.profile_follower_count);
+        followerCount.setText(Integer.toString(this.followers.size()));
+
+        // Following count
+        TextView followingCount = (TextView) profileView.findViewById(R.id.profile_following_count);
+        followingCount.setText(Integer.toString(this.following.size()));
+
+        // Add post icons
+
+        if(postsSize > 0){
+            TextView postFlag = (TextView) profileView.findViewById(R.id.profile_no_post_flag);
+            postFlag.setVisibility(View.GONE);
+            getPostIcons(inflater);
+        }
 
         return profileView;
     }
 
     public void getPostIcons(LayoutInflater inflater){
 
+        ArrayList<Post> posts = new ArrayList<>();
+
+        int i;
+        int postsSize = this.posts.size();
+        int maxPostIcons = Parameters.postIconsToLoad;
+        for (i = 0; i < maxPostIcons; i++){
+
+            if (i < postsSize) {
+                posts.add(this.posts.get(i + postIconCount));
+            } else {
+                break;
+            }
+        }
+
+        postIconCount = i;
+
+        Post.getPostIcons(inflater,
+                (LinearLayout) profileView.findViewById(R.id.profile_post_icons),
+                posts, postIconCount);
     }
 
     public Username getUsername() {
