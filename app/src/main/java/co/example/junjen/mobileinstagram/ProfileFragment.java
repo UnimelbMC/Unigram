@@ -1,10 +1,15 @@
 package co.example.junjen.mobileinstagram;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -30,7 +35,7 @@ import co.example.junjen.mobileinstagram.elements.TimeSince;
 public class ProfileFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String profile_key = "profile";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
@@ -55,16 +60,14 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param profile Parameter 1.
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance(Profile profile) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(profile_key, profile);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,7 +80,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            profile = (Profile) getArguments().getSerializable(profile_key);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -89,7 +92,10 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         // initialise ProfileFragment if not created yet
         if(profileFragment == null){
 
-            profile = new Profile();
+            // TODO: get Profile based on Data Object and pass into fragment constructor
+//            profile = new Profile();
+
+            setTitle();
 
             profileFragment = profile.getProfileView(inflater);
             profileFragment.setScrollViewListener(this);
@@ -107,6 +113,34 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
             LayoutInflater inflater = LayoutInflater.from(this.getContext());
             profile.getPostIcons(inflater);
         }
+    }
+
+    public void setTitle(){
+        TextView title = (TextView)
+                ((AppCompatActivity) this.getActivity()).getSupportActionBar().
+                        getCustomView().findViewById(R.id.action_bar_title);
+        title.setText(profile.getUsername().getUsername().toUpperCase());
+        title.setTextSize(Parameters.subTitleSize);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if(profile != null){
+            setTitle();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+
+
+        //fragment specific menu creation
+        setTitle();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

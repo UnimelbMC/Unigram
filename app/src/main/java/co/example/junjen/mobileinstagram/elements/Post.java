@@ -111,7 +111,8 @@ public class Post {
 
         // User image
         if(!this.userImage.getImageString().equals(Parameters.default_image)) {
-            UserImageView userImage = (UserImageView) postView.findViewById(R.id.post_header_user_image);
+            UserImageView userImage = (UserImageView)
+                    postView.findViewById(R.id.post_header_user_image);
             // TODO: Determine set image type
             userImage.setImageDrawable(this.userImage.getImage());
         }

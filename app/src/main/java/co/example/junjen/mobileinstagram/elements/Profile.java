@@ -6,17 +6,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
+import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
 /**
  * Created by junjen on 30/09/2015.
  *
  * This class creates Profile objects.
  */
-public class Profile {
+public class Profile implements Serializable{
 
     // Profile content
     private Username username;
@@ -96,19 +98,20 @@ public class Profile {
 
 //        /** Fixed parameters **/
 //
-//        // User image
-//        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
-//            ImageView userImage = (ImageView) profileView.findViewById(R.id.profile_user_image);
-//            // TODO: Determine set image type
-//            userImage.setImageDrawable(this.userImage.getImage());
-//        }
-//
 //        // Username
-//        TextView username = (TextView) postView.findViewById(R.id.post_header_username);
+//        TextView username = (TextView) profileView.findViewById(R.id.post_header_username);
 //        username.setText("");   // remove default text
 //        stringComponents.add(this.username.getUsername_link());
 //        StringFactory.stringBuilder(username, stringComponents);
 //        stringComponents.clear();
+//
+//        // User image
+//        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
+//            UserImageView userImage = (UserImageView)
+//                    profileView.findViewById(R.id.profile_user_image);
+//            // TODO: Determine set image type
+//            userImage.setImageDrawable(this.userImage.getImage());
+//        }
 //
 //        // Time since posted
 //        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
@@ -134,6 +137,10 @@ public class Profile {
 
     public Username getUsername() {
         return username;
+    }
+
+    public Image getUserImage() {
+        return userImage;
     }
 
     public String getProfName() {

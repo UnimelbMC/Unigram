@@ -5,6 +5,11 @@ package co.example.junjen.mobileinstagram.elements;
  */
 public class Parameters {
 
+    // Titles
+    public static final String mainTitle = "UniGram";
+    public static final float mainTitleSize = 20;
+    public static final float subTitleSize = 15;
+
     // Login screen parameters
     public static final String usernameFieldHint = "Username";
     public static final String passwordFieldHint = "Password";
