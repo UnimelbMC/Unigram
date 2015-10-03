@@ -17,6 +17,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
 public class Post {
 
@@ -102,14 +103,15 @@ public class Post {
         // TextView t2 = (TextView) findViewById(R.id.text2);
         // t2.setMovementMethod(LinkMovementMethod.getInstance());
 
-        RelativeLayout postView = (RelativeLayout) inflater.inflate(R.layout.post, parentView, false);
+        RelativeLayout postView = (RelativeLayout)
+                inflater.inflate(R.layout.post, parentView, false);
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
         /** Fixed parameters **/
 
         // User image
         if(!this.userImage.getImageString().equals(Parameters.default_image)) {
-            ImageView userImage = (ImageView) postView.findViewById(R.id.post_header_user_image);
+            UserImageView userImage = (UserImageView) postView.findViewById(R.id.post_header_user_image);
             // TODO: Determine set image type
             userImage.setImageDrawable(this.userImage.getImage());
         }

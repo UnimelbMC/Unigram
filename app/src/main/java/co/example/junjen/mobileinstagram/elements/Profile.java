@@ -3,6 +3,8 @@ package co.example.junjen.mobileinstagram.elements;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -18,6 +20,7 @@ public class Profile {
 
     // Profile content
     private Username username;
+    private Image userImage;
     private String profName;
     private String profDescrp;
     private ArrayList<Post> posts;
@@ -28,6 +31,7 @@ public class Profile {
         // test constructor to create 'empty' Profile objects
 
         this.username = new Username(Parameters.default_username);
+        this.userImage = new Image(Parameters.default_image);
         this.profName = Parameters.default_username;
         this.profDescrp = Parameters.default_profDescrp;
 
@@ -56,10 +60,11 @@ public class Profile {
         }
     }
 
-    public Profile(String username, String profName, String profDescrp, String posts,
-                   String followers, String following){
+    public Profile(String username, String userimage, String profName, String profDescrp,
+                   String posts, String followers, String following){
 
         this.username = new Username(username);
+        this.userImage = new Image(userimage);
         this.profName = profName;
         this.profDescrp = profDescrp;
         this.posts = createPostsList(posts);
@@ -85,8 +90,46 @@ public class Profile {
     }
 
     public ExpandableScrollView getProfileView(LayoutInflater inflater){
-        ExpandableScrollView profileView = (ExpandableScrollView) inflater.inflate(R.layout.fragment_profile, null, false);
+
+        ExpandableScrollView profileView = (ExpandableScrollView)
+                inflater.inflate(R.layout.fragment_profile, null, false);
+
+//        /** Fixed parameters **/
+//
+//        // User image
+//        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
+//            ImageView userImage = (ImageView) profileView.findViewById(R.id.profile_user_image);
+//            // TODO: Determine set image type
+//            userImage.setImageDrawable(this.userImage.getImage());
+//        }
+//
+//        // Username
+//        TextView username = (TextView) postView.findViewById(R.id.post_header_username);
+//        username.setText("");   // remove default text
+//        stringComponents.add(this.username.getUsername_link());
+//        StringFactory.stringBuilder(username, stringComponents);
+//        stringComponents.clear();
+//
+//        // Time since posted
+//        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+//        timeSince.setText(this.timeSince.getTimeSince());
+//
+//        // Post image
+//        if(!this.postImage.getImageString().equals(Parameters.default_image)) {
+//            ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
+//            // TODO: Determine set image type
+//            postImage.setImageDrawable(this.postImage.getImage());
+//        }
+//
+//        // TODO: Handle clicks for like button
+
+
+
         return profileView;
+    }
+
+    public void getPostIcons(LayoutInflater inflater){
+
     }
 
     public Username getUsername() {

@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
+        <co.example.junjen.mobileinstagram.customLayouts.UserImageView
             android:layout_width="@dimen/login_user_image_width"
             android:layout_height="@dimen/login_user_image_width"
             android:id="@+id/login_user_image"

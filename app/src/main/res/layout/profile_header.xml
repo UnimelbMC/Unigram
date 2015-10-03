@@ -11,14 +11,15 @@
         android:layout_margin="@dimen/post_margin">
 
         <!-- User image -->
-        <ImageView
+        <co.example.junjen.mobileinstagram.customLayouts.UserImageView
             android:layout_width="@dimen/profile_header_user_image_width"
             android:layout_height="@dimen/profile_header_user_image_width"
             android:id="@+id/profile_user_image"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/empty_user_image"
+            android:src="@drawable/login_user_image"
             android:adjustViewBounds="true"
+            android:foregroundGravity="center"
             android:contentDescription="Profile User Image"/>
 
         <!-- Profile stats -->
