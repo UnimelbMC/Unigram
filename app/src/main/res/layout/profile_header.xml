@@ -17,7 +17,7 @@
             android:id="@+id/profile_user_image"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/post_header_user_image"
+            android:src="@drawable/empty_user_image"
             android:adjustViewBounds="true"
             android:contentDescription="Profile User Image"/>
 

@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
         usernameField = (EditText) findViewById(R.id.login_username_editText);
         passwordField = (EditText) findViewById(R.id.login_password_editText);
 
-        usernameField.setHint("Username");
-        passwordField.setHint("Password");
+        usernameField.setHint(Parameters.usernameFieldHint);
+        passwordField.setHint(Parameters.passwordFieldHint);
     }
 
     public void actionBar(View v){

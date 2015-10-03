@@ -1,4 +1,5 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,29 +17,22 @@
             android:layout_width="@dimen/login_user_image_width"
             android:layout_height="@dimen/login_user_image_width"
             android:id="@+id/login_user_image"
-            android:src="@drawable/post_header_user_image"
+            android:src="@drawable/empty_user_image"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:layout_margin="@dimen/activity_horizontal_margin"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/login_username_editText"
-            android:layout_gravity="center"
-            android:layout_weight="1"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:autoText="true" />
+            android:contentDescription="Login User Image"/>
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
+            android:id="@+id/login_username_editText"
+            android:inputType="textPersonName"
+            style="@style/login_field"/>
+
+        <EditText
             android:id="@+id/login_password_editText"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/activity_horizontal_margin"/>
+            android:inputType="textPassword"
+            style="@style/login_field"/>
 
         <Button
             android:layout_width="wrap_content"

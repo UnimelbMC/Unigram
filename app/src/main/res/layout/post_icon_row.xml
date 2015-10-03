@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center"
-        android:src="@drawable/post_header_user_image"
+        android:src="@drawable/empty_user_image"
         android:adjustViewBounds="true"
         android:layout_margin="@dimen/post_icon_margin"/>
 

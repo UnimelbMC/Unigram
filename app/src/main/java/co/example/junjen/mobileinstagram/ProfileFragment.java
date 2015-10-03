@@ -85,16 +85,14 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // initialise userFeedFragment if not created yet
+        // initialise ProfileFragment if not created yet
         if(profileFragment == null){
-            profileFragment = (ExpandableScrollView)
-                    inflater.inflate(R.layout.fragment_profile, container, false);
-
-            profileFragment.setScrollViewListener(this);
 
             Profile profile = new Profile();
 
-            profile.getProfileView(inflater, profileFragment);
+            profileFragment = profile.getProfileView(inflater);
+            profileFragment.setScrollViewListener(this);
+
         }
         return profileFragment;
     }

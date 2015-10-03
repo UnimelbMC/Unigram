@@ -76,6 +76,7 @@ public class NavigationBar extends AppCompatActivity {
         });
     }
 
+    // TODO: update argument to receive token
     private void createFragments(){
         userFeedFragment = new UserFeedFragment();
         discoverFragment = new DiscoverFragment();

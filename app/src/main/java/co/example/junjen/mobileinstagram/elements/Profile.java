@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
+
 /**
  * Created by junjen on 30/09/2015.
  *
@@ -81,8 +84,9 @@ public class Profile {
         return usernames;
     }
 
-    public View getProfileView(LayoutInflater inflater, ViewGroup parentView){
-        return null;
+    public ExpandableScrollView getProfileView(LayoutInflater inflater){
+        ExpandableScrollView profileView = (ExpandableScrollView) inflater.inflate(R.layout.fragment_profile, null, false);
+        return profileView;
     }
 
     public Username getUsername() {

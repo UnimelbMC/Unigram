@@ -11,7 +11,7 @@
         android:id="@+id/post_header_user_image"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/post_header_user_image"
+        android:src="@drawable/empty_user_image"
         android:adjustViewBounds="true"
         android:layout_margin="@dimen/post_margin"
         android:contentDescription="Post User Image"/>
