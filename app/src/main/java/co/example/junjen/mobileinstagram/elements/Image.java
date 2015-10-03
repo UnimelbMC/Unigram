@@ -1,6 +1,7 @@
 package co.example.junjen.mobileinstagram.elements;
 
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 import java.io.Serializable;
 
@@ -21,11 +22,15 @@ public class Image implements Serializable {
         return imageString;
     }
 
-    public Drawable getImage(){
+    public Image getImage(){
         // TODO: Fill appropriate image return type
 
-        Drawable image = null;
+        Image image = null;
 
         return image;
+    }
+
+    public static void setImage(ImageView imageView, Image image){
+        // TODO: Determine set image type
     }
 }

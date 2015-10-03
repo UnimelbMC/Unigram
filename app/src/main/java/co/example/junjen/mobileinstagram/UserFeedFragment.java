@@ -47,9 +47,6 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts;
 
-    // counter for new posts to be placed in the right order when loaded
-    private int postCount = 0;
-
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -132,7 +129,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
             postView = post.getPostView(inflater, userFeedView);
 
-            index = i + postCount;
+            index = userFeedView.getChildCount();
 
             //TESTING
             TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
@@ -145,7 +142,6 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             this.timeSinceLastPost = post.getTimeSince();
         }
 
-        postCount += Parameters.postsToLoad;
         loadPosts = true;
         return userFeedView;
     }
@@ -153,11 +149,14 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        TextView title = (TextView)
-                ((AppCompatActivity) this.getActivity()).getSupportActionBar().
-                        getCustomView().findViewById(R.id.action_bar_title);
-        title.setText(Parameters.mainTitle);
-        title.setTextSize(Parameters.mainTitleSize);
+
+        View actionBar = ((AppCompatActivity)
+                this.getActivity()).getSupportActionBar().getCustomView();
+        if (actionBar != null) {
+            TextView title = (TextView) actionBar.findViewById(R.id.action_bar_title);
+            title.setText(Parameters.mainTitle);
+            title.setTextSize(Parameters.mainTitleSize);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

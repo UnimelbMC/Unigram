@@ -6,11 +6,11 @@ package co.example.junjen.mobileinstagram.elements;
  * This class creates Post objects.
  */
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -117,9 +117,7 @@ public class Post {
         if(!this.userImage.getImageString().equals(Parameters.default_image)) {
             UserImageView userImage = (UserImageView)
                     postView.findViewById(R.id.post_header_user_image);
-
-            // TODO: Determine set image type
-            userImage.setImageDrawable(this.userImage.getImage());
+            Image.setImage(userImage, this.userImage.getImage());
         }
 
         // Username
@@ -136,8 +134,7 @@ public class Post {
         // Post image
         if(!this.postImage.getImageString().equals(Parameters.default_image)) {
             ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-            // TODO: Determine set image type
-            postImage.setImageDrawable(this.postImage.getImage());
+            Image.setImage(postImage, this.postImage.getImage());
         }
 
         // TODO: Handle clicks for like button
@@ -194,11 +191,10 @@ public class Post {
         }
 
         // Comments
-
         TextView commentCountText = (TextView) postView.findViewById(R.id.post_comment_count);
         if (this.comments != null){
 
-            // add link to show all comments is more than 3 comments
+            // add link to show all comments if more than 3 comments
             int commentCount = this.comments.size();
             int commentThreshold = Parameters.commentThreshold;
             if (commentCount > commentThreshold){
@@ -212,7 +208,7 @@ public class Post {
 
             // dynamically add preview of maximum 3 comments below commentCountText
             int aboveID = commentCountText.getId();
-            ViewGroup commentView = (ViewGroup) postView.findViewById(R.id.post_comments);
+            ViewGroup commentsView = (ViewGroup) postView.findViewById(R.id.post_comments);
             ArrayList<TextView> commentViews = new ArrayList<>();
 
             int i;
@@ -220,24 +216,26 @@ public class Post {
                 if (commentCount > i) {
 
                     // get post_comment layout
-                    View comments = inflater.inflate(R.layout.post_comment, commentView, true);
-                    commentViews.add((TextView) comments.findViewById(R.id.post_comment));
-                    TextView comment_test = commentViews.get(i);
+                    View commentLayout =
+                            inflater.inflate(R.layout.post_comment, commentsView, true);
+                    commentViews.add((TextView) commentLayout.findViewById(R.id.post_comment));
+                    TextView commentView = commentViews.get(i);
 
                     // add layout params for comments to appear below the previous one
-                    LayoutParams layoutParams = (LayoutParams) comment_test.getLayoutParams();
+                    RelativeLayout.LayoutParams layoutParams =
+                            (RelativeLayout.LayoutParams) commentView.getLayoutParams();
                     layoutParams.addRule(RelativeLayout.BELOW, aboveID);
 
-                    comment_test.setText("");    // remove default text
+                    commentView.setText("");    // remove default text
                     Comment comment = this.comments.get(i);
                     stringComponents.add(comment.getUsername().getUsername_link());
                     stringComponents.add(" " + comment.getComment());
-                    StringFactory.stringBuilder(comment_test, stringComponents);
+                    StringFactory.stringBuilder(commentView, stringComponents);
                     stringComponents.clear();
-                    ((ViewGroup) comment_test.getParent()).removeView(comment_test);
+                    ((ViewGroup) commentView.getParent()).removeView(commentView);
 
                     // add comment below previous one
-                    commentView.addView(comment_test, layoutParams);
+                    commentsView.addView(commentView, layoutParams);
                     commentViews.get(i).setId(aboveID + 1);
                     aboveID = commentViews.get(i).getId();
                 } else {
@@ -245,21 +243,51 @@ public class Post {
                 }
             }
             // add comments block into postView
-            ((ViewGroup) commentView.getParent()).removeView(commentView);
-            LayoutParams layoutParams = (LayoutParams) commentView.getLayoutParams();
-            postView.addView(commentView, layoutParams);
+            ((ViewGroup) commentsView.getParent()).removeView(commentsView);
+            RelativeLayout.LayoutParams layoutParams =
+                    (RelativeLayout.LayoutParams) commentsView.getLayoutParams();
+            postView.addView(commentsView, layoutParams);
         }
         return postView;
     }
 
-    public static void getPostIcons(LayoutInflater inflater, LinearLayout postIconsList,
-                                    ArrayList<Post> posts, int startIndex){
+    public static void getPostIcons(LayoutInflater inflater, ViewGroup postIconList,
+                                    ArrayList<Post> posts){
 
+        int postsSize = posts.size();
         int postIconsPerRow = Parameters.postIconsPerRow;
+        int postIconRowsToLoad = Parameters.postIconRowsToLoad;
 
-        
+        int i;
+        int index;
+        for (i = 0; i < postIconRowsToLoad; i++){
 
+            LinearLayout postIconRow = (LinearLayout) inflater.inflate(R.layout.post_icon_row, null, false);
 
+            int j;
+            for (j = 0; j < postIconsPerRow; j++){
+                index = i * postIconsPerRow + j;
+
+                // get post_icon_row layout
+                View postIconLayout = inflater.inflate(R.layout.post_icon, null, false);
+                ImageView imageView = (ImageView) postIconLayout.findViewById(R.id.post_icon);
+                ((ViewGroup) imageView.getParent()).removeView(imageView);
+
+                if ((postsSize - i * postIconsPerRow) - j > 0) {
+                    Post post = posts.get(index);
+                    if (!post.getPostImage().getImageString().equals(Parameters.default_image)) {
+                        Image.setImage(imageView, post.getPostImage().getImage());
+                    }
+
+                } else {
+                    imageView.setImageDrawable(null);
+                }
+                // add post icon into row
+                postIconRow.addView(imageView, postIconRow.getChildCount());
+            }
+            // add icon row to list
+            postIconList.addView(postIconRow, postIconList.getChildCount());
+        }
     }
 
     public Image getUserImage() {

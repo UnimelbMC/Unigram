@@ -1,5 +1,6 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class Profile implements Serializable{
 
     // Profile view
     private ExpandableScrollView profileView;
-    private int postIconCount;
+    private int postIconCount = 0;
 
 
     public Profile(){
@@ -52,7 +53,7 @@ public class Profile implements Serializable{
         String username;
 
         // create 10 empty posts
-        for (i = 0; i < 20; i++){
+        for (i = 0; i < 10; i++){
             post = new Post();
             this.posts.add(post);
         }
@@ -61,7 +62,7 @@ public class Profile implements Serializable{
             username = Parameters.default_username + (i + 1);
             this.followers.add(new Username(username));
         }
-        // create 20 empty following
+        // create 10 empty following
         for (i = 0; i < 10; i++){
             username = Parameters.default_username + (i + 1);
             this.following.add(new Username(username));
@@ -99,6 +100,8 @@ public class Profile implements Serializable{
 
     public ExpandableScrollView getProfileView(LayoutInflater inflater){
 
+        postIconCount = 0;
+
         profileView = (ExpandableScrollView)
                 inflater.inflate(R.layout.fragment_profile, null, false);
 
@@ -108,9 +111,7 @@ public class Profile implements Serializable{
         if(!this.userImage.getImageString().equals(Parameters.default_image)) {
             UserImageView userImage = (UserImageView)
                     profileView.findViewById(R.id.profile_user_image);
-
-            // TODO: Determine set image type
-            userImage.setImageDrawable(this.userImage.getImage());
+            Image.setImage(userImage, this.userImage.getImage());
         }
 
         // Profile name
@@ -135,7 +136,6 @@ public class Profile implements Serializable{
         followingCount.setText(Integer.toString(this.following.size()));
 
         // Add post icons
-
         if(postsSize > 0){
             TextView postFlag = (TextView) profileView.findViewById(R.id.profile_no_post_flag);
             postFlag.setVisibility(View.GONE);
@@ -151,9 +151,8 @@ public class Profile implements Serializable{
 
         int i;
         int postsSize = this.posts.size();
-        int maxPostIcons = Parameters.postIconsToLoad;
+        int maxPostIcons = Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
         for (i = 0; i < maxPostIcons; i++){
-
             if (i < postsSize) {
                 posts.add(this.posts.get(i + postIconCount));
             } else {
@@ -161,11 +160,13 @@ public class Profile implements Serializable{
             }
         }
 
-        postIconCount = i;
+        int postIconRowCount = postIconCount / Parameters.postIconsPerRow;
 
         Post.getPostIcons(inflater,
                 (LinearLayout) profileView.findViewById(R.id.profile_post_icons),
-                posts, postIconCount);
+                posts);
+
+        postIconCount = i;
     }
 
     public Username getUsername() {
