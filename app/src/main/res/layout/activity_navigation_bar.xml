@@ -33,33 +33,34 @@
                 android:id="@+id/userfeed_button"
                 style="@style/navbar_button"
                 android:drawableTop="@drawable/userfeed_selector"
-                android:text="User Feed" />
+                android:text="@string/title_user_feed" />
             <RadioButton
                 android:id="@+id/discover_button"
                 style="@style/navbar_button"
                 android:drawableTop="@drawable/discover_selector"
-                android:text="Discover"
+                android:text="@string/title_discover"
                 android:layout_marginLeft="5dp"
                 />
             <RadioButton
                 android:id="@+id/camera_button"
                 style="@style/navbar_button"
                 android:drawableTop="@drawable/camera_selector"
-                android:text="Camera"
+                android:text="@string/title_camera"
                 android:layout_marginLeft="@dimen/nav_button_margin"
                 />
             <RadioButton
                 android:id="@+id/activityfeed_button"
                 style="@style/navbar_button"
                 android:drawableTop="@drawable/activityfeed_selector"
-                android:text="Activity Feed"
+                android:text="@string/title_activity_feed"
+                android:singleLine="true"
                 android:layout_marginLeft="@dimen/nav_button_margin"
                 />
             <RadioButton
                 android:id="@+id/profile_button"
                 style="@style/navbar_button"
                 android:drawableTop="@drawable/profile_selector"
-                android:text="Profile"
+                android:text="@string/title_profile"
                 android:layout_marginLeft="@dimen/nav_button_margin"
                 />
         </RadioGroup>

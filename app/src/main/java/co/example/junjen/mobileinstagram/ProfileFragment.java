@@ -86,17 +86,6 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
             profile = (Profile) getArguments().getSerializable(profile_key);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-//        ViewTreeObserver vto = profileFragment.getViewTreeObserver();
-//        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                profileFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-//                int width = profileFragment.getMeasuredWidth();
-//                int height = profileFragment.getMeasuredHeight();
-//            }
-//        });
-
     }
 
     @Override
@@ -126,7 +115,8 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                 public void onGlobalLayout() {
                     profileFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     int height = profileFragment.getHeight();
-                    Log.w("test", Integer.toString(height));
+
+                    Log.w("test2", Integer.toString(height)+","+Integer.toString(screenHeight));
 
                     if(height < screenHeight){
                         LayoutInflater inflater = LayoutInflater.from(getContext());

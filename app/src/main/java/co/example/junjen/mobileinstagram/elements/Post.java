@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
 public class Post implements Serializable{
@@ -259,11 +260,17 @@ public class Post implements Serializable{
         int postIconsPerRow = Parameters.postIconsPerRow;
         int postIconRowsToLoad = Parameters.postIconRowsToLoad;
 
+        int rows = (int) Math.ceil((double) postsSize / postIconsPerRow);
+        if (rows < postIconRowsToLoad){
+            postIconRowsToLoad = rows;
+        }
+
         int i;
-        int index = 0;
+        int index;
         for (i = 0; i < postIconRowsToLoad; i++){
 
-            LinearLayout postIconRow = (LinearLayout) inflater.inflate(R.layout.post_icon_row, null, false);
+            LinearLayout postIconRow = (LinearLayout)
+                    inflater.inflate(R.layout.post_icon_row, null, false);
 
             int j;
             for (j = 0; j < postIconsPerRow; j++){
@@ -271,27 +278,24 @@ public class Post implements Serializable{
 
                 // get post_icon_row layout
                 View postIconLayout = inflater.inflate(R.layout.post_icon, null, false);
-                ImageView imageView = (ImageView) postIconLayout.findViewById(R.id.post_icon);
+                SquareImageView imageView = (SquareImageView)
+                        postIconLayout.findViewById(R.id.post_icon);
                 ((ViewGroup) imageView.getParent()).removeView(imageView);
 
-                if ((postsSize - i * postIconsPerRow) - j > 0) {
+                if (postsSize - index > 0) {
                     Post post = posts.get(index);
                     if (!post.getPostImage().getImageString().equals(Parameters.default_image)) {
                         Image.setImage(imageView, post.getPostImage().getImage());
                     }
 
                 } else {
-                    imageView.setImageResource(R.drawable.empty_user_image);
+                    imageView.setImageResource(0);
                 }
                 // add post icon into row
                 postIconRow.addView(imageView, postIconRow.getChildCount());
             }
-            // add icon row to list
+            // add row to list
             postIconList.addView(postIconRow, postIconList.getChildCount());
-
-            if (index >= postsSize - 1){
-                break;
-            }
         }
     }
 

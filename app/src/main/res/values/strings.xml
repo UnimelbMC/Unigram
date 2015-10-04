@@ -7,11 +7,11 @@
 
     <!-- Navigation Bar -->
     <string name="title_activity_navigation_bar">UniGram</string>
-    <string name="title_section1">User Feed</string>
-    <string name="title_section2">Discover</string>
-    <string name="title_section3">Camera</string>
-    <string name="title_section4">Activity Feed</string>
-    <string name="title_section5">Profile</string>
+    <string name="title_user_feed">User Feed</string>
+    <string name="title_discover">Discover</string>
+    <string name="title_camera">Camera</string>
+    <string name="title_activity_feed">Activity Feed</string>
+    <string name="title_profile">Profile</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_user_feed_fragment">Hello User Feed fragment</string>

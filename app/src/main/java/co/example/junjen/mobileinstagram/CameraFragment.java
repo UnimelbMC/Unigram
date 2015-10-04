@@ -1,11 +1,17 @@
 package co.example.junjen.mobileinstagram;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import co.example.junjen.mobileinstagram.elements.Parameters;
 
 
 /**
@@ -72,6 +78,31 @@ public class CameraFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
+    @Override
+     // sets the action bar title when in a user feed fragment
+     public void onAttach(Context context) {
+        super.onAttach(context);
+
+        ActionBar actionBar = ((AppCompatActivity)
+                this.getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+    }
+
+    @Override
+    // sets the action bar title when in a user feed fragment
+    public void onDetach() {
+        super.onDetach();
+
+        ActionBar actionBar = ((AppCompatActivity)
+                this.getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.show();
+        }
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

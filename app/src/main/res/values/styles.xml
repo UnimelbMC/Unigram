@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <!-- Login screen -->
@@ -20,8 +20,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:button">@null</item>
         <item name="android:background">@drawable/radiobutton_selector</item>
-        <item name="android:gravity">center_horizontal</item>
+        <item name="android:gravity">center</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:textSize">@dimen/nav_button_text_size</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingBottom">@dimen/nav_button_margin</item>
     </style>
 
     <!-- Profile -->

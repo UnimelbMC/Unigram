@@ -53,7 +53,7 @@ public class Profile implements Serializable{
         String username;
 
         // create 10 empty posts
-        for (i = 0; i < 100; i++){
+        for (i = 0; i < 50; i++){
             post = new Post();
             this.posts.add(post);
         }
@@ -147,26 +147,32 @@ public class Profile implements Serializable{
 
     public void getPostIcons(LayoutInflater inflater){
 
-        ArrayList<Post> posts = new ArrayList<>();
-
-        int i;
         int postsSize = this.posts.size();
-        int maxPostIcons = Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
-        for (i = 0; i < maxPostIcons; i++){
-            if (i < postsSize) {
-                posts.add(this.posts.get(i + postIconCount));
-            } else {
-                break;
+
+        if (postIconCount < postsSize) {
+
+            ArrayList<Post> posts = new ArrayList<>();
+
+            int i;
+            int index;
+            int maxPostIcons = Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
+            for (i = 0; i < maxPostIcons; i++) {
+                index = i + postIconCount;
+                if (index < postsSize) {
+                    posts.add(this.posts.get(index));
+                } else {
+                    break;
+                }
             }
+
+            int postIconRowCount = postIconCount / Parameters.postIconsPerRow;
+
+            Post.getPostIcons(inflater,
+                    (LinearLayout) profileView.findViewById(R.id.profile_post_icons),
+                    posts);
+
+            postIconCount += i;
         }
-
-        int postIconRowCount = postIconCount / Parameters.postIconsPerRow;
-
-        Post.getPostIcons(inflater,
-                (LinearLayout) profileView.findViewById(R.id.profile_post_icons),
-                posts);
-
-        postIconCount = i;
     }
 
     public Username getUsername() {

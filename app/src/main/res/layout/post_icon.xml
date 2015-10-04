@@ -3,7 +3,7 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <co.example.junjen.mobileinstagram.customLayouts.SquareImageView
         android:id="@+id/post_icon"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
