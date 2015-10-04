@@ -36,16 +36,13 @@ import co.example.junjen.mobileinstagram.elements.TimeSince;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment implements ScrollViewListener{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the fragment initialization parameters
     private static final String profile_key = "profile";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String backButton_key = "backButton";
 
     private Profile profile;
+    private boolean backButton;
+
     private ExpandableScrollView profileFragment;
 
     // keep track of timeSince last post generated to generate new set of posts
@@ -67,10 +64,11 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(Profile profile) {
+    public static ProfileFragment newInstance(Profile profile, boolean backButton) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putSerializable(profile_key, profile);
+        args.putBoolean(backButton_key, backButton);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,7 +82,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             profile = (Profile) getArguments().getSerializable(profile_key);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            backButton = getArguments().getBoolean(backButton_key);
         }
     }
 

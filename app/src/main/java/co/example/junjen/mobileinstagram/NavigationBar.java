@@ -20,7 +20,7 @@ public class NavigationBar extends AppCompatActivity {
     private DiscoverFragment discoverFragment;
     private CameraFragment cameraFragment;
     private ActivityFeedFragment activityFeedFragment;
-    public ProfileFragment profileFragment;
+    private ProfileFragment profileFragment;
     private String token;
     private RadioGroup navBar;
     private int previousFragment;
@@ -63,34 +63,36 @@ public class NavigationBar extends AppCompatActivity {
         navBar = (RadioGroup) findViewById(R.id.nav_bar);
         navBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case R.id.userfeed_button:
-                        showFragment(mainView, userFeedFragment);
+                        ft.replace(mainView, userFeedFragment);
                         previousFragment = checkedId;
                         break;
                     case R.id.discover_button:
-                        showFragment(mainView, discoverFragment);
+                        ft.replace(mainView, discoverFragment);
                         previousFragment = checkedId;
                         break;
                     case R.id.camera_button:
-                        showFragment(mainView, cameraFragment);
+                        ft.replace(mainView, cameraFragment);
                         break;
                     case R.id.activityfeed_button:
                         ft.replace(mainView, activityFeedFragment);
                         previousFragment = checkedId;
                         break;
                     case R.id.profile_button:
-                        showFragment(mainView, profileFragment);
+                        ft.replace(mainView, profileFragment);
                         previousFragment = checkedId;
                         break;
                 }
+                ft.commit();
             }
         });
     }
 
-    public void showFragment(int viewId, Fragment fragment){
+    public void showFragment(Fragment fragment){
         ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(viewId, fragment);
+        ft.replace(mainView, fragment);
         ft.commit();
     }
 
@@ -100,11 +102,11 @@ public class NavigationBar extends AppCompatActivity {
         discoverFragment = new DiscoverFragment();
         cameraFragment = new CameraFragment();
         activityFeedFragment = new ActivityFeedFragment();
-        profileFragment = ProfileFragment.newInstance(new Profile());
+        profileFragment = ProfileFragment.newInstance(new Profile(), false);
     }
 
     // return to previous fragment by programmatically checking the radio button
-    public void getPreviousFragment(){
+    public void checkPreviousFragment(){
         navBar.check(previousFragment);
     }
 

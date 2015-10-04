@@ -41,10 +41,10 @@ public class Username implements Serializable{
                 if(username.equals(Parameters.default_username)){
                     profile = new Profile();
                 } else {
-                    // TODO:respond to click by going to profile of username
+                    // TODO:respond to click by creating profile object from username
                 }
 
-                navActivity.showFragment(navActivity.getMainView(), navActivity.profileFragment);
+                navActivity.showFragment(ProfileFragment.newInstance(profile, true));
             }
         };
         return onClickListener;

@@ -9,9 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import co.example.junjen.mobileinstagram.elements.Parameters;
 
 
 /**
@@ -81,7 +78,7 @@ public class CameraFragment extends Fragment {
 
     // returns to the previous fragment when the back button is clicked
     public void onBackButtonClick(){
-        ((NavigationBar) getActivity()).getPreviousFragment();
+        ((NavigationBar) getActivity()).checkPreviousFragment();
     }
 
     @Override
