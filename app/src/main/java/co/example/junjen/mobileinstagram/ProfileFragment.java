@@ -83,6 +83,10 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         if (getArguments() != null) {
             profile = (Profile) getArguments().getSerializable(profile_key);
             backButton = getArguments().getBoolean(backButton_key);
+
+            if (backButton){
+                ((NavigationBar) this.getActivity()).showBackButton();
+            }
         }
     }
 

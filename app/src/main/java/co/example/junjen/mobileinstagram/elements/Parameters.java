@@ -19,12 +19,12 @@ public class Parameters {
     public static final String loginToken_key = "token";
 
     // Post parameters
-    public static final String default_username = "username";
+    public static final String default_username = "#username";
     public static final String default_location = "Location";
     public static final String default_timeSince = "TimeSince";
     public static final String default_caption = "Caption";
     public static final String default_comment = "Comment";
-    public static final String default_image = "Image";
+    public static final String default_image = "#Image";
     public static final int likeThreshold = 10;
     public static final int commentThreshold = 3;
     public static final int postsToLoad = 10;

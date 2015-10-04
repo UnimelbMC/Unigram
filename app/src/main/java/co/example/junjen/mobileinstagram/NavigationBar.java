@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -105,6 +106,8 @@ public class NavigationBar extends AppCompatActivity {
         profileFragment = ProfileFragment.newInstance(new Profile(), false);
     }
 
+
+
     // return to previous fragment by programmatically checking the radio button
     public void checkPreviousFragment(){
         navBar.check(previousFragment);
@@ -115,8 +118,15 @@ public class NavigationBar extends AppCompatActivity {
         return navBar;
     }
 
+    // returns main view in navigation screen
     public int getMainView(){
         return mainView;
+    }
+
+    // show the back button on the action bar
+    public void showBackButton(){
+        getSupportActionBar().getCustomView().
+                findViewById(R.id.back_button).setVisibility(View.VISIBLE);
     }
 
     @Override

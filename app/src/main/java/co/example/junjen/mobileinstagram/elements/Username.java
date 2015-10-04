@@ -38,7 +38,7 @@ public class Username implements Serializable{
                 NavigationBar navActivity = ((NavigationBar) v.getContext());
                 LayoutInflater inflater = LayoutInflater.from(navActivity);
 
-                if(username.equals(Parameters.default_username)){
+                if(username.startsWith(Parameters.default_username)){
                     profile = new Profile();
                 } else {
                     // TODO:respond to click by creating profile object from username
