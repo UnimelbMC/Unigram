@@ -1,6 +1,7 @@
 package co.example.junjen.mobileinstagram;
 
 import android.app.ActionBar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,13 +15,16 @@ import co.example.junjen.mobileinstagram.elements.Profile;
 
 public class NavigationBar extends AppCompatActivity {
 
-    FragmentTransaction ft;
-    UserFeedFragment userFeedFragment;
-    DiscoverFragment discoverFragment;
-    CameraFragment cameraFragment;
-    ActivityFeedFragment activityFeedFragment;
-    ProfileFragment profileFragment;
-    String token;
+    private FragmentTransaction ft;
+    private UserFeedFragment userFeedFragment;
+    private DiscoverFragment discoverFragment;
+    private CameraFragment cameraFragment;
+    private ActivityFeedFragment activityFeedFragment;
+    public ProfileFragment profileFragment;
+    private String token;
+    private RadioGroup navBar;
+    private int previousFragment;
+    private int mainView = R.id.view1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,30 +60,38 @@ public class NavigationBar extends AppCompatActivity {
         }
 
         // set listener for navigation bar
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.nav_bar);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        navBar = (RadioGroup) findViewById(R.id.nav_bar);
+        navBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case R.id.userfeed_button:
-                        ft.replace(R.id.view1, userFeedFragment);
+                        showFragment(mainView, userFeedFragment);
+                        previousFragment = checkedId;
                         break;
                     case R.id.discover_button:
-                        ft.replace(R.id.view1, discoverFragment);
+                        showFragment(mainView, discoverFragment);
+                        previousFragment = checkedId;
                         break;
                     case R.id.camera_button:
-                        ft.replace(R.id.view1, cameraFragment);
+                        showFragment(mainView, cameraFragment);
                         break;
                     case R.id.activityfeed_button:
-                        ft.replace(R.id.view1, activityFeedFragment);
+                        ft.replace(mainView, activityFeedFragment);
+                        previousFragment = checkedId;
                         break;
                     case R.id.profile_button:
-                        ft.replace(R.id.view1, profileFragment);
+                        showFragment(mainView, profileFragment);
+                        previousFragment = checkedId;
                         break;
                 }
-                ft.commit();
             }
         });
+    }
+
+    public void showFragment(int viewId, Fragment fragment){
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(viewId, fragment);
+        ft.commit();
     }
 
     // TODO: update argument to receive token
@@ -89,6 +101,20 @@ public class NavigationBar extends AppCompatActivity {
         cameraFragment = new CameraFragment();
         activityFeedFragment = new ActivityFeedFragment();
         profileFragment = ProfileFragment.newInstance(new Profile());
+    }
+
+    // return to previous fragment by programmatically checking the radio button
+    public void getPreviousFragment(){
+        navBar.check(previousFragment);
+    }
+
+    // returns the navigation bar object to the camera fragment's back button
+    public RadioGroup getNavBar(){
+        return navBar;
+    }
+
+    public int getMainView(){
+        return mainView;
     }
 
     @Override

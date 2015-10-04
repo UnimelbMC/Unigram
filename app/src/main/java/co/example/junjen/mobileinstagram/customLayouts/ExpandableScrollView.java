@@ -12,7 +12,7 @@ import android.widget.ScrollView;
  * Custom scroll view to be able to detect when scrolled to the bottom
  */
 
-public class ExpandableScrollView extends ScrollView {
+public class ExpandableScrollView extends ScrollView{
 
     private ScrollViewListener scrollViewListener = null;
     private int counter = 0;    // counter to prevent 2 consecutive cases of onScrollChanged

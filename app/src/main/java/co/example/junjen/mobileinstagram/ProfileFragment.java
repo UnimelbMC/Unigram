@@ -116,8 +116,6 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     profileFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     int height = profileFragment.getHeight();
 
-                    Log.w("test2", Integer.toString(height)+","+Integer.toString(screenHeight));
-
                     if(height < screenHeight){
                         LayoutInflater inflater = LayoutInflater.from(getContext());
                         profile.getPostIcons(inflater);

@@ -3,9 +3,13 @@ package co.example.junjen.mobileinstagram.elements;
 import android.text.Html;
 import android.text.SpannableString;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import java.io.Serializable;
+
+import co.example.junjen.mobileinstagram.NavigationBar;
+import co.example.junjen.mobileinstagram.ProfileFragment;
 
 /**
  * Created by junjen on 30/09/2015.
@@ -29,8 +33,18 @@ public class Username implements Serializable{
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO:respond to click
-                v.setVisibility(View.GONE);
+
+                Profile profile = null;
+                NavigationBar navActivity = ((NavigationBar) v.getContext());
+                LayoutInflater inflater = LayoutInflater.from(navActivity);
+
+                if(username.equals(Parameters.default_username)){
+                    profile = new Profile();
+                } else {
+                    // TODO:respond to click by going to profile of username
+                }
+
+                navActivity.showFragment(navActivity.getMainView(), navActivity.profileFragment);
             }
         };
         return onClickListener;

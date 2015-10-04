@@ -79,6 +79,11 @@ public class CameraFragment extends Fragment {
         }
     }
 
+    // returns to the previous fragment when the back button is clicked
+    public void onBackButtonClick(){
+        ((NavigationBar) getActivity()).getPreviousFragment();
+    }
+
     @Override
      // sets the action bar title when in a user feed fragment
      public void onAttach(Context context) {
@@ -89,6 +94,7 @@ public class CameraFragment extends Fragment {
         if (actionBar != null) {
             actionBar.hide();
         }
+        ((NavigationBar) getActivity()).getNavBar().setVisibility(View.GONE);
     }
 
     @Override
@@ -101,6 +107,7 @@ public class CameraFragment extends Fragment {
         if (actionBar != null) {
             actionBar.show();
         }
+        ((NavigationBar) getActivity()).getNavBar().setVisibility(View.VISIBLE);
     }
 
 
