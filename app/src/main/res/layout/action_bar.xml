@@ -11,5 +11,6 @@
         android:layout_gravity="center"
         android:id="@+id/action_bar_title"
         android:text="Action Bar Title"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff"
+        android:textStyle="bold"/>
 </LinearLayout>

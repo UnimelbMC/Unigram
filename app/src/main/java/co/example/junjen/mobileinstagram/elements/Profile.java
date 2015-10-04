@@ -53,7 +53,7 @@ public class Profile implements Serializable{
         String username;
 
         // create 10 empty posts
-        for (i = 0; i < 10; i++){
+        for (i = 0; i < 100; i++){
             post = new Post();
             this.posts.add(post);
         }

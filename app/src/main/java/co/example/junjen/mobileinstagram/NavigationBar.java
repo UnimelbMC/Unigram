@@ -1,7 +1,6 @@
 package co.example.junjen.mobileinstagram;
 
 import android.app.ActionBar;
-import android.graphics.Color;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import co.example.junjen.mobileinstagram.elements.Profile;
 
@@ -30,7 +28,7 @@ public class NavigationBar extends AppCompatActivity {
 
         // set custom action bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.actionbar);
+        getSupportActionBar().setCustomView(R.layout.action_bar);
 
         setContentView(R.layout.activity_navigation_bar);
         // get username and password

@@ -15,12 +15,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
-public class Post {
+public class Post implements Serializable{
 
     // post header
     private Image userImage;
@@ -259,7 +260,7 @@ public class Post {
         int postIconRowsToLoad = Parameters.postIconRowsToLoad;
 
         int i;
-        int index;
+        int index = 0;
         for (i = 0; i < postIconRowsToLoad; i++){
 
             LinearLayout postIconRow = (LinearLayout) inflater.inflate(R.layout.post_icon_row, null, false);
@@ -280,13 +281,17 @@ public class Post {
                     }
 
                 } else {
-                    imageView.setImageDrawable(null);
+                    imageView.setImageResource(R.drawable.empty_user_image);
                 }
                 // add post icon into row
                 postIconRow.addView(imageView, postIconRow.getChildCount());
             }
             // add icon row to list
             postIconList.addView(postIconRow, postIconList.getChildCount());
+
+            if (index >= postsSize - 1){
+                break;
+            }
         }
     }
 

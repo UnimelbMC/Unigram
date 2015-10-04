@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.print.PrintDocumentAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -45,7 +47,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
 
     // flag to check if posts are being loaded before loading new ones
-    private boolean loadPosts;
+    private boolean loadPosts = true;
 
     private OnFragmentInteractionListener mListener;
 
@@ -92,6 +94,27 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             userFeedFragment.setScrollViewListener(this);
 
             getUserFeedPosts(inflater, userFeedFragment);
+
+            // add layout listener to add content if default screen is not filled
+            ViewTreeObserver vto = userFeedFragment.getViewTreeObserver();
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            final int screenHeight = displaymetrics.heightPixels;
+
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    userFeedFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    int height = userFeedFragment.getHeight();
+                    Log.w("test", Integer.toString(height));
+
+                    if (height < screenHeight) {
+                        LayoutInflater inflater = LayoutInflater.from(getContext());
+                        getUserFeedPosts(inflater, userFeedFragment);
+                    }
+                }
+            });
+
         }
         return userFeedFragment;
     }
@@ -102,15 +125,15 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
         // load new posts if no posts are currently being loaded
         if(loadPosts){
-            LayoutInflater inflater = LayoutInflater.from(this.getContext());
+            loadPosts = false;
+            LayoutInflater inflater = LayoutInflater.from(getContext());
             getUserFeedPosts(inflater, scrollView);
+            loadPosts = true;
         }
     }
 
     // loads a chunk of posts on the user feed view
     private View getUserFeedPosts(LayoutInflater inflater, View userFeedFragment){
-
-        loadPosts = false;
 
         ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
 
@@ -141,12 +164,11 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
             this.timeSinceLastPost = post.getTimeSince();
         }
-
-        loadPosts = true;
         return userFeedView;
     }
 
     @Override
+    // sets the action bar title when in a user feed fragment
     public void onAttach(Context context) {
         super.onAttach(context);
 

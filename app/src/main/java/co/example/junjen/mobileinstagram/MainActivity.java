@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         // set custom action bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.actionbar);
+        getSupportActionBar().setCustomView(R.layout.action_bar);
         TextView title = (TextView) getSupportActionBar().
                 getCustomView().findViewById(R.id.action_bar_title);
         title.setText(Parameters.mainTitle);

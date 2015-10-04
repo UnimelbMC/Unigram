@@ -5,6 +5,8 @@ import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 
+import java.io.Serializable;
+
 /**
  * Created by junjen on 30/09/2015.
  *
@@ -12,7 +14,7 @@ import android.view.View;
  * Handles username clicks for profile popup.
  */
 
-public class Username {
+public class Username implements Serializable{
 
     private String username;
     private SpannableString username_link;

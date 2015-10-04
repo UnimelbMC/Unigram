@@ -1,11 +1,13 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import java.io.Serializable;
+
 /**
  * Created by junjen on 30/09/2015.
  *
  * This class creates Comment objects.
  */
-public class Comment {
+public class Comment implements Serializable{
 
     private Username username;
     private String comment;

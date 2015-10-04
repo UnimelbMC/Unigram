@@ -1,11 +1,13 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import java.io.Serializable;
+
 /**
  * Created by junjen on 30/09/2015.
  *
  * This class creates Like objects.
  */
-public class Like {
+public class Like implements Serializable{
 
     private Username username;
     private TimeSince timeSince;

@@ -6,12 +6,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,7 +52,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
 
     // flag to check if posts are being loaded before loading new ones
-    private boolean loadPosts;
+    private boolean loadPosts = true;
 
     // counter for new posts to be placed in the right order when loaded
     private int postCount = 0;
@@ -83,6 +86,17 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
             profile = (Profile) getArguments().getSerializable(profile_key);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+//        ViewTreeObserver vto = profileFragment.getViewTreeObserver();
+//        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                profileFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//                int width = profileFragment.getMeasuredWidth();
+//                int height = profileFragment.getMeasuredHeight();
+//            }
+//        });
+
     }
 
     @Override
@@ -101,6 +115,25 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
             profileFragment = profile.getProfileView(inflater);
             profileFragment.setScrollViewListener(this);
 
+            // add layout listener to add content if default screen is not filled
+            ViewTreeObserver vto = profileFragment.getViewTreeObserver();
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            final int screenHeight = displaymetrics.heightPixels;
+
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    profileFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    int height = profileFragment.getHeight();
+                    Log.w("test", Integer.toString(height));
+
+                    if(height < screenHeight){
+                        LayoutInflater inflater = LayoutInflater.from(getContext());
+                        profile.getPostIcons(inflater);
+                    }
+                }
+            });
         }
         return profileFragment;
     }
@@ -111,17 +144,22 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
 
         // load new posts if no posts are currently being loaded
         if(loadPosts){
-            LayoutInflater inflater = LayoutInflater.from(this.getContext());
+            loadPosts = false;
+            LayoutInflater inflater = LayoutInflater.from(getContext());
             profile.getPostIcons(inflater);
+            loadPosts = true;
         }
     }
 
+    // sets the action bar title when in a profile fragment
     public void setTitle(){
-        TextView title = (TextView)
-                ((AppCompatActivity) this.getActivity()).getSupportActionBar().
-                        getCustomView().findViewById(R.id.action_bar_title);
-        title.setText(profile.getUsername().getUsername().toUpperCase());
-        title.setTextSize(Parameters.subTitleSize);
+        View actionBar = ((AppCompatActivity)
+                this.getActivity()).getSupportActionBar().getCustomView();
+        if (actionBar != null) {
+            TextView title = (TextView) actionBar.findViewById(R.id.action_bar_title);
+            title.setText(profile.getUsername().getUsername().toUpperCase());
+            title.setTextSize(Parameters.subTitleSize);
+        }
     }
 
     @Override

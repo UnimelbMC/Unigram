@@ -2,6 +2,8 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.content.res.Resources;
 
+import java.io.Serializable;
+
 import co.example.junjen.mobileinstagram.R;
 
 /**
@@ -10,7 +12,7 @@ import co.example.junjen.mobileinstagram.R;
  * This class creates TimeSince objects.
  * Handles the sorting of time tagged objects based on their TimeSince object values.
  */
-public class TimeSince {
+public class TimeSince implements Serializable{
 
     private String timeSince;
 

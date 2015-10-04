@@ -1,12 +1,14 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import java.io.Serializable;
+
 /**
  * Created by junjen on 2/10/2015.
  *
  * Creates Location objects for location tags
  */
 
-public class Location {
+public class Location implements Serializable{
 
     private String location;
 
