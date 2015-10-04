@@ -175,6 +175,10 @@ public class Profile implements Serializable{
         }
     }
 
+    public void setUsername(String username) {
+        this.username = new Username(username);
+    }
+
     public Username getUsername() {
         return username;
     }

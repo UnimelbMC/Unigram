@@ -39,6 +39,7 @@ public class Username implements Serializable{
 
                 if(username.startsWith(Parameters.default_username)){
                     profile = new Profile();
+                    profile.setUsername(username);
                 } else {
                     // TODO:respond to click by creating profile object from username
                 }

@@ -6,6 +6,8 @@ package co.example.junjen.mobileinstagram.elements;
  * This class creates Post objects.
  */
 
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.R;
@@ -193,6 +196,14 @@ public class Post implements Serializable{
         }
 
         // Comments
+        buildCommentView(inflater);
+        return postView;
+    }
+
+    // builds the view for the comments portion in a post
+    private void buildCommentView(LayoutInflater inflater){
+
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
         TextView commentCountText = (TextView) postView.findViewById(R.id.post_comment_count);
         if (this.comments != null){
 
@@ -200,10 +211,19 @@ public class Post implements Serializable{
             int commentCount = this.comments.size();
             int commentThreshold = Parameters.commentThreshold;
             if (commentCount > commentThreshold){
-                commentCountText.setText("View all " + commentCount + " comments");
+                String text = "View all " + commentCount + " comments";
 
-                // TODO: onClickListener
-
+                SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO: go to comments view
+                        v.setVisibility(View.GONE);
+                    }
+                });
+                commentCountText.setText("");    // remove default text
+                stringComponents.add(commentLink);
+                StringFactory.stringBuilder(commentCountText, stringComponents);
+                stringComponents.clear();
             } else {
                 commentCountText.setVisibility(View.GONE);
             }
@@ -250,8 +270,8 @@ public class Post implements Serializable{
                     (RelativeLayout.LayoutParams) commentsView.getLayoutParams();
             postView.addView(commentsView, layoutParams);
         }
-        return postView;
     }
+
 
     public static void getPostIcons(LayoutInflater inflater, ViewGroup postIconList,
                                     ArrayList<Post> posts){

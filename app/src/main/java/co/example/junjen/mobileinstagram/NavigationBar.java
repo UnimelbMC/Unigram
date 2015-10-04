@@ -15,6 +15,7 @@ import android.widget.RadioGroup;
 
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 
 public class NavigationBar extends AppCompatActivity {

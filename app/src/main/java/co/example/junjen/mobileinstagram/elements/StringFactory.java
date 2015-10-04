@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public class StringFactory {
 
+    // builds a string that contains text links to make those links clickable
     public static void stringBuilder(TextView tv, ArrayList<CharSequence> args) {
 
         // Append all string portions
