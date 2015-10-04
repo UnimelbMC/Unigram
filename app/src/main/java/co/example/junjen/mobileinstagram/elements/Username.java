@@ -2,7 +2,6 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.text.Html;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
