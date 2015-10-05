@@ -41,9 +41,18 @@ public class Network  extends AppCompatActivity {
         //  getUserFeed();
 
         instagram = new Instagram(Params.ACCESS_TOKEN);
+        finish();
         //Go back to main activity
-        Intent homepage = new Intent(this, MainActivity.class);
-        startActivity(homepage);
+        // UPDATE: check if token is null or not
+      //  if (Params.ACCESS_TOKEN != null){
+          /*  Intent navIntent = new Intent(MainActivity.this, NavigationBar.class);
+//
+//            // TODO: pass token into Navigation screen creation
+
+            startActivity(navIntent);*/
+      //  }
+      //  Intent homepage = new Intent(this, MainActivity.class);
+    //    startActivity(homepage);
     }
     private void getAccessCode(String code){
         InstagramService service = new InstagramAuthService()

@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Params.ACCESS_TOKEN != null){
+            Log.v("test", Params.ACCESS_TOKEN.toString());
+        }
+
         //Set permission for library to access the internet
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -56,73 +60,90 @@ public class MainActivity extends AppCompatActivity {
         usernameField.setHint(Parameters.usernameFieldHint);
         passwordField.setHint(Parameters.passwordFieldHint);
 
-        // UPDATE: check if token is null or not
+
     }
 
     public void actionBar(View v){
-        // get username and password input
-        String loginUsername = usernameField.getText().toString();
-        String loginPassword = passwordField.getText().toString();
 
-        boolean authenticated = false;
+        startActivity(Network.LaunchAuthBrowser());
 
-        // TODO: authenticate username with password and get required token
-        // TESTING
-        String token = null;
-        ArrayList<Map<String, String>> accounts = new ArrayList<>();
-        Map<String, String> account1 = new HashMap<>();
-        Map<String, String> account2 = new HashMap<>();
-        account1.put(username_key, "");
-        account1.put(password_key, "");
-        account2.put(username_key, "qqq");
-        account2.put(password_key, "www");
-        accounts.add(account1);
-        accounts.add(account2);
-        for (Map account : accounts){
-            if(account.get(username_key).equals(loginUsername) &&
-                    account.get(password_key).equals(loginPassword)){
-                authenticated = true;
-                //Authenticate with Instagram
-                startActivity(Network.LaunchAuthBrowser());
-                // TODO: get token type
-                token = null;
 
-            }
-        }
-
-        loginPassword = null;
-
-        if(!authenticated) {
-
-            // TODO: pop-up saying invalid login and password
-
-        } else {
-
-            //TESTING
-            if (token == null){
-                ImageView loginUserImage = (ImageView) this.findViewById(R.id.login_user_image);
-                loginUserImage.setImageResource(R.drawable.login_user_image);
-            } else {
-                // TODO: get user image based on token and display
-                loginUserImage = new Image(Parameters.default_image);
-            }
-
-            Intent intent = new Intent(MainActivity.this, NavigationBar.class);
-
-            // TODO: pass token into Navigation screen creation
-            Bundle b = new Bundle();
-            b.putString(token_key, token);
-            intent.putExtras(b);
-            MainActivity.this.startActivity(intent);
-        }
+//        // get username and password input
+//        String loginUsername = usernameField.getText().toString();
+//        String loginPassword = passwordField.getText().toString();
+//
+//        boolean authenticated = false;
+//
+//        // TODO: authenticate username with password and get required token
+//        // TESTING
+//        String token = null;
+//        ArrayList<Map<String, String>> accounts = new ArrayList<>();
+//        Map<String, String> account1 = new HashMap<>();
+//        Map<String, String> account2 = new HashMap<>();
+//        account1.put(username_key, "");
+//        account1.put(password_key, "");
+//        account2.put(username_key, "qqq");
+//        account2.put(password_key, "www");
+//        accounts.add(account1);
+//        accounts.add(account2);
+//        for (Map account : accounts){
+//            if(account.get(username_key).equals(loginUsername) &&
+//                    account.get(password_key).equals(loginPassword)){
+//                authenticated = true;
+//                //Authenticate with Instagram
+////                startActivity(Network.LaunchAuthBrowser());
+//                // TODO: get token type
+//                token = null;
+//
+//            }
+//        }
+//
+//        loginPassword = null;
+//
+//        if(!authenticated) {
+//
+//            // TODO: pop-up saying invalid login and password
+//
+//        } else {
+//
+//            //TESTING
+//            if (token == null){
+//                ImageView loginUserImage = (ImageView) this.findViewById(R.id.login_user_image);
+//                loginUserImage.setImageResource(R.drawable.login_user_image);
+//            } else {
+//                // TODO: get user image based on token and display
+//                loginUserImage = new Image(Parameters.default_image);
+//            }
+//
+//            Intent intent = new Intent(MainActivity.this, NavigationBar.class);
+//
+//            // TODO: pass token into Navigation screen creation
+//            Bundle b = new Bundle();
+//            b.putString(token_key, token);
+//            intent.putExtras(b);
+////            MainActivity.this.startActivity(intent);
+//        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.v("resume","1");
+     //   Intent intent = new Intent(MainActivity.this, NavigationBar.class);
+//
+//            // TODO: pass token into Navigation screen creation
+//            Bundle b = new Bundle();
+//            b.putString(token_key, token);
+//            intent.putExtras(b);
+          // MainActivity.this.startActivity(intent);
 
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.v("start","2");
 
+    }
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "main activity saved");
