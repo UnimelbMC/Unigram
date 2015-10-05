@@ -95,7 +95,7 @@ public class Network  extends MainActivity {
         String url = Params.AUTHORIZE_URL;
         Intent internetIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse(url));
-        internetIntent.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
+       // internetIntent.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
         internetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return internetIntent;
     }

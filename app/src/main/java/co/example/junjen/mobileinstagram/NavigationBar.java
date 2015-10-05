@@ -1,6 +1,8 @@
 package co.example.junjen.mobileinstagram;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -258,8 +260,14 @@ public class NavigationBar extends AppCompatActivity {
 
         // clear access token on logout
         if (id == R.id.action_logout) {
+
             clearToken();
             goToMain();
+            Intent internetIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://instagram.com/accounts/logout"));
+            //internetIntent.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
+            //internetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(internetIntent);
             return true;
         }
 
