@@ -13,7 +13,6 @@
 
     <!-- Post -->
     <dimen name="post_header_height">60dp</dimen>
-    <dimen name="post_header_height_half">25dp</dimen>
     <dimen name="post_header_user_image_width">40dp</dimen>
     <dimen name="post_image_options_height">60dp</dimen>
     <dimen name="like_button_width">40dp</dimen>
@@ -29,5 +28,7 @@
     <!-- Post icons -->
     <dimen name="post_icon_margin">1dp</dimen>
 
+    <!-- Comments -->
+    <dimen name="comment_margin">5dp</dimen>
 
 </resources>

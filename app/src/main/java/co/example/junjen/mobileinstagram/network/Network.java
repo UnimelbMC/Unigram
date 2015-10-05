@@ -1,13 +1,11 @@
 package co.example.junjen.mobileinstagram.network;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 
 import org.jinstagram.Instagram;
 import org.jinstagram.auth.InstagramAuthService;
@@ -17,18 +15,24 @@ import org.jinstagram.auth.oauth.InstagramService;
 import org.jinstagram.entity.users.basicinfo.UserInfo;
 import org.jinstagram.exceptions.InstagramException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import co.example.junjen.mobileinstagram.MainActivity;
-import co.example.junjen.mobileinstagram.NavigationBar;
 
 /**
  * Created by Jaime on 10/4/2015.
  */
-public class Network  extends AppCompatActivity {
+public class Network  extends MainActivity {
 
     private Instagram instagram;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.v("TEST_NET","1");
         //network://localhost/redirect/?code=baf92352dbb144eeb2e3bfb6403ba360
         final Intent intent = getIntent();
@@ -69,6 +73,23 @@ public class Network  extends AppCompatActivity {
         Verifier verifier = new Verifier(code);
         Params.ACCESS_TOKEN = service.getAccessToken(EMPTY_TOKEN, verifier);
         Log.v("TEST_ACCESS", Params.ACCESS_TOKEN.toString());
+
+        try {
+            File accessTokenFile = new File(Params.ACCESS_TOKEN_FILEPATH);
+            if(!accessTokenFile.exists()) {
+                accessTokenFile.createNewFile();
+            }
+//            FileOutputStream fos = openFileOutput(Params.ACCESS_TOKEN_FILEPATH, Context.MODE_PRIVATE);
+            FileOutputStream fos = new FileOutputStream(accessTokenFile);
+
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(Params.ACCESS_TOKEN);
+            oos.close();
+        } catch (FileNotFoundException e) {
+            Log.w("test","file not found");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public static Intent LaunchAuthBrowser(){
@@ -77,8 +98,9 @@ public class Network  extends AppCompatActivity {
                 Uri.parse(url));
         internetIntent.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
         internetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-       return internetIntent;
+        return internetIntent;
     }
+
     public UserInfo getUserInfo(String username){
         try {
             return instagram.getUserInfo(username);

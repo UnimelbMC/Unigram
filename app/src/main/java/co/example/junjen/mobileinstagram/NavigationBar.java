@@ -1,5 +1,6 @@
 package co.example.junjen.mobileinstagram;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
+import co.example.junjen.mobileinstagram.network.Network;
 
 public class NavigationBar extends AppCompatActivity {
 
@@ -60,29 +62,18 @@ public class NavigationBar extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_navigation_bar);
+
         // get username and password
         if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if(extras == null) {
-                finish();
-            } else {
-                // TODO: get token type
-                token = extras.getString("token");
+            createFragments();
 
-                // TODO: pass token for creating fragments
-                // create fragments
-                createFragments();
-
-                // set default fragment to User Feed
-                RadioButton userFeedButton = (RadioButton) findViewById(userFeedButtonId);
-                userFeedButton.setChecked(true);
-                getSupportFragmentManager().beginTransaction().
-                        add(R.id.view1, userFeedHistory.get(0)).commit();
-                prevNavButtonId = userFeedButtonId;
-            }
+            // set default fragment to User Feed
+            RadioButton userFeedButton = (RadioButton) findViewById(userFeedButtonId);
+            userFeedButton.setChecked(true);
+            getSupportFragmentManager().beginTransaction().
+                    add(R.id.view1, userFeedHistory.get(0)).commit();
+            prevNavButtonId = userFeedButtonId;
         } else {
-            // recreate fragments from previous token
-            token = savedInstanceState.getString("token");
             createFragments();
         }
 
@@ -216,6 +207,11 @@ public class NavigationBar extends AppCompatActivity {
         }
     }
 
+    public void goToMain(){
+        Intent intent = new Intent(NavigationBar.this, MainActivity.class);
+        NavigationBar.this.startActivity(intent);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "nav bar saved");
@@ -250,8 +246,10 @@ public class NavigationBar extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        // clear access token on logout
+        if (id == R.id.action_logout) {
+            MainActivity.clearToken();
+            goToMain();
             return true;
         }
 

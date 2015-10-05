@@ -14,5 +14,9 @@ public class Params {
     public static String AUHTORIZE_CODE="";
     public static Token ACCESS_TOKEN = null;
 
+    public static String ACCESS_TOKEN_FILENAME = "/unigram_access_token";
+    public static String ACCESS_TOKEN_FILEPATH = null;
+
+
 }
 

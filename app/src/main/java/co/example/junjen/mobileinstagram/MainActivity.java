@@ -1,6 +1,6 @@
 package co.example.junjen.mobileinstagram;
 
-import android.app.ActionBar;
+import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -9,10 +9,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.jinstagram.auth.model.Token;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,16 +41,25 @@ public class MainActivity extends AppCompatActivity {
     String token_key = Parameters.loginToken_key;
     String loginUserImage_key = Parameters.loginUserImage_key;
 
+    // Logout button
+    Button logoutButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Params.ACCESS_TOKEN != null){
-            Log.v("test", Params.ACCESS_TOKEN.toString());
-        }
+        setContentView(R.layout.activity_main);
+        logoutButton = (Button) findViewById(R.id.logout_button);
+
+        // get access token file path
+        Params.ACCESS_TOKEN_FILEPATH = getFilesDir().getPath().toString() + Params.ACCESS_TOKEN_FILENAME;
+
+        // check if token is present
+        checkToken();
 
         //Set permission for library to access the internet
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
         // set custom action bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
@@ -53,82 +68,129 @@ public class MainActivity extends AppCompatActivity {
         title.setText(Parameters.mainTitle);
         title.setTextSize(Parameters.mainTitleSize);
 
-        setContentView(R.layout.activity_main);
         usernameField = (EditText) findViewById(R.id.login_username_editText);
         passwordField = (EditText) findViewById(R.id.login_password_editText);
 
         usernameField.setHint(Parameters.usernameFieldHint);
         passwordField.setHint(Parameters.passwordFieldHint);
-
-
     }
 
-    public void actionBar(View v){
+    public void loginButtonAction(View v){
 
-        startActivity(Network.LaunchAuthBrowser());
+        if (Params.ACCESS_TOKEN == null) {
+            startActivity(Network.LaunchAuthBrowser());
+        } else {
+            Log.v("test", Params.ACCESS_TOKEN.toString());
+            startNavBar();
+        }
+    }
 
+    public void logoutButtonAction(View v){
+        clearToken();
+        logoutButton.setVisibility(View.GONE);
+    }
 
-//        // get username and password input
-//        String loginUsername = usernameField.getText().toString();
-//        String loginPassword = passwordField.getText().toString();
-//
-//        boolean authenticated = false;
-//
-//        // TODO: authenticate username with password and get required token
-//        // TESTING
-//        String token = null;
-//        ArrayList<Map<String, String>> accounts = new ArrayList<>();
-//        Map<String, String> account1 = new HashMap<>();
-//        Map<String, String> account2 = new HashMap<>();
-//        account1.put(username_key, "");
-//        account1.put(password_key, "");
-//        account2.put(username_key, "qqq");
-//        account2.put(password_key, "www");
-//        accounts.add(account1);
-//        accounts.add(account2);
-//        for (Map account : accounts){
-//            if(account.get(username_key).equals(loginUsername) &&
-//                    account.get(password_key).equals(loginPassword)){
-//                authenticated = true;
-//                //Authenticate with Instagram
-////                startActivity(Network.LaunchAuthBrowser());
-//                // TODO: get token type
-//                token = null;
-//
-//            }
-//        }
-//
-//        loginPassword = null;
-//
-//        if(!authenticated) {
-//
-//            // TODO: pop-up saying invalid login and password
-//
-//        } else {
-//
-//            //TESTING
-//            if (token == null){
-//                ImageView loginUserImage = (ImageView) this.findViewById(R.id.login_user_image);
-//                loginUserImage.setImageResource(R.drawable.login_user_image);
-//            } else {
-//                // TODO: get user image based on token and display
-//                loginUserImage = new Image(Parameters.default_image);
-//            }
-//
-//            Intent intent = new Intent(MainActivity.this, NavigationBar.class);
-//
-//            // TODO: pass token into Navigation screen creation
-//            Bundle b = new Bundle();
-//            b.putString(token_key, token);
-//            intent.putExtras(b);
-////            MainActivity.this.startActivity(intent);
-//        }
+    public static void clearToken(){
+        File file = new File(Params.ACCESS_TOKEN_FILEPATH);
+        if(file.exists()) {
+            file.delete();
+        }
+        Params.ACCESS_TOKEN = null;
+    }
+
+    // go to the navigation screen
+    public void startNavBar(){
+        Intent intent = new Intent(MainActivity.this, NavigationBar.class);
+        MainActivity.this.startActivity(intent);
+    }
+
+    // checks if there is a access token present
+    private void checkToken(){
+        // read from saved access token if available
+        try {
+            File accessTokenFile = new File(Params.ACCESS_TOKEN_FILEPATH);
+            if(accessTokenFile.exists()) {
+                FileInputStream fis = new FileInputStream(accessTokenFile);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                Params.ACCESS_TOKEN = (Token) ois.readObject();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if (Params.ACCESS_TOKEN != null){
+            logoutButton.setVisibility(View.VISIBLE);
+            startNavBar();
+        } else {
+            logoutButton.setVisibility(View.GONE);
+        }
+    }
+
+    public void checkLogin(){
+        // get username and password input
+        String loginUsername = usernameField.getText().toString();
+        String loginPassword = passwordField.getText().toString();
+
+        boolean authenticated = false;
+
+        // TODO: authenticate username with password and get required token
+        // TESTING
+        String token = null;
+        ArrayList<Map<String, String>> accounts = new ArrayList<>();
+        Map<String, String> account1 = new HashMap<>();
+        Map<String, String> account2 = new HashMap<>();
+        account1.put(username_key, "");
+        account1.put(password_key, "");
+        account2.put(username_key, "qqq");
+        account2.put(password_key, "www");
+        accounts.add(account1);
+        accounts.add(account2);
+        for (Map account : accounts){
+            if(account.get(username_key).equals(loginUsername) &&
+                    account.get(password_key).equals(loginPassword)){
+                authenticated = true;
+                //Authenticate with Instagram
+//                startActivity(Network.LaunchAuthBrowser());
+                // TODO: get token type
+                token = null;
+
+            }
+        }
+
+        loginPassword = null;
+
+        if(!authenticated) {
+
+            // TODO: pop-up saying invalid login and password
+
+        } else {
+
+            //TESTING
+            if (token == null){
+                ImageView loginUserImage = (ImageView) this.findViewById(R.id.login_user_image);
+                loginUserImage.setImageResource(R.drawable.login_user_image);
+            } else {
+                // TODO: get user image based on token and display
+                loginUserImage = new Image(Parameters.default_image);
+            }
+
+            Intent intent = new Intent(MainActivity.this, NavigationBar.class);
+
+            // TODO: pass token into Navigation screen creation
+            Bundle b = new Bundle();
+            b.putString(token_key, token);
+            intent.putExtras(b);
+            MainActivity.this.startActivity(intent);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.v("resume","1");
+        Log.v("resume", "1");
+        Log.w("test","main activity resumed");
+
+        checkToken();
      //   Intent intent = new Intent(MainActivity.this, NavigationBar.class);
 //
 //            // TODO: pass token into Navigation screen creation
