@@ -2,6 +2,7 @@ package co.example.junjen.mobileinstagram;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,13 +18,16 @@ import java.util.HashMap;
 import java.util.Map;
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.network.Network;
+import co.example.junjen.mobileinstagram.network.Params;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText usernameField;
-    EditText passwordField;
-    Image loginUserImage;
+    private EditText usernameField;
+    private EditText passwordField;
+    private Image loginUserImage;
+    private Network net;
 
     // Keys
     String username_key = Parameters.loginUsername_key;
@@ -34,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //Set permission for library to access the internet
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         // set custom action bar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
@@ -76,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
             if(account.get(username_key).equals(loginUsername) &&
                     account.get(password_key).equals(loginPassword)){
                 authenticated = true;
-
+                //Authenticate with Instagram
+                startActivity(Network.LaunchAuthBrowser());
                 // TODO: get token type
                 token = null;
 
@@ -108,6 +115,12 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtras(b);
             MainActivity.this.startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override
