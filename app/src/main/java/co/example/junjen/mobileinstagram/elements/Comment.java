@@ -10,17 +10,23 @@ import java.io.Serializable;
 public class Comment implements Serializable{
 
     private Username username;
+    private Image userImage;
     private String comment;
     private TimeSince timeSince;
 
-    public Comment(String username, String comment, TimeSince timeSince){
+    public Comment(String username, Image userImage, String comment, TimeSince timeSince){
         this.username = new Username(username);
+        this.userImage = userImage;
         this.comment = comment;
         this.timeSince = timeSince;
     }
 
     public Username getUsername() {
         return username;
+    }
+
+    public Image getUserImage() {
+        return userImage;
     }
 
     public String getComment() {

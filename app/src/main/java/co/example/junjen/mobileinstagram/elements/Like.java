@@ -10,16 +10,23 @@ import java.io.Serializable;
 public class Like implements Serializable{
 
     private Username username;
+    private Image userImage;
     private TimeSince timeSince;
 
-    public Like(String username, TimeSince timeSince){
+    public Like(String username, Image userImage, TimeSince timeSince){
         this.username = new Username(username);
+        this.userImage = userImage;
         this.timeSince = timeSince;
     }
 
     public Username getUsername() {
         return username;
     }
+
+    public Image getUserImage() {
+        return userImage;
+    }
+
 
     public TimeSince getTimeSince() {
         return timeSince;
