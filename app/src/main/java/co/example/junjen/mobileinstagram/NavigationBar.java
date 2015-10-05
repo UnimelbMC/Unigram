@@ -14,11 +14,13 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.network.Network;
+import co.example.junjen.mobileinstagram.network.Params;
 
 public class NavigationBar extends AppCompatActivity {
 
@@ -212,6 +214,14 @@ public class NavigationBar extends AppCompatActivity {
         NavigationBar.this.startActivity(intent);
     }
 
+    public void clearToken(){
+        File file = new File(Params.ACCESS_TOKEN_FILEPATH);
+        if(file.exists()) {
+            file.delete();
+        }
+        Params.ACCESS_TOKEN = null;
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "nav bar saved");
@@ -248,7 +258,7 @@ public class NavigationBar extends AppCompatActivity {
 
         // clear access token on logout
         if (id == R.id.action_logout) {
-            MainActivity.clearToken();
+            clearToken();
             goToMain();
             return true;
         }

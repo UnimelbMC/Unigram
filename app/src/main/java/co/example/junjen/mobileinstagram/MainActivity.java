@@ -41,14 +41,10 @@ public class MainActivity extends AppCompatActivity {
     String token_key = Parameters.loginToken_key;
     String loginUserImage_key = Parameters.loginUserImage_key;
 
-    // Logout button
-    Button logoutButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        logoutButton = (Button) findViewById(R.id.logout_button);
 
         // get access token file path
         Params.ACCESS_TOKEN_FILEPATH = getFilesDir().getPath().toString() + Params.ACCESS_TOKEN_FILENAME;
@@ -85,19 +81,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void logoutButtonAction(View v){
-        clearToken();
-        logoutButton.setVisibility(View.GONE);
-    }
-
-    public static void clearToken(){
-        File file = new File(Params.ACCESS_TOKEN_FILEPATH);
-        if(file.exists()) {
-            file.delete();
-        }
-        Params.ACCESS_TOKEN = null;
-    }
-
     // go to the navigation screen
     public void startNavBar(){
         Intent intent = new Intent(MainActivity.this, NavigationBar.class);
@@ -119,10 +102,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (Params.ACCESS_TOKEN != null){
-            logoutButton.setVisibility(View.VISIBLE);
             startNavBar();
-        } else {
-            logoutButton.setVisibility(View.GONE);
         }
     }
 
