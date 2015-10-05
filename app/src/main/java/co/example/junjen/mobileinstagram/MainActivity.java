@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         usernameField.setHint(Parameters.usernameFieldHint);
         passwordField.setHint(Parameters.passwordFieldHint);
+
+        // UPDATE: check if token is null or not
     }
 
     public void actionBar(View v){

@@ -27,6 +27,7 @@ public class Profile implements Serializable{
     private Image userImage;
     private String profName;
     private String profDescrp;
+    // TODO: store counts only, and a array of 'postsLoaded'
     private ArrayList<Post> posts;
     private ArrayList<Username> followers;
     private ArrayList<Username> following;

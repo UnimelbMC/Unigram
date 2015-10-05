@@ -84,6 +84,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
             profile = (Profile) getArguments().getSerializable(profile_key);
             backButton = getArguments().getBoolean(backButton_key);
 
+            // display back button if profile fragment created from username link
             if (backButton){
                 ((NavigationBar) this.getActivity()).showBackButton();
             }
