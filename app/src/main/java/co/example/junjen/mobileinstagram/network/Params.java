@@ -1,5 +1,7 @@
 package co.example.junjen.mobileinstagram.network;
 
+import org.jinstagram.auth.model.Token;
+
 /**
  * Created by Jaime on 10/4/2015.
  */
@@ -10,5 +12,7 @@ public class Params {
     //Flow 1, get code from instagram auth server
     public static final String AUTHORIZE_URL= "https://api.instagram.com/oauth/authorize/?client_id="+CLIENT_ID+"&redirect_uri="+REDIRECT_URI+"&response_type=code";
     public static String AUHTORIZE_CODE="";
-    public static String ACCESS_TOKEN = "";
+    public static Token ACCESS_TOKEN = null;
+
 }
+

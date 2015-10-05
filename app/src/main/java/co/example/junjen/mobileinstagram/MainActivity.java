@@ -118,10 +118,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Params.ACCESS_TOKEN.compareTo("") !=0) {
-            Log.v("MAIN_RESUME", Params.ACCESS_TOKEN);
 
-        }
     }
 
     @Override

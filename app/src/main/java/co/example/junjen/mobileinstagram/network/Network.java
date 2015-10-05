@@ -18,12 +18,13 @@ import org.jinstagram.entity.users.basicinfo.UserInfo;
 import org.jinstagram.exceptions.InstagramException;
 
 import co.example.junjen.mobileinstagram.MainActivity;
+import co.example.junjen.mobileinstagram.NavigationBar;
 
 /**
  * Created by Jaime on 10/4/2015.
  */
 public class Network  extends AppCompatActivity {
-    private Token accessToken;
+
     private Instagram instagram;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,8 @@ public class Network  extends AppCompatActivity {
         getAccessCode(Params.AUHTORIZE_CODE);
         //  getUserFeed();
 
-        instagram = new Instagram(accessToken);
+        instagram = new Instagram(Params.ACCESS_TOKEN);
+        //Go back to main activity
         Intent homepage = new Intent(this, MainActivity.class);
         startActivity(homepage);
     }
@@ -56,8 +58,8 @@ public class Network  extends AppCompatActivity {
         //String authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
         // Getting the Access Token
         Verifier verifier = new Verifier(code);
-        accessToken = service.getAccessToken(EMPTY_TOKEN, verifier);
-        Log.v("TEST_ACCESS", accessToken.toString());
+        Params.ACCESS_TOKEN = service.getAccessToken(EMPTY_TOKEN, verifier);
+        Log.v("TEST_ACCESS", Params.ACCESS_TOKEN.toString());
     }
 
     public static Intent LaunchAuthBrowser(){
