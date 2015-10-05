@@ -71,12 +71,13 @@ public class MainActivity extends AppCompatActivity {
         passwordField.setHint(Parameters.passwordFieldHint);
     }
 
+    // action to take when login button is clicked
     public void loginButtonAction(View v){
 
+        // if no access token found, go to browser to authenticate
         if (Params.ACCESS_TOKEN == null) {
             startActivity(Network.LaunchAuthBrowser());
         } else {
-            Log.v("test", Params.ACCESS_TOKEN.toString());
             startNavBar();
         }
     }

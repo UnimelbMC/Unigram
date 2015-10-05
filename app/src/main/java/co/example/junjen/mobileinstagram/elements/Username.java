@@ -28,6 +28,7 @@ public class Username implements Serializable{
         this.username_link = StringFactory.createLink(Html.fromHtml(username_link), getOnClickListener());
     }
 
+    // on click action for username links to display user profile when clicked
     private View.OnClickListener getOnClickListener(){
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -35,7 +36,6 @@ public class Username implements Serializable{
 
                 Profile profile = null;
                 NavigationBar navActivity = ((NavigationBar) v.getContext());
-                LayoutInflater inflater = LayoutInflater.from(navActivity);
 
                 if(username.startsWith(Parameters.default_username)){
                     profile = new Profile();
@@ -44,6 +44,7 @@ public class Username implements Serializable{
                     // TODO:respond to click by creating profile object from username
                 }
 
+                // display profile of username
                 navActivity.showFragment(ProfileFragment.newInstance(profile, true));
             }
         };

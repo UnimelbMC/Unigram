@@ -21,6 +21,9 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.CommentsFragment;
+import co.example.junjen.mobileinstagram.NavigationBar;
+import co.example.junjen.mobileinstagram.ProfileFragment;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
@@ -217,7 +220,10 @@ public class Post implements Serializable{
                     @Override
                     public void onClick(View v) {
                         // TODO: go to comments view
-                        v.setVisibility(View.GONE);
+                        NavigationBar navActivity = ((NavigationBar) v.getContext());
+
+                        // display post's comments
+//                        navActivity.showFragment(CommentsFragment.newInstance(profile, true));
                     }
                 });
                 commentCountText.setText("");    // remove default text

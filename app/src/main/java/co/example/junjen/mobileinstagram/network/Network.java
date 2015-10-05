@@ -74,7 +74,7 @@ public class Network  extends MainActivity {
         Params.ACCESS_TOKEN = service.getAccessToken(EMPTY_TOKEN, verifier);
         Log.v("TEST_ACCESS", Params.ACCESS_TOKEN.toString());
 
-        // writing token to access token file
+        // writing ACCESS_TOKEN to access token file
         try {
             File accessTokenFile = new File(Params.ACCESS_TOKEN_FILEPATH);
             if(!accessTokenFile.exists()) {
