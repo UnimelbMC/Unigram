@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -50,7 +48,11 @@ public class CommentsFragment extends Fragment {
     private String caption;
     private TimeSince timeSince;
 
+    private ScrollView commentsScrollView;
+    private View loadMoreCommentsBar;
+    private ViewGroup commentsContent;
     private int commentCount = 0;
+    private int commentsSize = 0;
 
     private OnFragmentInteractionListener mListener;
 
@@ -101,13 +103,13 @@ public class CommentsFragment extends Fragment {
         setTitle();
 
         View commentsFragment = inflater.inflate(R.layout.fragment_comments, container, false);
-        final ScrollView commentsMain = (ScrollView) commentsFragment.findViewById(R.id.comments_main);
+        commentsScrollView = (ScrollView) commentsFragment.findViewById(R.id.comments_scroll_view);
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
         if (comments != null){
-            ViewGroup commentsContent = (ViewGroup) commentsFragment.findViewById(R.id.comments_content);
+            commentsContent = (ViewGroup) commentsFragment.findViewById(R.id.comments_content);
             View commentsCaption = commentsFragment.findViewById(R.id.comments_caption);
-            View loadMoreCommentsBar = commentsFragment.findViewById(R.id.load_more_comments_bar);
+            loadMoreCommentsBar = commentsFragment.findViewById(R.id.load_more_comments_bar);
 
             // Comments caption
             if (caption != null){
@@ -130,10 +132,10 @@ public class CommentsFragment extends Fragment {
                 commentsCaption.setVisibility(View.GONE);
             }
 
-            int commentsSize = comments.size();
+            commentsSize = comments.size();
 
             // "Load more comments" link
-            TextView loadMoreComments = (TextView) loadMoreCommentsBar.findViewById(R.id.load_more_comments);
+            final TextView loadMoreComments = (TextView) loadMoreCommentsBar.findViewById(R.id.load_more_comments);
 
             if (commentsSize <= Parameters.loadCommentThreshold){
                 loadMoreCommentsBar.setVisibility(View.GONE);
@@ -146,6 +148,7 @@ public class CommentsFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         // TODO: load more comments
+                        loadMoreComments();
                     }
                 });
                 loadMoreComments.setText("");    // remove default text
@@ -155,56 +158,47 @@ public class CommentsFragment extends Fragment {
             }
 
             // Comments content
-            int i;
-            int index;
-            int loadCommentThreshold = Parameters.loadCommentThreshold;
-            for (i = 0; i < loadCommentThreshold; i++){
-                index = commentsSize - 1 - commentCount;
-
-                if (index > commentsSize - 1 || index < 0) break;
-
-                View commentElement = inflater.inflate(R.layout.comments_element, commentsContent, false);
-                Comment comment = comments.get(index);
-
-                ImageView userImage = (ImageView) commentElement.findViewById(R.id.comment_user_image);
-                TextView username = (TextView) commentElement.findViewById(R.id.comment_username);
-                TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
-                TextView commentText = (TextView) commentElement.findViewById(R.id.comment_text);
-
-                if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
-
-                    username.setText("");   // remove default text
-                    stringComponents.add(comment.getUsername().getUsernameLink());
-                    StringFactory.stringBuilder(username, stringComponents);
-                    stringComponents.clear();
-
-                    timeSince.setText(Integer.toString(Math.abs(index - commentsSize + 1)) + "s");
-                    commentText.setText(comment.getComment());
-                } else {
-                    // TODO: get Data Object
-                }
-
-                commentsContent.addView(commentElement, 0);
-
-//                // add comment above each other
-//                if (index == commentsSize - 1){
-//                    commentsContent.addView(commentElement);
+            loadMoreComments();
+//            int i;
+//            int index;
+//            int loadCommentThreshold = Parameters.loadCommentThreshold;
+//
+//            // load chunk of comments based on a threshold
+//            for (i = 0; i < loadCommentThreshold; i++){
+//                index = commentsSize - 1 - commentCount;
+//
+//                if (index > commentsSize - 1 || index < 0) break;
+//
+//                // load view components
+//                View commentElement = inflater.inflate(R.layout.comments_element, commentsContent, false);
+//                ImageView userImage = (ImageView) commentElement.findViewById(R.id.comment_user_image);
+//                TextView username = (TextView) commentElement.findViewById(R.id.comment_username);
+//                TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
+//                TextView commentText = (TextView) commentElement.findViewById(R.id.comment_text);
+//
+//                Comment comment = comments.get(index);
+//
+//                if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
+//
+//                    username.setText("");   // remove default text
+//                    stringComponents.add(comment.getUsername().getUsernameLink());
+//                    StringFactory.stringBuilder(username, stringComponents);
+//                    stringComponents.clear();
+//
+//                    timeSince.setText(Integer.toString(Math.abs(index - commentsSize + 1)) + "s");
+//                    commentText.setText(comment.getComment());
 //                } else {
-//                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
-//                            commentElement.getLayoutParams();
-//                    layoutParams.addRule(RelativeLayout.ABOVE, index + 1);
-//                    commentsContent.addView(commentElement, layoutParams);
-//                    Log.w("test", "adding");
+//                    // TODO: get Data Object
 //                }
-//                commentElement.setId(index);
-                commentCount++;
-            }
+//                commentsContent.addView(commentElement, 0);
+//                commentCount++;
+//            }
         }
         // focus to most recent comment at the bottom
-        commentsMain.post(new Runnable() {
+        commentsScrollView.post(new Runnable() {
             @Override
             public void run() {
-                commentsMain.fullScroll(View.FOCUS_DOWN);
+                commentsScrollView.fullScroll(View.FOCUS_DOWN);
             }
         });
 
@@ -214,6 +208,46 @@ public class CommentsFragment extends Fragment {
 
     public void loadMoreComments(){
 
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+
+        int i;
+        int index;
+        int loadCommentThreshold = Parameters.loadCommentThreshold;
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+
+        // load chunk of comments based on a threshold
+        for (i = 0; i < loadCommentThreshold; i++){
+            index = commentsSize - 1 - commentCount;
+
+            if (index > commentsSize - 1 || index < 0) {
+                loadMoreCommentsBar.setVisibility(View.GONE);
+                break;
+            }
+
+            // load view components
+            View commentElement = inflater.inflate(R.layout.comments_element, commentsContent, false);
+            ImageView userImage = (ImageView) commentElement.findViewById(R.id.comment_user_image);
+            TextView username = (TextView) commentElement.findViewById(R.id.comment_username);
+            TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
+            TextView commentText = (TextView) commentElement.findViewById(R.id.comment_text);
+
+            Comment comment = comments.get(index);
+
+            if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
+
+                username.setText("");   // remove default text
+                stringComponents.add(comment.getUsername().getUsernameLink());
+                StringFactory.stringBuilder(username, stringComponents);
+                stringComponents.clear();
+
+                timeSince.setText(Integer.toString(Math.abs(index - commentsSize + 1)) + "s");
+                commentText.setText(comment.getComment());
+            } else {
+                // TODO: get Data Object
+            }
+            commentsContent.addView(commentElement, 0);
+            commentCount++;
+        }
     }
 
     public void sendComment(){

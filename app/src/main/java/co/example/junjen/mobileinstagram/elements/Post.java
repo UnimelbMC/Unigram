@@ -7,6 +7,7 @@ package co.example.junjen.mobileinstagram.elements;
  */
 
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
+import co.example.junjen.mobileinstagram.network.Params;
 
 public class Post implements Serializable{
 
@@ -208,10 +210,10 @@ public class Post implements Serializable{
         if (this.comments != null){
 
             // add link to show all comments if more than 3 comments
-            int commentCount = this.comments.size();
+            int commentsSize = this.comments.size();
             int commentThreshold = Parameters.commentThreshold;
-            if (commentCount > commentThreshold){
-                String text = "View all " + commentCount + " comments";
+            if (commentsSize > commentThreshold){
+                String text = "View all " + commentsSize + " comments";
 
                 SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
@@ -220,7 +222,8 @@ public class Post implements Serializable{
                         NavigationBar navActivity = ((NavigationBar) v.getContext());
 
                         // display post's comments
-                        navActivity.showFragment(CommentsFragment.newInstance(comments, username, userImage, caption, timeSince));
+                        navActivity.showFragment(CommentsFragment.
+                                newInstance(comments, username, userImage, caption, timeSince));
                     }
                 });
                 commentCountText.setText("");    // remove default text
@@ -232,50 +235,39 @@ public class Post implements Serializable{
             }
 
             // dynamically add preview of maximum 3 comments below commentCountText
-            int aboveID = commentCountText.getId();
             ViewGroup commentsView = (ViewGroup) postView.findViewById(R.id.post_comments);
-            ArrayList<TextView> commentViews = new ArrayList<>();
 
             int i;
+            int index;
+            int commentCount = 0;
+
             for (i = 0; i < commentThreshold; i++){
-                if (commentCount > i) {
+                index = commentsSize - 1 - commentCount;
 
-                    // get post_comment layout
-                    View commentLayout =
-                            inflater.inflate(R.layout.post_comment, commentsView, true);
-                    commentViews.add((TextView) commentLayout.findViewById(R.id.post_comment));
-                    TextView commentView = commentViews.get(i);
+                if (index > commentsSize - 1 || index < 0) break;
 
-                    // add layout params for comments to appear below the previous one
-                    RelativeLayout.LayoutParams layoutParams =
-                            (RelativeLayout.LayoutParams) commentView.getLayoutParams();
-                    layoutParams.addRule(RelativeLayout.BELOW, aboveID);
+                View commentPreview = inflater.inflate(R.layout.post_comment, commentsView, false);
+                TextView commentText = (TextView) commentPreview.findViewById(R.id.post_comment);
+                Comment comment = comments.get(index);
 
-                    commentView.setText("");    // remove default text
-                    Comment comment = this.comments.get(i);
+                if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
+
+                    commentText.setText("");    // remove default text
                     stringComponents.add(comment.getUsername().getUsernameLink());
                     stringComponents.add(" " + comment.getComment());
-                    StringFactory.stringBuilder(commentView, stringComponents);
+                    StringFactory.stringBuilder(commentText, stringComponents);
                     stringComponents.clear();
-                    ((ViewGroup) commentView.getParent()).removeView(commentView);
 
-                    // add comment below previous one
-                    commentsView.addView(commentView, layoutParams);
-                    commentViews.get(i).setId(aboveID + 1);
-                    aboveID = commentViews.get(i).getId();
                 } else {
-                    break;
+                    // TODO: get Data Object
                 }
+                commentsView.addView(commentPreview, 0);
+                commentCount++;
             }
-            // add comments block into postView
-            ((ViewGroup) commentsView.getParent()).removeView(commentsView);
-            RelativeLayout.LayoutParams layoutParams =
-                    (RelativeLayout.LayoutParams) commentsView.getLayoutParams();
-            postView.addView(commentsView, layoutParams);
         }
     }
 
-
+    // get layout of post icons to be added to the bottom of a profile fragment
     public static void getPostIcons(LayoutInflater inflater, ViewGroup postIconList,
                                     ArrayList<Post> posts){
 

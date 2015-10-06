@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_above="@id/comment_send_bar"
-        android:id="@+id/comments_main">
+        android:id="@+id/comments_scroll_view">
 
         <LinearLayout
             android:layout_width="match_parent"

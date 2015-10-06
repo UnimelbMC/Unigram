@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <TextView
         android:layout_width="match_parent"
@@ -8,4 +11,4 @@
         android:text="Comment"
         android:layout_margin="@dimen/post_margin"/>
 
-</merge>
+</LinearLayout>
