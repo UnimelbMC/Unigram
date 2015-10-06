@@ -29,7 +29,9 @@ public class Parameters {
     public static final int likeThreshold = 10;
     public static final int commentThreshold = 3;
     public static final int postsToLoad = 10;
+//    public static final int loadCommentThreshold = 20;
     public static final int loadCommentThreshold = 20;
+
 
     // Post icon parameters
     public static final int postIconsPerRow = 3;

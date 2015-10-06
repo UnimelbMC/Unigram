@@ -158,7 +158,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             //TESTING
             TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
             if(post.getTimeSince().getTimeSince().equals(Parameters.default_timeSince)){
-                timeSince.setText(Integer.toString(index) + "s ago");
+                timeSince.setText(Integer.toString(index) + "s");
             }
 
             userFeedView.addView(postView, index);

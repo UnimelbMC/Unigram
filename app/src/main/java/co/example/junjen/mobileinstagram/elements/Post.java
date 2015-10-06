@@ -7,8 +7,6 @@ package co.example.junjen.mobileinstagram.elements;
  */
 
 import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.CommentsFragment;
 import co.example.junjen.mobileinstagram.NavigationBar;
-import co.example.junjen.mobileinstagram.ProfileFragment;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
@@ -132,7 +128,7 @@ public class Post implements Serializable{
         // Username
         TextView username = (TextView) postView.findViewById(R.id.post_header_username);
         username.setText("");   // remove default text
-        stringComponents.add(this.username.getUsername_link());
+        stringComponents.add(this.username.getUsernameLink());
         StringFactory.stringBuilder(username, stringComponents);
         stringComponents.clear();
 
@@ -176,7 +172,7 @@ public class Post implements Serializable{
                 likes.setText("");  // remove default text
                 int i;
                 for (i = 0; i < likeCount; i++){
-                    stringComponents.add(this.likes.get(i).getUsername().getUsername_link());
+                    stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
                     stringComponents.add(", ");
                 }
                 stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
@@ -191,7 +187,7 @@ public class Post implements Serializable{
         TextView caption = (TextView) postView.findViewById(R.id.post_caption);
         if (this.caption != null){
             caption.setText("");    // remove default text
-            stringComponents.add(this.username.getUsername_link());
+            stringComponents.add(this.username.getUsernameLink());
             stringComponents.add(" " + this.caption);
             StringFactory.stringBuilder(caption, stringComponents);
             stringComponents.clear();
@@ -257,7 +253,7 @@ public class Post implements Serializable{
 
                     commentView.setText("");    // remove default text
                     Comment comment = this.comments.get(i);
-                    stringComponents.add(comment.getUsername().getUsername_link());
+                    stringComponents.add(comment.getUsername().getUsernameLink());
                     stringComponents.add(" " + comment.getComment());
                     StringFactory.stringBuilder(commentView, stringComponents);
                     stringComponents.clear();

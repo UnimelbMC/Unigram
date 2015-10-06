@@ -1,16 +1,17 @@
 package co.example.junjen.mobileinstagram;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import co.example.junjen.mobileinstagram.elements.Comment;
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.StringFactory;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.elements.Username;
 
@@ -100,11 +102,12 @@ public class CommentsFragment extends Fragment {
 
         View commentsFragment = inflater.inflate(R.layout.fragment_comments, container, false);
         final ScrollView commentsMain = (ScrollView) commentsFragment.findViewById(R.id.comments_main);
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
         if (comments != null){
             ViewGroup commentsContent = (ViewGroup) commentsFragment.findViewById(R.id.comments_content);
             View commentsCaption = commentsFragment.findViewById(R.id.comments_caption);
-            View loadMoreComments = commentsFragment.findViewById(R.id.load_more_comments);
+            View loadMoreCommentsBar = commentsFragment.findViewById(R.id.load_more_comments_bar);
 
             // Comments caption
             if (caption != null){
@@ -115,7 +118,10 @@ public class CommentsFragment extends Fragment {
                 TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
 
                 if (this.username.getUsername().equals(Parameters.default_username)){
-                    username.setText(this.username.getUsername());
+                    username.setText("");   // remove default text
+                    stringComponents.add(this.username.getUsernameLink());
+                    StringFactory.stringBuilder(username, stringComponents);
+                    stringComponents.clear();
                     timeSince.setText(this.timeSince.getTimeSince());
                 } else {
                     // TODO: get Data Object
@@ -127,22 +133,37 @@ public class CommentsFragment extends Fragment {
             int commentsSize = comments.size();
 
             // "Load more comments" link
+            TextView loadMoreComments = (TextView) loadMoreCommentsBar.findViewById(R.id.load_more_comments);
+
             if (commentsSize <= Parameters.loadCommentThreshold){
-                loadMoreComments.setVisibility(View.GONE);
+                loadMoreCommentsBar.setVisibility(View.GONE);
             } else {
                 // TODO: set onclick listener to load more comments
+
+                String text = this.getActivity().getResources().getString(R.string.default_load_more_comments);
+
+                SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO: load more comments
+                    }
+                });
+                loadMoreComments.setText("");    // remove default text
+                stringComponents.add(commentLink);
+                StringFactory.stringBuilder(loadMoreComments, stringComponents);
+                stringComponents.clear();
             }
 
-            // Comments
+            // Comments content
             int i;
             int index;
             int loadCommentThreshold = Parameters.loadCommentThreshold;
             for (i = 0; i < loadCommentThreshold; i++){
-                index = comments.size() - 1 - commentCount;
+                index = commentsSize - 1 - commentCount;
 
                 if (index > commentsSize - 1 || index < 0) break;
-                Log.w("test", Integer.toString(index) + "," + Integer.toString(commentsSize));
-                View commentElement = inflater.inflate(R.layout.comments_element, container, false);
+
+                View commentElement = inflater.inflate(R.layout.comments_element, commentsContent, false);
                 Comment comment = comments.get(index);
 
                 ImageView userImage = (ImageView) commentElement.findViewById(R.id.comment_user_image);
@@ -151,20 +172,31 @@ public class CommentsFragment extends Fragment {
                 TextView commentText = (TextView) commentElement.findViewById(R.id.comment_text);
 
                 if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
-                    username.setText(comment.getUsername().getUsername());
-                    timeSince.setText(Integer.toString(index)+"s");
+
+                    username.setText("");   // remove default text
+                    stringComponents.add(comment.getUsername().getUsernameLink());
+                    StringFactory.stringBuilder(username, stringComponents);
+                    stringComponents.clear();
+
+                    timeSince.setText(Integer.toString(Math.abs(index - commentsSize + 1)) + "s");
                     commentText.setText(comment.getComment());
                 } else {
                     // TODO: get Data Object
                 }
 
-//                relativeLayout.addView(adView);
-//                adView.setId(12345678);
-//                RelativeLayout.LayoutParams llParams = (RelativeLayout.LayoutParams)linearLayout.getLayoutParams();
-//                llParams.addRule(RelativeLayout.BELOW, adView.getId());
-
-                // add comment
                 commentsContent.addView(commentElement, 0);
+
+//                // add comment above each other
+//                if (index == commentsSize - 1){
+//                    commentsContent.addView(commentElement);
+//                } else {
+//                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
+//                            commentElement.getLayoutParams();
+//                    layoutParams.addRule(RelativeLayout.ABOVE, index + 1);
+//                    commentsContent.addView(commentElement, layoutParams);
+//                    Log.w("test", "adding");
+//                }
+//                commentElement.setId(index);
                 commentCount++;
             }
         }
@@ -178,6 +210,10 @@ public class CommentsFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return commentsFragment;
+    }
+
+    public void loadMoreComments(){
+
     }
 
     public void sendComment(){

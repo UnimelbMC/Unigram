@@ -2,7 +2,6 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.text.Html;
 import android.text.SpannableString;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import java.io.Serializable;
@@ -20,12 +19,12 @@ import co.example.junjen.mobileinstagram.ProfileFragment;
 public class Username implements Serializable{
 
     private String username;
-    private SpannableString username_link;
+    private SpannableString usernameLink;
 
     public Username(String username) {
         this.username = username;
         String username_link = "<b>"+this.username+"</b>";
-        this.username_link = StringFactory.createLink(Html.fromHtml(username_link), getOnClickListener());
+        this.usernameLink = StringFactory.createLink(Html.fromHtml(username_link), getOnClickListener());
     }
 
     // on click action for username links to display user profile when clicked
@@ -55,8 +54,8 @@ public class Username implements Serializable{
         return username;
     }
 
-    public SpannableString getUsername_link() {
-        return username_link;
+    public SpannableString getUsernameLink() {
+        return usernameLink;
     }
 
     public String toString() {

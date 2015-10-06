@@ -5,10 +5,21 @@
     android:layout_height="wrap_content"
     tools:context="co.example.junjen.mobileinstagram.CommentsFragment">
 
+    <!-- Send comment -->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/comments_input"
+        android:id="@+id/comment_send_bar"
+        android:layout_alignParentBottom="true"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/comment_send_bar"
         android:id="@+id/comments_main">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +33,7 @@
             <!-- Load more comments -->
             <RelativeLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/load_more_comments"
+                android:id="@+id/load_more_comments_bar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/post_header_user_image_width">
 
@@ -43,6 +54,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/load_more_comments"
                         android:text="@string/default_load_more_comments"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/comment_margin"
@@ -59,7 +71,8 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
+            <!-- Comments content -->
+            <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,12 +81,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <!-- Send comment -->
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/comments_input"
-        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
