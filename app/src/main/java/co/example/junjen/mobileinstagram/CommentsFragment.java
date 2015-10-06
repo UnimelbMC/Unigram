@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -48,6 +51,7 @@ public class CommentsFragment extends Fragment {
     private String caption;
     private TimeSince timeSince;
 
+    private EditText commentToSend;
     private ScrollView commentsScrollView;
     private View loadMoreCommentsBar;
     private ViewGroup commentsContent;
@@ -100,9 +104,24 @@ public class CommentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // change action bar title
         setTitle();
 
         View commentsFragment = inflater.inflate(R.layout.fragment_comments, container, false);
+
+        // bind method to send comment button
+        Button sendButton = (Button) commentsFragment.findViewById(R.id.comment_send_button);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendComment();
+            }
+        });
+
+        // load field for adding a comment
+        commentToSend = (EditText) commentsFragment.findViewById(R.id.comment_send_text);
+
+
         commentsScrollView = (ScrollView) commentsFragment.findViewById(R.id.comments_scroll_view);
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
@@ -159,41 +178,8 @@ public class CommentsFragment extends Fragment {
 
             // Comments content
             loadMoreComments();
-//            int i;
-//            int index;
-//            int loadCommentThreshold = Parameters.loadCommentThreshold;
-//
-//            // load chunk of comments based on a threshold
-//            for (i = 0; i < loadCommentThreshold; i++){
-//                index = commentsSize - 1 - commentCount;
-//
-//                if (index > commentsSize - 1 || index < 0) break;
-//
-//                // load view components
-//                View commentElement = inflater.inflate(R.layout.comments_element, commentsContent, false);
-//                ImageView userImage = (ImageView) commentElement.findViewById(R.id.comment_user_image);
-//                TextView username = (TextView) commentElement.findViewById(R.id.comment_username);
-//                TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
-//                TextView commentText = (TextView) commentElement.findViewById(R.id.comment_text);
-//
-//                Comment comment = comments.get(index);
-//
-//                if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
-//
-//                    username.setText("");   // remove default text
-//                    stringComponents.add(comment.getUsername().getUsernameLink());
-//                    StringFactory.stringBuilder(username, stringComponents);
-//                    stringComponents.clear();
-//
-//                    timeSince.setText(Integer.toString(Math.abs(index - commentsSize + 1)) + "s");
-//                    commentText.setText(comment.getComment());
-//                } else {
-//                    // TODO: get Data Object
-//                }
-//                commentsContent.addView(commentElement, 0);
-//                commentCount++;
-//            }
         }
+
         // focus to most recent comment at the bottom
         commentsScrollView.post(new Runnable() {
             @Override
@@ -206,6 +192,7 @@ public class CommentsFragment extends Fragment {
         return commentsFragment;
     }
 
+    // loads a number of comments based on a threshold
     public void loadMoreComments(){
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -250,8 +237,12 @@ public class CommentsFragment extends Fragment {
         }
     }
 
+    // send the comment in the input field when send button is clicked
     public void sendComment(){
-        // TODO: send comment
+        // TODO: send comment by posting using data class
+
+        // clear input field
+        commentToSend.setText("");
     }
 
     // sets the action bar title when in a comment fragment
