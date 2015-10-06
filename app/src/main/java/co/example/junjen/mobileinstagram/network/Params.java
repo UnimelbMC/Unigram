@@ -14,7 +14,8 @@ public class Params {
     public static String AUHTORIZE_CODE="";
     public static Token ACCESS_TOKEN = null;
 
-    public static final String URL_HEADER = "https://instagram.com/accounts/login/?force_classic_login";
+    public static final String LOGIN_URL_HEADER = "https://instagram.com/accounts/login/?force_classic_login";
+    public static final String LOGOUT_URL_HEADER =  "https://instagram";
 
     public static String ACCESS_TOKEN_FILENAME = "/unigram_access_token";
     public static String ACCESS_TOKEN_FILEPATH = null;

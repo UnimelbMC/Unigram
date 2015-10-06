@@ -1,10 +1,12 @@
 package co.example.junjen.mobileinstagram;
 
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,21 +53,23 @@ public class MainActivity extends AppCompatActivity {
     String token_key = Parameters.loginToken_key;
     String loginUserImage_key = Parameters.loginUserImage_key;
 
+    int mainActivityView = R.layout.activity_main;
+
     int loginClickInBrowserCount = 0;
     int loginClickInBrowserCountMax = 2;
     int urlCount = 0;
     int urlCountMax = 2;
+    int splashScreenDuration = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(mainActivityView);
+
+        Log.w("test", "main activity created");
 
         // get access token file path
         Params.ACCESS_TOKEN_FILEPATH = getFilesDir().getPath().toString() + Params.ACCESS_TOKEN_FILENAME;
-
-        // check if token is present
-        checkToken();
 
         //Set permission for library to access the internet
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -86,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
 //
 //        usernameField.setHint(Parameters.usernameFieldHint);
 //        passwordField.setHint(Parameters.passwordFieldHint);
+
+        // check if token is present
+        checkToken();
     }
 
     // action to take when login button is clicked
@@ -97,75 +105,82 @@ public class MainActivity extends AppCompatActivity {
         // if no access token found, go to browser to authenticate
         if (Params.ACCESS_TOKEN == null) {
 
-            WebView myWebView = new WebView(this);
+            WebView myWebView = new WebView(getApplicationContext());
             myWebView.clearFormData();
             setContentView(myWebView);
-            myWebView.setWebViewClient(new WebViewClient() {
-
-                // prevent browser app from starting for webview to be within the app
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    view.loadUrl(url);
-                    return false;
-                }
-
-                // capture code in url
-                @Override
-                public void onLoadResource(WebView view, String url) {
-
-                    // if redirected, access code is in url
-                    if (url.startsWith(Params.REDIRECT_URI)) {
-                        loginClickInBrowserCount = 0;
-                        urlCount = 0;
-
-                        // extract access code
-                        String[] parts = url.split("=");
-                        Params.AUHTORIZE_CODE = parts[1];
-                        Log.v("TEST_NET", Params.AUHTORIZE_CODE);
-                        getAccessCode(Params.AUHTORIZE_CODE);
-
-                        // go to navigation screen
-                        startNavBar();
-
-                        // update view of main activity
-                        view.destroy();
-                        setContentView(R.layout.activity_main);
-
-                    }
-                    // if login button in webview clicked, disable clicking
-                    // (prevents error page popup from spamming the login button)
-                    else if (url.startsWith(Params.URL_HEADER)) {
-                        loginClickInBrowserCount++;
-
-                        if(loginClickInBrowserCount == loginClickInBrowserCountMax) {
-                            view.setOnTouchListener(new View.OnTouchListener() {
-                                @Override
-                                public boolean onTouch(View v, MotionEvent event) {
-                                    return true;
-                                }
-                            });
-                        }
-                    }
-                    // if login is incorrect enable webview clicking
-                    if (loginClickInBrowserCount == loginClickInBrowserCountMax){
-                        urlCount++;
-
-                        if (urlCount > urlCountMax){
-                            urlCount = 0;
-                            loginClickInBrowserCount = 1;
-                            view.setOnTouchListener(new View.OnTouchListener() {
-                                @Override
-                                public boolean onTouch(View v, MotionEvent event) {
-                                    return false;
-                                }
-                            });
-                        }
-                    }
-                }
-            });
+            myWebView.setWebViewClient(new LoginWebViewClient());
             myWebView.loadUrl(Params.AUTHORIZE_URL);
-        } else {
-            startNavBar();
+        }
+    }
+
+    // WebView client for login sessions
+    private class LoginWebViewClient extends WebViewClient{
+
+        // prevent browser app from starting for webview to be within the app
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return false;
+        }
+
+        // capture code in url
+        @Override
+        public void onLoadResource(WebView view, String url) {
+
+            // if redirected, access code is in url
+            if (url.startsWith(Params.REDIRECT_URI)) {
+                loginClickInBrowserCount = 0;
+                urlCount = 0;
+
+                // extract access code
+                String[] parts = url.split("=");
+                Params.AUHTORIZE_CODE = parts[1];
+                Log.v("TEST_NET", Params.AUHTORIZE_CODE);
+                getAccessCode(Params.AUHTORIZE_CODE);
+
+//                // update details on login screen
+//                updateLoginScreen();
+
+                // update view of main activity
+                view.destroy();
+
+                setContentView(mainActivityView);
+
+                // update details on login screen
+                updateLoginScreen();
+
+                // go to navigation screen
+                startNavBar();
+            }
+            // if login button in webview clicked, disable clicking
+            // (prevents error page popup from spamming the login button)
+            else if (url.startsWith(Params.LOGIN_URL_HEADER)) {
+                loginClickInBrowserCount++;
+
+                if (loginClickInBrowserCount == loginClickInBrowserCountMax) {
+                    view.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            return true;
+                        }
+                    });
+                }
+            }
+            // if login is incorrect enable webview clicking
+            if (loginClickInBrowserCount == loginClickInBrowserCountMax) {
+                urlCount++;
+
+                if (urlCount > urlCountMax) {
+                    urlCount = 0;
+                    loginClickInBrowserCount = 1;
+                    view.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            return false;
+                        }
+                    });
+                }
+            }
         }
     }
 
@@ -205,15 +220,24 @@ public class MainActivity extends AppCompatActivity {
 
     // go to the navigation screen
     public void startNavBar(){
-        Intent intent = new Intent(MainActivity.this, NavigationBar.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        MainActivity.this.startActivity(intent);
+
+        // show splash screen for a duration of time before going to navigation screen
+        int DELAY = splashScreenDuration;
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, NavigationBar.class);
+                MainActivity.this.startActivity(intent);
+            }
+        }, DELAY);
     }
 
     // checks if there is a access token present
     private void checkToken(){
-        // read from saved access token if available
 
+        // read from saved access token if available
         Params.ACCESS_TOKEN = null;
         try {
             File accessTokenFile = new File(Params.ACCESS_TOKEN_FILEPATH);
@@ -227,11 +251,43 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if (Params.ACCESS_TOKEN != null){
-            // TODO: update login screen with user image and username
+        // update details on login screen
+        updateLoginScreen();
 
+        if (Params.ACCESS_TOKEN != null){
+            // go to navigation screen
             startNavBar();
         }
+    }
+
+    // update details on login screen
+    public void updateLoginScreen(){
+
+        View mainActivityView = this.findViewById(android.R.id.content);
+
+        ImageView userImage = (ImageView) this.findViewById(R.id.login_user_image);
+        TextView username = (TextView) this.findViewById(R.id.login_username);
+        Button loginButton = (Button) this.findViewById(R.id.login_button);
+
+        //fill login screen with user that is currently logged in
+        if (Params.ACCESS_TOKEN != null){
+            // TODO: update login screen with user image and username using Data Object
+
+            userImage.setImageResource(R.drawable.login_user_image);
+            username.setText(Html.fromHtml("Hello <b>" + Parameters.default_username.toUpperCase() + "</b>"));
+            username.setTextSize(Parameters.subTitleSize);
+            username.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+
+        // return login to default state when no user is logged in
+        } else {
+
+            userImage.setImageResource(R.drawable.empty_user_image);
+            username.setText(Parameters.default_username.toUpperCase());
+            username.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+        }
+
     }
 
     public void checkLogin(){
@@ -296,18 +352,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.v("resume", "1");
-        Log.w("test","main activity resumed");
+        Log.w("test", "main activity resumed");
+
+        splashScreenDuration = Parameters.splashScreenDuration;
 
         checkToken();
-     //   Intent intent = new Intent(MainActivity.this, NavigationBar.class);
-//
-//            // TODO: pass token into Navigation screen creation
-//            Bundle b = new Bundle();
-//            b.putString(token_key, token);
-//            intent.putExtras(b);
-          // MainActivity.this.startActivity(intent);
-
     }
+
     @Override
     protected void onStart() {
         super.onStart();

@@ -203,7 +203,6 @@ public class NavigationBar extends AppCompatActivity {
         if (actionBar != null){
             actionBar.getCustomView().findViewById(R.id.back_button).setVisibility(View.VISIBLE);
         }
-
     }
 
     // hide the back button on the action bar
@@ -211,12 +210,6 @@ public class NavigationBar extends AppCompatActivity {
         if (actionBar != null){
             actionBar.getCustomView().findViewById(R.id.back_button).setVisibility(View.GONE);
         }
-    }
-
-    public void goToMain(){
-        Intent intent = new Intent(NavigationBar.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        NavigationBar.this.startActivity(intent);
     }
 
     public void clearToken(){
@@ -267,26 +260,33 @@ public class NavigationBar extends AppCompatActivity {
 
             clearToken();
 
-//            Intent internetIntent = new Intent(Intent.ACTION_VIEW,
-//                    Uri.parse("https://instagram.com/accounts/logout"));
-//            //internetIntent.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
-//            internetIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//            startActivity(internetIntent);
-
-            WebView myWebView = new WebView(this);
-            myWebView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    view.loadUrl(url);
-                    return false;
-                }
-            });
+            // logout of instagram account
+            WebView myWebView = new WebView(getApplicationContext());
+            myWebView.clearFormData();
+            setContentView(myWebView);
+            myWebView.setWebViewClient(new LogoutWebViewClient());
             myWebView.loadUrl("https://instagram.com/accounts/logout");
 
-            goToMain();
+            finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // WebView client for logging out
+    private class LogoutWebViewClient extends WebViewClient{
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return false;
+        }
+
+        @Override
+        public void onLoadResource(WebView view, String url) {
+            Log.w("test", url);
+
+            // wait for 4 occurences of  https://instagram then only show login button
+        }
     }
 }
