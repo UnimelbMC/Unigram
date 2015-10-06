@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -213,6 +215,7 @@ public class NavigationBar extends AppCompatActivity {
 
     public void goToMain(){
         Intent intent = new Intent(NavigationBar.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         NavigationBar.this.startActivity(intent);
     }
 
@@ -220,6 +223,7 @@ public class NavigationBar extends AppCompatActivity {
         File file = new File(Params.ACCESS_TOKEN_FILEPATH);
         if(file.exists()) {
             file.delete();
+            Log.w("test", "token deleted");
         }
         Params.ACCESS_TOKEN = null;
     }
@@ -262,12 +266,24 @@ public class NavigationBar extends AppCompatActivity {
         if (id == R.id.action_logout) {
 
             clearToken();
+
+//            Intent internetIntent = new Intent(Intent.ACTION_VIEW,
+//                    Uri.parse("https://instagram.com/accounts/logout"));
+//            //internetIntent.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
+//            internetIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//            startActivity(internetIntent);
+
+            WebView myWebView = new WebView(this);
+            myWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return false;
+                }
+            });
+            myWebView.loadUrl("https://instagram.com/accounts/logout");
+
             goToMain();
-            Intent internetIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://instagram.com/accounts/logout"));
-            //internetIntent.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
-            //internetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(internetIntent);
             return true;
         }
 

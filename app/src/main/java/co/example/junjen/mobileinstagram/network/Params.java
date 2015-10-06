@@ -10,13 +10,14 @@ public class Params {
     public static final String CLIENT_SECRET = "afba876a0eac4d79b6cc8520c2b5e330";
     public static final String REDIRECT_URI = "network://localhost/redirect/";
     //Flow 1, get code from instagram auth server
-    public static final String AUTHORIZE_URL= "https://api.instagram.com/oauth/authorize/?client_id="+CLIENT_ID+"&redirect_uri="+REDIRECT_URI+"&response_type=code";
+    public static final String AUTHORIZE_URL= "https://instagram.com/oauth/authorize/?client_id="+CLIENT_ID+"&redirect_uri="+REDIRECT_URI+"&response_type=code";
     public static String AUHTORIZE_CODE="";
     public static Token ACCESS_TOKEN = null;
 
+    public static final String URL_HEADER = "https://instagram.com/accounts/login/?force_classic_login";
+
     public static String ACCESS_TOKEN_FILENAME = "/unigram_access_token";
     public static String ACCESS_TOKEN_FILEPATH = null;
-
 
 }
 

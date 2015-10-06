@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import co.example.junjen.mobileinstagram.MainActivity;
+import co.example.junjen.mobileinstagram.NavigationBar;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -45,6 +46,12 @@ public class Network  extends MainActivity {
         //  getUserFeed();
 
         instagram = new Instagram(Params.ACCESS_TOKEN);
+
+        // go to navigation screen
+        Intent navIntent = new Intent(this, NavigationBar.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        this.startActivity(navIntent);
+
         finish();
         //Go back to main activity
         // UPDATE: check if token is null or not
