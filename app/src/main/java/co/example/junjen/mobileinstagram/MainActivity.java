@@ -71,18 +71,21 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         // set custom action bar
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
-        TextView title = (TextView) getSupportActionBar().
-                getCustomView().findViewById(R.id.action_bar_title);
-        title.setText(Parameters.mainTitle);
-        title.setTextSize(Parameters.mainTitleSize);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(R.layout.action_bar);
+            TextView title = (TextView) getSupportActionBar().
+                    getCustomView().findViewById(R.id.action_bar_title);
+            title.setText(Parameters.mainTitle);
+            title.setTextSize(Parameters.mainTitleSize);
+        }
 
-        usernameField = (EditText) findViewById(R.id.login_username_editText);
-        passwordField = (EditText) findViewById(R.id.login_password_editText);
-
-        usernameField.setHint(Parameters.usernameFieldHint);
-        passwordField.setHint(Parameters.passwordFieldHint);
+//        usernameField = (EditText) findViewById(R.id.login_username_editText);
+//        passwordField = (EditText) findViewById(R.id.login_password_editText);
+//
+//        usernameField.setHint(Parameters.usernameFieldHint);
+//        passwordField.setHint(Parameters.passwordFieldHint);
     }
 
     // action to take when login button is clicked
@@ -109,8 +112,6 @@ public class MainActivity extends AppCompatActivity {
                 // capture code in url
                 @Override
                 public void onLoadResource(WebView view, String url) {
-
-                    Log.w("test",url);
 
                     // if redirected, access code is in url
                     if (url.startsWith(Params.REDIRECT_URI)) {
@@ -227,6 +228,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (Params.ACCESS_TOKEN != null){
+            // TODO: update login screen with user image and username
+
             startNavBar();
         }
     }

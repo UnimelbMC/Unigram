@@ -224,7 +224,7 @@ public class Post implements Serializable{
                         NavigationBar navActivity = ((NavigationBar) v.getContext());
 
                         // display post's comments
-//                        navActivity.showFragment(CommentsFragment.newInstance(profile, true));
+                        navActivity.showFragment(CommentsFragment.newInstance(comments, username, userImage, caption, timeSince));
                     }
                 });
                 commentCountText.setText("");    // remove default text

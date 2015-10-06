@@ -53,7 +53,7 @@ public class NavigationBar extends AppCompatActivity {
         // set custom action bar
         actionBar = getSupportActionBar();
         if(actionBar != null) {
-            actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             actionBar.setCustomView(R.layout.action_bar);
 
             // bind backButton click to goBack() method

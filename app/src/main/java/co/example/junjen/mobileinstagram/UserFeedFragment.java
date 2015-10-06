@@ -108,6 +108,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
                     userFeedFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     int height = userFeedFragment.getHeight();
 
+
                     if (height < screenHeight) {
                         LayoutInflater inflater = LayoutInflater.from(getContext());
                         getUserFeedPosts(inflater, userFeedFragment);

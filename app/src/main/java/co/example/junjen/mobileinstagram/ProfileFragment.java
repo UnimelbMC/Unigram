@@ -119,6 +119,8 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     profileFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     int height = profileFragment.getHeight();
 
+                    Log.w("test","profile: "+Integer.toString(height)+" ("+Integer.toString(screenHeight)+")");
+
                     if(height < screenHeight){
                         LayoutInflater inflater = LayoutInflater.from(getContext());
                         profile.getPostIcons(inflater);
@@ -167,7 +169,6 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-
 
         //fragment specific menu creation
         setTitle();

@@ -1,60 +1,79 @@
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context="co.example.junjen.mobileinstagram.CommentsFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <!-- Comments caption -->
-        <include
-            layout="@layout/comments_element"
-            android:id="@+id/comments_caption"/>
-
-        <!-- Load more comments -->
-        <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/load_more_comments"
+        android:id="@+id/comments_main">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/post_header_user_image_width">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <Space
-                android:layout_width="@dimen/post_header_user_image_width"
-                android:layout_height="@dimen/post_header_user_image_width"
-                android:id="@+id/comment_count_space"
-                android:layout_alignParentTop="true"
-                android:layout_margin="@dimen/comment_margin"/>
+            <!-- Comments caption -->
+            <include
+                layout="@layout/comments_element"
+                android:id="@+id/comments_caption"/>
 
+            <!-- Load more comments -->
             <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/comment_count_space"
-                android:layout_toEndOf="@id/comment_count_space">
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/load_more_comments"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/post_header_user_image_width">
 
-                <!-- Text link -->
-                <TextView
-                    android:layout_width="match_parent"
+                <Space
+                    android:layout_width="@dimen/post_header_user_image_width"
+                    android:layout_height="@dimen/post_header_user_image_width"
+                    android:id="@+id/comment_count_space"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="@dimen/comment_margin"/>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/default_load_more_comments"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/comment_margin"
-                    android:layout_marginEnd="@dimen/comment_margin"/>
+                    android:layout_toRightOf="@id/comment_count_space"
+                    android:layout_toEndOf="@id/comment_count_space">
 
-                <!-- Comment divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_alignParentBottom="true"/>
+                    <!-- Text link -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/default_load_more_comments"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/comment_margin"
+                        android:layout_marginEnd="@dimen/comment_margin"/>
+
+                    <!-- Comment divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@android:color/darker_gray"
+                        android:layout_alignParentBottom="true"/>
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/comments_content"/>
 
-    </LinearLayout>
+        </LinearLayout>
 
-</ScrollView>
+    </ScrollView>
+
+    <!-- Send comment -->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/comments_input"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
