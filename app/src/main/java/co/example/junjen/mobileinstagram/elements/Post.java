@@ -27,6 +27,8 @@ import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
 public class Post implements Serializable{
 
+    private int postId;
+
     // post header
     private Image userImage;
     private Username username;
@@ -74,11 +76,12 @@ public class Post implements Serializable{
         }
     }
 
-    public Post(String userImage, String username, String location, String timeSince,
+    public Post(int postId, String userImage, String username, String location, String timeSince,
                 String postImage, String caption, ArrayList<Like> likes, ArrayList<Comment> comments){
 
         // TODO: Assumes strings as parameters. Set appropriately later on.
 
+        this.postId = postId;
         this.userImage = new Image(userImage);
         this.username = new Username(username);
         this.location = new Location(location);
@@ -313,6 +316,10 @@ public class Post implements Serializable{
             // add row to list
             postIconList.addView(postIconRow, postIconList.getChildCount());
         }
+    }
+
+    public int getPostId() {
+        return postId;
     }
 
     public Image getUserImage() {

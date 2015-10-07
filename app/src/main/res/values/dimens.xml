@@ -35,10 +35,7 @@
     <dimen name="comment_input_margin">10dp</dimen>
     <dimen name="comment_button_height">40dp</dimen>
 
-<<<<<<< HEAD
     <!-- Likes -->
     <dimen name="like_bar_height">50dp</dimen>
-=======
->>>>>>> 251705b3a2bea3c829d8c75c08356a872e6df511
 
 </resources>

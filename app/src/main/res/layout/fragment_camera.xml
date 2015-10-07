@@ -42,7 +42,8 @@
                         android:background="@drawable/btn_default_light"
                         android:src="@drawable/ic_close_white_24dp"
                         android:adjustViewBounds="true"
-                        android:scaleType="fitCenter"/>
+                        android:scaleType="fitCenter"
+                        android:id="@+id/closeButton" />
 
                     <View
                         android:layout_width="0dp"

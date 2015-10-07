@@ -162,6 +162,9 @@ public class CameraFragment extends Fragment {
         Button takePhotoButton = (Button) v.findViewById(R.id.takePhotoButton);
         takePhotoButton.setOnClickListener(takePhotoButtonListener);
 
+        ImageButton closeButton = (ImageButton) v.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(closeButtonListener);
+
         ImageButton loadImageButton = (ImageButton) v.findViewById(R.id.loadImage);
         loadImageButton.setOnClickListener(loadImageButtonListener);
 
@@ -559,6 +562,16 @@ public class CameraFragment extends Fragment {
             // get an image from the camera
             mCamera.takePicture(null, null, mPicture);
 
+        }
+    };
+
+
+    private View.OnClickListener closeButtonListener= new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            // go back to previous fragment
+            ((NavigationBar) getActivity()).goBack();
         }
     };
 
