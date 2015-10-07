@@ -40,4 +40,7 @@ public class Parameters {
     public static final String default_profName = "Username";
     public static final String default_profDescrp = "My Profile";
 
+    // Image Links
+    public static final String default_userImageLink = "0";
+
 }
