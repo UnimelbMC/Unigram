@@ -27,7 +27,7 @@ import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
 public class Post implements Serializable{
 
-    private int postId;
+    private String postId;
 
     // post header
     private Image userImage;
@@ -64,19 +64,19 @@ public class Post implements Serializable{
         // create 20 empty likes
         for (i = 0; i < 20; i++){
             username = Parameters.default_username + (i + 1);
-            this.likes.add(new Like(username, new Image(Parameters.default_image),
+            this.likes.add(new Like(username, Parameters.default_image,
                     Parameters.default_profName));
         }
         // create 10 empty comments
         for (i = 0; i < 10; i++){
             username = Parameters.default_username + (i + 1);
             comment = Parameters.default_comment + (i + 1);
-            this.comments.add(new Comment(username, new Image(Parameters.default_image), comment,
+            this.comments.add(new Comment(username, Parameters.default_image, comment,
                     new TimeSince(Parameters.default_timeSince)));
         }
     }
 
-    public Post(int postId, String userImage, String username, String location, String timeSince,
+    public Post(String postId, String userImage, String username, String location, String timeSince,
                 String postImage, String caption, ArrayList<Like> likes, ArrayList<Comment> comments){
 
         // TODO: Assumes strings as parameters. Set appropriately later on.
@@ -318,7 +318,7 @@ public class Post implements Serializable{
         }
     }
 
-    public int getPostId() {
+    public String getPostId() {
         return postId;
     }
 

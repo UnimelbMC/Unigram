@@ -13,9 +13,10 @@ public class Like implements Serializable{
     private Image userImage;
     private String profName;
 
-    public Like(String username, Image userImage, String profName){
+
+    public Like(String username, String userImage, String profName){
         this.username = new Username(username);
-        this.userImage = userImage;
+        this.userImage =  new Image(userImage);;
         this.profName = profName;
     }
 
