@@ -1,5 +1,7 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import android.content.Context;
+
 /**
  * Created by junjen on 1/10/2015.
  */
@@ -41,6 +43,11 @@ public class Parameters {
     public static final String default_profDescrp = "My Profile";
 
     // Image Links
-    public static final String default_userImageLink = "0";
+    public static final String default_loginUserImageLink = "0";
+    public static final String default_emptyUserImageLink = "1";
+
+    // Application helpers
+    public static Context context = null;
+    public static final String navBarCreated = "navBarCreated";
 
 }
