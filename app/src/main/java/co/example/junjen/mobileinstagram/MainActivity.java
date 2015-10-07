@@ -1,5 +1,6 @@
 package co.example.junjen.mobileinstagram;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -46,8 +47,6 @@ import co.example.junjen.mobileinstagram.network.Params;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText usernameField;
-    private EditText passwordField;
     private Image loginUserImage;
     private Network net;
 
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     String loginUserImage_key = Parameters.loginUserImage_key;
 
     int mainActivityView = R.layout.activity_main;
+    public static Activity mainActivity;
 
     int loginClickInBrowserCount = 0;
     int loginClickInBrowserCountMax = 2;
@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(mainActivityView);
+
+        mainActivity = this;
 
         // set application context to be accessible by other classes
         Parameters.context = this.getApplicationContext();
@@ -93,28 +95,9 @@ public class MainActivity extends AppCompatActivity {
             title.setTextSize(Parameters.mainTitleSize);
         }
 
-        // Register to receive messages from NavigationBar activity
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter(Parameters.navBarCreated));
-
-//        usernameField = (EditText) findViewById(R.id.login_username_editText);
-//        passwordField = (EditText) findViewById(R.id.login_password_editText);
-//
-//        usernameField.setHint(Parameters.usernameFieldHint);
-//        passwordField.setHint(Parameters.passwordFieldHint);
-
         // check if token is present
         checkToken();
     }
-
-    // receives message from NavigationBar activity when created so that this activity can finish
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // finish main activity when navigation screen created
-            finish();
-        }
-    };
 
     // action to take when login button is clicked
     public void loginButtonAction(View v){
@@ -310,65 +293,6 @@ public class MainActivity extends AppCompatActivity {
             username.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
         }
-
-    }
-
-    public void checkLogin(){
-        // get username and password input
-        String loginUsername = usernameField.getText().toString();
-        String loginPassword = passwordField.getText().toString();
-
-        boolean authenticated = false;
-
-        // TODO: authenticate username with password and get required token
-        // TESTING
-        String token = null;
-        ArrayList<Map<String, String>> accounts = new ArrayList<>();
-        Map<String, String> account1 = new HashMap<>();
-        Map<String, String> account2 = new HashMap<>();
-        account1.put(username_key, "");
-        account1.put(password_key, "");
-        account2.put(username_key, "qqq");
-        account2.put(password_key, "www");
-        accounts.add(account1);
-        accounts.add(account2);
-        for (Map account : accounts){
-            if(account.get(username_key).equals(loginUsername) &&
-                    account.get(password_key).equals(loginPassword)){
-                authenticated = true;
-                //Authenticate with Instagram
-//                startActivity(Network.LaunchAuthBrowser());
-                // TODO: get token type
-                token = null;
-
-            }
-        }
-
-        loginPassword = null;
-
-        if(!authenticated) {
-
-            // TODO: pop-up saying invalid login and password
-
-        } else {
-
-            //TESTING
-            if (token == null){
-                ImageView loginUserImage = (ImageView) this.findViewById(R.id.login_user_image);
-                loginUserImage.setImageResource(R.drawable.login_user_image);
-            } else {
-                // TODO: get user image based on token and display
-                loginUserImage = new Image(Parameters.default_image);
-            }
-
-            Intent intent = new Intent(MainActivity.this, NavigationBar.class);
-
-            // TODO: pass token into Navigation screen creation
-            Bundle b = new Bundle();
-            b.putString(token_key, token);
-            intent.putExtras(b);
-            MainActivity.this.startActivity(intent);
-        }
     }
 
     @Override
@@ -429,12 +353,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        // Unregister since the activity is about to be closed.
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        super.onDestroy();
     }
 }
