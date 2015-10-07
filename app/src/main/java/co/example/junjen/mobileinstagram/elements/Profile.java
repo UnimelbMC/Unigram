@@ -91,7 +91,7 @@ public class Profile implements Serializable{
         if(!this.userImage.getImageString().equals(Parameters.default_image)) {
             UserImageView userImage = (UserImageView)
                     profileView.findViewById(R.id.profile_user_image);
-            Image.setImage(userImage, this.userImage.getImage());
+            Image.setImage(userImage, this.userImage);
         }
 
         // Profile name

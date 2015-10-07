@@ -25,14 +25,6 @@ public class Image implements Serializable {
         return imageString;
     }
 
-    public Image getImage(){
-        // TODO: Fill appropriate image return type
-
-        Image image = null;
-
-        return image;
-    }
-
     public static void setImage(ImageView imageView, Image image){
 
         Context context = Parameters.context;

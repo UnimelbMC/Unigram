@@ -108,7 +108,7 @@ public class Post implements Serializable{
         if(!this.userImage.getImageString().equals(Parameters.default_image)) {
             UserImageView userImage = (UserImageView)
                     postView.findViewById(R.id.post_header_user_image);
-            Image.setImage(userImage, this.userImage.getImage());
+            Image.setImage(userImage, this.userImage);
         }
 
         // Username
@@ -125,7 +125,7 @@ public class Post implements Serializable{
         // Post image
         if(!this.postImage.getImageString().equals(Parameters.default_image)) {
             ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-            Image.setImage(postImage, this.postImage.getImage());
+            Image.setImage(postImage, this.postImage);
         }
 
         // TODO: Handle clicks for like button
@@ -284,7 +284,7 @@ public class Post implements Serializable{
                 if (postsSize - index > 0) {
                     Post post = posts.get(index);
                     if (!post.getPostImage().getImageString().equals(Parameters.default_image)) {
-                        Image.setImage(imageView, post.getPostImage().getImage());
+                        Image.setImage(imageView, post.getPostImage());
                     }
 
                 } else {
