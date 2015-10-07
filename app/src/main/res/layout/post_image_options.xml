@@ -1,0 +1,33 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/post_image_options_height"
+    android:paddingLeft="@dimen/post_margin"
+    android:paddingRight="@dimen/post_margin">
+
+    <!-- Like button -->
+    <RadioGroup
+        android:id="@+id/like_button_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <co.example.junjen.mobileinstagram.customLayouts.LikeButton
+            android:id="@+id/like_button"
+            android:layout_width="@dimen/like_button_width"
+            android:layout_height="@dimen/like_button_width"
+            android:button="@null"
+            android:drawableTop="@drawable/like_selector"
+            android:layout_margin="@dimen/post_margin"/>
+    </RadioGroup>
+
+    <!-- Comment button -->
+    <ImageView
+        android:layout_width="@dimen/comment_button_width"
+        android:layout_height="@dimen/comment_button_width"
+        android:id="@+id/comment_button"
+        android:layout_toRightOf="@id/like_button_group"
+        android:src="@drawable/comment_button"
+        android:layout_margin="@dimen/post_margin"/>
+
+</RelativeLayout>

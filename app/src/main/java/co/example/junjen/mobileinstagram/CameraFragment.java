@@ -25,6 +25,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -1102,6 +1104,38 @@ public class CameraFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
+    // returns to the previous fragment when the back button is clicked
+    public void onBackButtonClick(){
+        ((NavigationBar) getActivity()).checkPreviousNavButton();
+    }
+
+    @Override
+     // sets the action bar title when in a user feed fragment
+     public void onAttach(Context context) {
+        super.onAttach(context);
+
+        ActionBar actionBar = ((AppCompatActivity)
+                this.getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+        ((NavigationBar) getActivity()).getNavBar().setVisibility(View.GONE);
+    }
+
+    @Override
+    // sets the action bar title when in a user feed fragment
+    public void onDetach() {
+        super.onDetach();
+
+        ActionBar actionBar = ((AppCompatActivity)
+                this.getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.show();
+        }
+        ((NavigationBar) getActivity()).getNavBar().setVisibility(View.VISIBLE);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

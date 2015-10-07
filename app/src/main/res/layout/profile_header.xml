@@ -1,0 +1,110 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:style="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="@dimen/post_margin">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/profile_header_user_image_width"
+        android:layout_margin="@dimen/post_margin">
+
+        <!-- User image -->
+        <co.example.junjen.mobileinstagram.customLayouts.UserImageView
+            android:layout_width="@dimen/profile_header_user_image_width"
+            android:layout_height="@dimen/profile_header_user_image_width"
+            android:id="@+id/profile_user_image"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/login_user_image"
+            android:adjustViewBounds="true"
+            android:foregroundGravity="center"
+            android:contentDescription="Profile User Image"/>
+
+        <!-- Profile stats -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/profile_user_image"
+            android:layout_toEndOf="@id/profile_user_image"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:baselineAligned="false">
+
+            <!-- Number of posts -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/profile_post_count"
+                    android:text="0"
+                    style="@style/profile_stat_number"/>
+
+                <TextView
+                    android:text="@string/profile_post_count_label"
+                    style="@style/profile_stat_tag"/>
+
+            </LinearLayout>
+
+            <!-- Number of followers -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/profile_follower_count"
+                    android:text="0"
+                    style="@style/profile_stat_number"/>
+
+                <TextView
+                    android:text="@string/profile_follower_count_label"
+                    style="@style/profile_stat_tag"/>
+
+            </LinearLayout>
+
+            <!-- Numbers following -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/profile_following_count"
+                    android:text="0"
+                    style="@style/profile_stat_number"/>
+
+                <TextView
+                    android:text="@string/profile_following_count_label"
+                    style="@style/profile_stat_tag"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!-- Profile Name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_name"
+        android:text="Profile name"
+        android:layout_margin="@dimen/post_margin"
+        android:textStyle="bold"/>
+
+    <!-- Profile Description -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_description"
+        android:text="Profile Description"
+        android:layout_margin="@dimen/post_margin"/>
+
+</LinearLayout>

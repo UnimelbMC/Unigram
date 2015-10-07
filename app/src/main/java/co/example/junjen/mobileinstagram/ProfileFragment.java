@@ -1,11 +1,30 @@
 package co.example.junjen.mobileinstagram;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
+import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
+import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.Post;
+import co.example.junjen.mobileinstagram.elements.Profile;
+import co.example.junjen.mobileinstagram.elements.TimeSince;
 
 
 /**
@@ -16,15 +35,24 @@ import android.view.ViewGroup;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class ProfileFragment extends Fragment implements ScrollViewListener{
+    // the fragment initialization parameters
+    private static final String profile_key = "profile";
+    private static final String backButton_key = "backButton";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Profile profile;
+    private boolean backButton;
+
+    private ExpandableScrollView profileFragment;
+
+    // keep track of timeSince last post generated to generate new set of posts
+    private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
+
+    // flag to check if posts are being loaded before loading new ones
+    private boolean loadPosts = true;
+
+    // counter for new posts to be placed in the right order when loaded
+    private int postCount = 0;
 
     private OnFragmentInteractionListener mListener;
 
@@ -32,16 +60,15 @@ public class ProfileFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param profile Parameter 1.
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance(Profile profile, boolean backButton) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(profile_key, profile);
+        args.putBoolean(backButton_key, backButton);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,16 +81,97 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            profile = (Profile) getArguments().getSerializable(profile_key);
+            backButton = getArguments().getBoolean(backButton_key);
+
+            // display back button if profile fragment created from username link
+            if (backButton){
+                ((NavigationBar) this.getActivity()).showBackButton();
+            }
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+
+        // initialise ProfileFragment if not created yet
+        if(profileFragment == null){
+
+            // TODO: get Profile based on Data Object and pass into fragment constructor
+            // currently being created in nav bar activity
+//            profile = new Profile();
+
+            setTitle();
+
+            profileFragment = profile.getProfileView(inflater);
+            profileFragment.setScrollViewListener(this);
+
+            // add layout listener to add content if default screen is not filled
+            ViewTreeObserver vto = profileFragment.getViewTreeObserver();
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            final int screenHeight = displaymetrics.heightPixels;
+
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    profileFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    int height = profileFragment.getHeight();
+
+                    Log.w("test","profile: "+Integer.toString(height)+" ("+Integer.toString(screenHeight)+")");
+
+                    if(height < screenHeight){
+                        LayoutInflater inflater = LayoutInflater.from(getContext());
+                        profile.getPostIcons(inflater);
+                    }
+                }
+            });
+        }
+        return profileFragment;
+    }
+
+    // loads another chunk of posts when at the bottom of the profile ScrollView
+    @Override
+    public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
+
+        // load new posts if no posts are currently being loaded
+        if(loadPosts){
+            loadPosts = false;
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            profile.getPostIcons(inflater);
+            loadPosts = true;
+        }
+    }
+
+    // sets the action bar title when in a profile fragment
+    public void setTitle(){
+        View actionBar = ((AppCompatActivity)
+                this.getActivity()).getSupportActionBar().getCustomView();
+        if (actionBar != null) {
+            TextView title = (TextView) actionBar.findViewById(R.id.action_bar_title);
+            title.setText(profile.getUsername().getUsername().toUpperCase());
+            title.setTextSize(Parameters.subTitleSize);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if(profile != null){
+            setTitle();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+
+        //fragment specific menu creation
+        setTitle();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

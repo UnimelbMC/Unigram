@@ -1,0 +1,322 @@
+package co.example.junjen.mobileinstagram.elements;
+
+/**
+ * Created by junjen on 30/09/2015.
+ *
+ * This class creates Post objects.
+ */
+
+import android.text.SpannableString;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import co.example.junjen.mobileinstagram.CommentsFragment;
+import co.example.junjen.mobileinstagram.NavigationBar;
+import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
+import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
+
+public class Post implements Serializable{
+
+    // post header
+    private Image userImage;
+    private Username username;
+    private Location location;
+    private TimeSince timeSince;
+
+    // post content
+    private Image postImage;
+    private String caption;
+    private ArrayList<Like> likes;
+    private ArrayList<Comment> comments;
+
+    // post view
+    private RelativeLayout postView;
+
+    public Post(){
+        // test constructor to create 'empty' Post objects
+
+        this.userImage = new Image(Parameters.default_image);
+        this.username = new Username(Parameters.default_username);
+        this.location = new Location(Parameters.default_location);
+        this.timeSince = new TimeSince(Parameters.default_timeSince);
+        this.postImage = new Image(Parameters.default_image);
+        this.caption = Parameters.default_caption;
+
+        this.likes = new ArrayList<>();
+        this.comments = new ArrayList<>();
+
+        int i;
+        String username;
+        String comment;
+
+        // create 20 empty likes
+        for (i = 0; i < 20; i++){
+            username = Parameters.default_username + (i + 1);
+            this.likes.add(new Like(username, new Image(Parameters.default_image),
+                    new TimeSince(Parameters.default_timeSince)));
+        }
+        // create 10 empty comments
+        for (i = 0; i < 10; i++){
+            username = Parameters.default_username + (i + 1);
+            comment = Parameters.default_comment + (i + 1);
+            this.comments.add(new Comment(username, new Image(Parameters.default_image), comment,
+                    new TimeSince(Parameters.default_timeSince)));
+        }
+    }
+
+    public Post(String userImage, String username, String location, String timeSince,
+                String postImage, String caption, ArrayList<Like> likes, ArrayList<Comment> comments){
+
+        // TODO: Assumes strings as parameters. Set appropriately later on.
+
+        this.userImage = new Image(userImage);
+        this.username = new Username(username);
+        this.location = new Location(location);
+        this.timeSince = new TimeSince(timeSince);
+        this.postImage = new Image(postImage);
+        this.caption = caption;
+
+        this.likes = likes;
+        this.comments = comments;
+    }
+
+    public View getPostView(LayoutInflater inflater, ViewGroup parentView){
+
+        // TODO: set 'onClickListener" for any applicable views
+        // Example:
+        // TextView t2 = (TextView) findViewById(R.id.text2);
+        // t2.setMovementMethod(LinkMovementMethod.getInstance());
+
+        postView = (RelativeLayout)
+                inflater.inflate(R.layout.post, parentView, false);
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+
+        /** Fixed parameters **/
+
+        // User image
+        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
+            UserImageView userImage = (UserImageView)
+                    postView.findViewById(R.id.post_header_user_image);
+            Image.setImage(userImage, this.userImage);
+        }
+
+        // Username
+        TextView username = (TextView) postView.findViewById(R.id.post_header_username);
+        username.setText("");   // remove default text
+        stringComponents.add(this.username.getUsernameLink());
+        StringFactory.stringBuilder(username, stringComponents);
+        stringComponents.clear();
+
+        // Time since posted
+        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+        timeSince.setText(this.timeSince.getTimeSince());
+
+        // Post image
+        if(!this.postImage.getImageString().equals(Parameters.default_image)) {
+            ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
+            Image.setImage(postImage, this.postImage);
+        }
+
+        // TODO: Handle clicks for like button
+
+        /** Optional parameters **/
+
+        // TODO: Confirm for 'null' return type if optional params do not exist
+
+        // Location
+        TextView location = (TextView) postView.findViewById(R.id.post_header_location);
+        if (this.location != null){
+            location.setText("");    // remove default text
+            stringComponents.add(this.location.getLocation());
+            StringFactory.stringBuilder(location, stringComponents);
+            stringComponents.clear();
+        } else {
+            location.setVisibility(View.GONE);
+        }
+
+        // Likes
+        RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
+        if (this.likes != null){
+            TextView likes = (TextView) postView.findViewById(R.id.like_count);
+            int likeCount = this.likes.size();
+            int likeThreshold = Parameters.likeThreshold;
+            if(likeCount > likeThreshold){
+                likes.setText(likeCount + " likes");
+            }
+            else {
+                likes.setText("");  // remove default text
+                int i;
+                for (i = 0; i < likeCount; i++){
+                    stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
+                    stringComponents.add(", ");
+                }
+                stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
+                StringFactory.stringBuilder(likes, stringComponents);
+                stringComponents.clear();
+            }
+        } else {
+            likeLine.setVisibility(View.GONE);
+        }
+
+        // Caption
+        TextView caption = (TextView) postView.findViewById(R.id.post_caption);
+        if (this.caption != null){
+            caption.setText("");    // remove default text
+            stringComponents.add(this.username.getUsernameLink());
+            stringComponents.add(" " + this.caption);
+            StringFactory.stringBuilder(caption, stringComponents);
+            stringComponents.clear();
+        } else {
+            caption.setVisibility(View.GONE);
+        }
+
+        // Comments
+        buildCommentView(inflater);
+        return postView;
+    }
+
+    // builds the view for the comments portion in a post
+    private void buildCommentView(LayoutInflater inflater){
+
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+        TextView commentCountText = (TextView) postView.findViewById(R.id.post_comment_count);
+        if (this.comments != null){
+
+            // add link to show all comments if more than 3 comments
+            int commentsSize = this.comments.size();
+            int commentThreshold = Parameters.commentThreshold;
+            if (commentsSize > commentThreshold){
+                String text = "View all " + commentsSize + " comments";
+
+                SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO: go to comments view
+                        NavigationBar navActivity = ((NavigationBar) v.getContext());
+
+                        // display post's comments
+                        navActivity.showFragment(CommentsFragment.
+                                newInstance(comments, username, userImage, caption, timeSince));
+                    }
+                });
+                commentCountText.setText("");    // remove default text
+                stringComponents.add(commentLink);
+                StringFactory.stringBuilder(commentCountText, stringComponents);
+                stringComponents.clear();
+            } else {
+                commentCountText.setVisibility(View.GONE);
+            }
+
+            // dynamically add preview of maximum 3 comments below commentCountText
+            ViewGroup commentsView = (ViewGroup) postView.findViewById(R.id.post_comments);
+
+            int i;
+            int index;
+            int commentCount = 0;
+
+            for (i = 0; i < commentThreshold; i++){
+                index = commentsSize - 1 - commentCount;
+
+                if (index > commentsSize - 1 || index < 0) break;
+
+                View commentPreview = inflater.inflate(R.layout.post_comment, commentsView, false);
+                TextView commentText = (TextView) commentPreview.findViewById(R.id.post_comment);
+                Comment comment = comments.get(index);
+
+                if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
+
+                    commentText.setText("");    // remove default text
+                    stringComponents.add(comment.getUsername().getUsernameLink());
+                    stringComponents.add(" " + comment.getComment());
+                    StringFactory.stringBuilder(commentText, stringComponents);
+                    stringComponents.clear();
+
+                } else {
+                    // TODO: get Data Object
+                }
+                commentsView.addView(commentPreview, 0);
+                commentCount++;
+            }
+        }
+    }
+
+    // get layout of post icons to be added to the bottom of a profile fragment
+    public static void getPostIcons(LayoutInflater inflater, ViewGroup postIconList,
+                                    ArrayList<Post> posts){
+
+        int postsSize = posts.size();
+        int postIconsPerRow = Parameters.postIconsPerRow;
+        int postIconRowsToLoad = Parameters.postIconRowsToLoad;
+
+        int rows = (int) Math.ceil((double) postsSize / postIconsPerRow);
+        if (rows < postIconRowsToLoad){
+            postIconRowsToLoad = rows;
+        }
+
+        int i;
+        int index;
+        for (i = 0; i < postIconRowsToLoad; i++){
+
+            LinearLayout postIconRow = (LinearLayout)
+                    inflater.inflate(R.layout.post_icon_row, null, false);
+
+            int j;
+            for (j = 0; j < postIconsPerRow; j++){
+                index = i * postIconsPerRow + j;
+
+                // get post_icon_row layout
+                View postIconLayout = inflater.inflate(R.layout.post_icon, null, false);
+                SquareImageView imageView = (SquareImageView)
+                        postIconLayout.findViewById(R.id.post_icon);
+                ((ViewGroup) imageView.getParent()).removeView(imageView);
+
+                if (postsSize - index > 0) {
+                    Post post = posts.get(index);
+                    if (!post.getPostImage().getImageString().equals(Parameters.default_image)) {
+                        Image.setImage(imageView, post.getPostImage());
+                    }
+
+                } else {
+                    imageView.setImageResource(0);
+                }
+                // add post icon into row
+                postIconRow.addView(imageView, postIconRow.getChildCount());
+            }
+            // add row to list
+            postIconList.addView(postIconRow, postIconList.getChildCount());
+        }
+    }
+
+    public Image getUserImage() {
+        return userImage;
+    }
+
+    public Username getUsername() {
+        return username;
+    }
+
+    public TimeSince getTimeSince() {
+        return timeSince;
+    }
+
+    public Image getPostImage() {
+        return postImage;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public ArrayList<Like> getLikes() {
+        return likes;
+    }
+}

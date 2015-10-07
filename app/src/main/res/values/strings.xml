@@ -1,19 +1,21 @@
 <resources>
-    <string name="app_name">UniGram</string>
 
+    <!-- General -->
+    <string name="app_name">UniGram</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
 
+    <!-- Navigation Bar -->
     <string name="title_activity_navigation_bar">UniGram</string>
-
-    <string name="title_section1">User Feed</string>
-    <string name="title_section2">Discover</string>
-    <string name="title_section3">Camera</string>
-    <string name="title_section4">Activity Feed</string>
-    <string name="title_section5">Profile</string>
+    <string name="title_user_feed">User Feed</string>
+    <string name="title_discover">Discover</string>
+    <string name="title_camera">Camera</string>
+    <string name="title_activity_feed">Activity Feed</string>
+    <string name="title_profile">Profile</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_user_feed_fragment">Hello User Feed fragment\n\n\n1\n\n\n2\n\n\n3\n\n\n4\n\n\n5\n\n\n6\n\n\n7\n\n\n8\n\n\n9\n\n\n10\n\n\n11\n\n\n12\n\n\n13\n\n\n14\n\n\n15</string>
+    <string name="hello_user_feed_fragment">Hello User Feed fragment</string>
     <string name="hello_discover_fragment">Hello Discover fragment</string>
     <string name="hello_camera_fragment">Hello Camera fragment</string>
     <string name="hello_activity_feed_fragment">Hello Activity Feed fragment</string>
@@ -21,5 +23,22 @@
     <string name="camerabuttom">cameraphoto</string>
     <string name="title_activity_publish">PublishActivity</string>
 
+    <!-- Post -->
+    <string name="icon_heart">&#x2665;</string>
+    <string name="default_username">Username</string>
+    <string name="default_location">Location</string>
+    <string name="default_timeSince">TimeSince</string>
+    <string name="default_comment">Comment</string>
+    <string name="default_load_more_comments">Load more comments</string>
+    <string name="comment_hint">Add a comment...</string>
+
+    <!-- Profile -->
+    <string name="profile_post_count_label">posts</string>
+    <string name="profile_follower_count_label">followers</string>
+    <string name="profile_following_count_label">following</string>
+    <string name="profile_no_post_flag">No posts</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
