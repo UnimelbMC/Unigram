@@ -221,6 +221,13 @@ public class NavigationBar extends AppCompatActivity {
         Params.ACCESS_TOKEN = null;
     }
 
+    private void goToMain(){
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        startActivity(mainIntent);
+
+        finish();
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "nav bar saved");
@@ -267,7 +274,7 @@ public class NavigationBar extends AppCompatActivity {
             myWebView.setWebViewClient(new LogoutWebViewClient());
             myWebView.loadUrl("https://instagram.com/accounts/logout");
 
-            finish();
+            goToMain();
             return true;
         }
 
