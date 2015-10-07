@@ -7,6 +7,7 @@ public class Parameters {
 
     // Titles
     public static final String mainTitle = "UniGram";
+    public static final String commentsTitle = "COMMENTS";
     public static final float mainTitleSize = 20;
     public static final float subTitleSize = 15;
 
@@ -17,6 +18,7 @@ public class Parameters {
     public static final String loginPassword_key = "password";
     public static final String loginUserImage_key = "loginUserImage";
     public static final String loginToken_key = "token";
+    public static final int splashScreenDuration = 2000;    // in milliseconds
 
     // Post parameters
     public static final String default_username = "#username";
@@ -28,6 +30,7 @@ public class Parameters {
     public static final int likeThreshold = 10;
     public static final int commentThreshold = 3;
     public static final int postsToLoad = 10;
+    public static final int loadCommentThreshold = 20;
 
     // Post icon parameters
     public static final int postIconsPerRow = 3;

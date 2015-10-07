@@ -46,18 +46,30 @@
         android:id="@+id/post_details"
         android:layout_below="@id/post_divider"/>
 
-    <!-- Post comments -->
-    <include
+    <!-- "View all comments" link -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/post_comments"
-        android:id="@+id/post_comments"
-        android:layout_below="@id/post_details"/>
+        android:layout_below="@+id/post_details"
+        android:id="@+id/post_comment_count"
+        android:text="View all 0 comments"
+        android:layout_margin="@dimen/post_margin"/>
+
+    <!-- Comments preview -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/post_comment_count"
+        android:id="@+id/post_comments"/>
 
     <!-- Space between posts -->
     <Space
         android:layout_width="1dp"
         android:layout_height="@dimen/space_between_posts"
-        android:layout_below="@id/post_comments"/>
+        android:layout_below="@id/post_comments"
+        android:id="@+id/post_space"
+        android:layout_alignParentBottom="true"/>
+
 
 </RelativeLayout>

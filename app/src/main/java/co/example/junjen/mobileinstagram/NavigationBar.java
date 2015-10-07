@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -51,7 +53,7 @@ public class NavigationBar extends AppCompatActivity {
         // set custom action bar
         actionBar = getSupportActionBar();
         if(actionBar != null) {
-            actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             actionBar.setCustomView(R.layout.action_bar);
 
             // bind backButton click to goBack() method
@@ -201,7 +203,6 @@ public class NavigationBar extends AppCompatActivity {
         if (actionBar != null){
             actionBar.getCustomView().findViewById(R.id.back_button).setVisibility(View.VISIBLE);
         }
-
     }
 
     // hide the back button on the action bar
@@ -211,15 +212,11 @@ public class NavigationBar extends AppCompatActivity {
         }
     }
 
-    public void goToMain(){
-        Intent intent = new Intent(NavigationBar.this, MainActivity.class);
-        NavigationBar.this.startActivity(intent);
-    }
-
     public void clearToken(){
         File file = new File(Params.ACCESS_TOKEN_FILEPATH);
         if(file.exists()) {
             file.delete();
+            Log.w("test", "token deleted");
         }
         Params.ACCESS_TOKEN = null;
     }
@@ -262,15 +259,34 @@ public class NavigationBar extends AppCompatActivity {
         if (id == R.id.action_logout) {
 
             clearToken();
-            goToMain();
-            Intent internetIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://instagram.com/accounts/logout"));
-            //internetIntent.setComponent(new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"));
-            //internetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(internetIntent);
+
+            // logout of instagram account
+            WebView myWebView = new WebView(getApplicationContext());
+            myWebView.clearFormData();
+            setContentView(myWebView);
+            myWebView.setWebViewClient(new LogoutWebViewClient());
+            myWebView.loadUrl("https://instagram.com/accounts/logout");
+
+            finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // WebView client for logging out
+    private class LogoutWebViewClient extends WebViewClient{
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return false;
+        }
+
+        @Override
+        public void onLoadResource(WebView view, String url) {
+            Log.w("test", url);
+
+            // wait for 4 occurences of  https://instagram then only show login button
+        }
     }
 }
