@@ -46,16 +46,7 @@ import co.example.junjen.mobileinstagram.network.Params;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    private Image loginUserImage;
-    private Network net;
-
-    // Keys
-    String username_key = Parameters.loginUsername_key;
-    String password_key = Parameters.loginPassword_key;
-    String token_key = Parameters.loginToken_key;
-    String loginUserImage_key = Parameters.loginUserImage_key;
-
+    
     int mainActivityView = R.layout.activity_main;
     public static Activity mainActivity;
 
@@ -310,15 +301,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Log.v("start", "2");
-
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "main activity saved");
-
-        // Save the user's current game state
-        savedInstanceState.putSerializable(loginUserImage_key, loginUserImage);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -331,27 +318,5 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
