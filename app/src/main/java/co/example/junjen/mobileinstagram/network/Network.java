@@ -18,6 +18,7 @@ import java.util.List;
 
 import co.example.junjen.mobileinstagram.elements.Comment;
 import co.example.junjen.mobileinstagram.elements.Like;
+import co.example.junjen.mobileinstagram.elements.Location;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
@@ -121,8 +122,14 @@ public class Network {
             Log.v("POST1",Integer.toString(mediaFeeds.size()));
             for (MediaFeedData thisPost : mediaFeeds) {
                 Log.v("POST2",thisPost.toString());
+                String loc;
+                if (thisPost.getLocation()== null){
+                    loc = null;
+                }else{
+                    loc = thisPost.getLocation().toString();
+                }
                 Post post = new Post(thisPost.getId(),thisPost.getUser().getProfilePictureUrl(),
-                        thisPost.getUser().getUserName(),thisPost.getLocation().toString(),
+                        thisPost.getUser().getUserName(),loc,
                         thisPost.getCreatedTime(), thisPost.getImages().getThumbnail().getImageUrl()
                         ,thisPost.getCaption().getText(),getLikesByPostId(thisPost.getId()),
                         getCommentsByPostId(thisPost.getId()));
