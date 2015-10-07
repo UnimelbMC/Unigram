@@ -7,7 +7,6 @@ package co.example.junjen.mobileinstagram.elements;
  */
 
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
-import co.example.junjen.mobileinstagram.network.Params;
 
 public class Post implements Serializable{
 

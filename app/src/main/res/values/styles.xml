@@ -1,8 +1,10 @@
 <resources>
 
     <!-- Base application theme. -->
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowBackground">@color/white</item>
+
     </style>
 
     <!-- Login screen -->
@@ -15,6 +17,7 @@
     </style>
 
     <!-- Navigation bar -->
+
     <style name="navbar_button">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>

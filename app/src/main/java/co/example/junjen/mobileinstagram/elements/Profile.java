@@ -30,8 +30,6 @@ public class Profile implements Serializable{
     private int followingCount;
 
     private ArrayList<Post> posts;
-
-    // TODO: separate fragment
     private ArrayList<Username> followers;
     private ArrayList<Username> following;
 
@@ -53,18 +51,34 @@ public class Profile implements Serializable{
         this.followingCount = 100;
 
         this.posts = new ArrayList<>();
+        this.followers = new ArrayList<>();
+        this.following = new ArrayList<>();
 
         int i;
         Post post;
+        String username;
 
         // create 10 empty posts
+
         for (i = 0; i < this.postCount; i++){
+
             post = new Post();
             this.posts.add(post);
+        }
+        // create 10 empty followers
+        for (i = 0; i < 10; i++){
+            username = Parameters.default_username + (i + 1);
+            this.followers.add(new Username(username));
+        }
+        // create 10 empty following
+        for (i = 0; i < 10; i++){
+            username = Parameters.default_username + (i + 1);
+            this.following.add(new Username(username));
         }
     }
 
     public Profile(String username, String userimage, String profName, String profDescrp,
+
                    int postCount, int followerCount, int followingCount,
                    ArrayList<Post> posts){
 
@@ -72,10 +86,12 @@ public class Profile implements Serializable{
         this.userImage = new Image(userimage);
         this.profName = profName;
         this.profDescrp = profDescrp;
+
         this.postCount = postCount;
         this.followerCount = followerCount;
         this.followingCount = followingCount;
         this.posts = posts;
+
     }
 
     public ExpandableScrollView getProfileView(LayoutInflater inflater){
@@ -126,9 +142,9 @@ public class Profile implements Serializable{
 
     public void getPostIcons(LayoutInflater inflater){
 
-        int postsSize = this.posts.size();
+      //  int postsSize = this.posts.size();
 
-        if (postIconCount < postsSize) {
+        if (postIconCount < this.postCount) {
 
             ArrayList<Post> posts = new ArrayList<>();
 
@@ -137,7 +153,7 @@ public class Profile implements Serializable{
             int maxPostIcons = Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
             for (i = 0; i < maxPostIcons; i++) {
                 index = i + postIconCount;
-                if (index < postsSize) {
+                if (index < this.postCount) {
                     posts.add(this.posts.get(index));
                 } else {
                     break;

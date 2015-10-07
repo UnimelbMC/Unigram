@@ -1,8 +1,6 @@
 package co.example.junjen.mobileinstagram;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
@@ -25,8 +23,7 @@ import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
-import co.example.junjen.mobileinstagram.network.Network;
-import co.example.junjen.mobileinstagram.network.Params;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 public class NavigationBar extends AppCompatActivity {
 
@@ -186,7 +183,7 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance(new Profile(), false));
+        profileHistory.add(ProfileFragment.newInstance(NetParams.NETWORK.getProfileFromAPI(), false));
     }
 
     // return to previous fragment by programmatically checking the radio button
@@ -220,12 +217,12 @@ public class NavigationBar extends AppCompatActivity {
 
     // destroy the access token
     public void clearToken(){
-        File file = new File(Params.ACCESS_TOKEN_FILEPATH);
+        File file = new File(NetParams.ACCESS_TOKEN_FILEPATH);
         if(file.exists()) {
             file.delete();
             Log.w("test", "token deleted");
         }
-        Params.ACCESS_TOKEN = null;
+        NetParams.ACCESS_TOKEN = null;
     }
 
     // go back to login screen
@@ -300,7 +297,7 @@ public class NavigationBar extends AppCompatActivity {
         public void onLoadResource(WebView view, String url) {
             Log.w("test", url);
 
-            if (url.startsWith(Params.LOGOUT_URL_HEADER)) {
+            if (url.startsWith(NetParams.LOGOUT_URL_HEADER)) {
                 logoutBrowserCount++;
 
                 if (logoutBrowserCount >= Parameters.logoutBrowserCountMax){

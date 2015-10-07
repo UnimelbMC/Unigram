@@ -22,6 +22,10 @@
     <item name="darkgreen" type="color">#FF669900</item>
     <item name="darkorange" type="color">#FFFF8800</item>
     <item name="darkred" type="color">#FFCC0000</item>
+    <item name="selected" type="color">#404040</item>
+    <item name="unselected" type="color">#191919</item>
+    <color name="btn_default_light_normal">#00000000</color>
+    <color name="btn_default_light_pressed">#40ffffff</color>
     <item name="white" type="color">#FFFFFF</item>
 
     <integer-array name="androidcolors">
