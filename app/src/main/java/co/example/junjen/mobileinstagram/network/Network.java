@@ -5,9 +5,7 @@ import android.util.Log;
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.comments.CommentData;
 import org.jinstagram.entity.comments.MediaCommentsFeed;
-import org.jinstagram.entity.common.User;
 import org.jinstagram.entity.likes.LikesFeed;
-import org.jinstagram.entity.media.MediaInfoFeed;
 import org.jinstagram.entity.users.basicinfo.UserInfoData;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.example.junjen.mobileinstagram.elements.Comment;
-import co.example.junjen.mobileinstagram.elements.Like;
+import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
@@ -139,7 +137,7 @@ public class Network {
     //Get a media from instagram and return Post object for layout
     public Post getPostById(String postId){
       //  int postId, String userImage, String username, String location, String timeSince,
-        //        String postImage, String caption, ArrayList< Like > likes, ArrayList< Comment > comments
+        //        String postImage, String caption, ArrayList< User > likes, ArrayList< Comment > comments
         try {
             MediaFeedData thisPost = instagram.getMediaInfo(postId).getData();
             return new Post(thisPost.getId(),thisPost.getUser().getProfilePictureUrl(),
@@ -172,14 +170,14 @@ public class Network {
         return null;
     }
     //Build Likes list to return to layout
-    public ArrayList<Like> getLikesByPostId(String postId){
+    public ArrayList<User> getLikesByPostId(String postId){
         //String username, Image userImage, String profName, TimeSince timeSince
         try {
             LikesFeed feed = instagram.getUserLikes(postId);
-            List<User> users = feed.getUserList();
-            ArrayList<Like> result = new ArrayList<>();
-            for (User u : users){
-                Like newLike = new Like(u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
+            List<org.jinstagram.entity.common.User> users = feed.getUserList();
+            ArrayList<User> result = new ArrayList<>();
+            for (org.jinstagram.entity.common.User u : users){
+                User newLike = new User(u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
                 result.add(newLike);
             }
             return result;

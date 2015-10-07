@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
-import co.example.junjen.mobileinstagram.elements.Like;
+import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.StringFactory;
 
@@ -33,17 +33,17 @@ import co.example.junjen.mobileinstagram.elements.StringFactory;
 public class FollowFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String likes_key = "likes";
+    private static final String usernames_key = "usernames";
 
     // TODO: Rename and change types of parameters
-    private ArrayList<Like> likes;
+    private ArrayList<User> usernames;
 
     private ExpandableScrollView likesFragment;
     private ViewGroup likesView;
     private int likeCount = 0;
     private int likesSize = 0;
 
-    // flag to check if likes are being loaded before loading new ones
+    // flag to check if usernames are being loaded before loading new ones
     private boolean loadPosts = true;
 
     private OnFragmentInteractionListener mListener;
@@ -56,10 +56,10 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
      * @return A new instance of fragment FollowFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FollowFragment newInstance(ArrayList<Like> likes) {
+    public static FollowFragment newInstance(ArrayList<User> likes) {
         FollowFragment fragment = new FollowFragment();
         Bundle args = new Bundle();
-        args.putSerializable(likes_key, likes);
+        args.putSerializable(usernames_key, likes);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +72,7 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            likes = (ArrayList<Like>) getArguments().getSerializable(likes_key);
+            usernames = (ArrayList<User>) getArguments().getSerializable(usernames_key);
             // display back button
             ((NavigationBar) this.getActivity()).showBackButton();
         }
@@ -85,11 +85,11 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
         // change action bar title
         setTitle();
 
-        if (likes != null){
+        if (usernames != null){
             likesFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
             likesFragment.setScrollViewListener(this);
             likesView = (ViewGroup) likesFragment.findViewById(R.id.expandable_scroll_view);
-            likesSize = likes.size();
+            likesSize = usernames.size();
 
             loadLikes();
 
@@ -149,7 +149,7 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
             TextView username = (TextView) likeElement.findViewById(R.id.follow_username);
             TextView profName = (TextView) likeElement.findViewById(R.id.follow_prof_name);
 
-            Like like = likes.get(likeCount);
+            User like = usernames.get(likeCount);
 
             if (like.getUsername().getUsername().startsWith(Parameters.default_username)){
 

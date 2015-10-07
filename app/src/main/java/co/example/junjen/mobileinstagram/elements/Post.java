@@ -38,7 +38,7 @@ public class Post implements Serializable{
     // post content
     private Image postImage;
     private String caption;
-    private ArrayList<Like> likes;
+    private ArrayList<User> likes;
     private ArrayList<Comment> comments;
 
     // post view
@@ -64,7 +64,7 @@ public class Post implements Serializable{
         // create 20 empty likes
         for (i = 0; i < 20; i++){
             username = Parameters.default_username + (i + 1);
-            this.likes.add(new Like(username, Parameters.default_image,
+            this.likes.add(new User(username, Parameters.default_image,
                     Parameters.default_profName));
         }
         // create 10 empty comments
@@ -77,7 +77,7 @@ public class Post implements Serializable{
     }
 
     public Post(String postId, String userImage, String username, String location, String timeSince,
-                String postImage, String caption, ArrayList<Like> likes, ArrayList<Comment> comments){
+                String postImage, String caption, ArrayList<User> likes, ArrayList<Comment> comments){
 
         // TODO: Assumes strings as parameters. Set appropriately later on.
 
@@ -342,7 +342,7 @@ public class Post implements Serializable{
         return caption;
     }
 
-    public ArrayList<Like> getLikes() {
+    public ArrayList<User> getLikes() {
         return likes;
     }
 }

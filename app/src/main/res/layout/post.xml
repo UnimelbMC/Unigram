@@ -19,7 +19,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="Post Image"/>
 
-    <!-- Post image options (Like and Comment buttons) -->
+    <!-- Post image options (User and Comment buttons) -->
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

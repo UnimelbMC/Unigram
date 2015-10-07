@@ -47,7 +47,7 @@
             android:layout_marginTop="@dimen/post_margin"
             android:layout_marginBottom="@dimen/post_margin"/>
 
-        <!-- Like divider -->
+        <!-- User divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
