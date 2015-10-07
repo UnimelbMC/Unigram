@@ -31,5 +31,4 @@ public class Like implements Serializable{
     public String getProfName() {
         return profName;
     }
-
 }
