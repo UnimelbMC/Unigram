@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.CommentsFragment;
-import co.example.junjen.mobileinstagram.LikesFragment;
+import co.example.junjen.mobileinstagram.FollowFragment;
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
@@ -167,7 +167,7 @@ public class Post implements Serializable{
                         NavigationBar navActivity = ((NavigationBar) v.getContext());
 
                         // display post's comments
-                        navActivity.showFragment(LikesFragment.newInstance(likes));
+                        navActivity.showFragment(FollowFragment.newInstance(likes));
                     }
                 });
                 likeCountText.setText("");    // remove default text

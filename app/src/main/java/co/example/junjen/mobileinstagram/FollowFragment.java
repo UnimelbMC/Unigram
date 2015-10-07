@@ -19,19 +19,18 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Like;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.StringFactory;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LikesFragment.OnFragmentInteractionListener} interface
+ * {@link FollowFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LikesFragment#newInstance} factory method to
+ * Use the {@link FollowFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LikesFragment extends Fragment implements ScrollViewListener{
+public class FollowFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String likes_key = "likes";
@@ -54,18 +53,18 @@ public class LikesFragment extends Fragment implements ScrollViewListener{
      * this fragment using the provided parameters.
      *
      * @param likes Parameter 1.
-     * @return A new instance of fragment LikesFragment.
+     * @return A new instance of fragment FollowFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LikesFragment newInstance(ArrayList<Like> likes) {
-        LikesFragment fragment = new LikesFragment();
+    public static FollowFragment newInstance(ArrayList<Like> likes) {
+        FollowFragment fragment = new FollowFragment();
         Bundle args = new Bundle();
         args.putSerializable(likes_key, likes);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public LikesFragment() {
+    public FollowFragment() {
         // Required empty public constructor
     }
 
@@ -145,10 +144,10 @@ public class LikesFragment extends Fragment implements ScrollViewListener{
             }
 
             // load view components
-            View likeElement = inflater.inflate(R.layout.likes_element, likesView, false);
-            ImageView userImage = (ImageView) likeElement.findViewById(R.id.like_user_image);
-            TextView username = (TextView) likeElement.findViewById(R.id.like_username);
-            TextView profName = (TextView) likeElement.findViewById(R.id.like_prof_name);
+            View likeElement = inflater.inflate(R.layout.follow_element, likesView, false);
+            ImageView userImage = (ImageView) likeElement.findViewById(R.id.follow_user_image);
+            TextView username = (TextView) likeElement.findViewById(R.id.follow_username);
+            TextView profName = (TextView) likeElement.findViewById(R.id.follow_prof_name);
 
             Like like = likes.get(likeCount);
 
