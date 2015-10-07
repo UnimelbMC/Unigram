@@ -1,7 +1,10 @@
 package co.example.junjen.mobileinstagram.elements;
 
-import android.graphics.drawable.Drawable;
+import android.content.Context;
 import android.widget.ImageView;
+import co.example.junjen.mobileinstagram.R;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 
@@ -32,11 +35,20 @@ public class Image implements Serializable {
 
     public static void setImage(ImageView imageView, Image image){
 
+        Context context = Parameters.context;
+        String imageLink = image.getImageString();
 
-        // TODO: Determine set image type
+        if(imageLink.equals(Parameters.default_loginUserImageLink)) {
+            imageView.setImageResource(R.drawable.login_user_image);
+        } else if(imageLink.equals(Parameters.default_emptyUserImageLink)){
+            imageView.setImageResource(R.drawable.empty_user_image);
 
+        } else {
+            String testUrl = "http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg";
 
-        // test url: http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg
+            // TODO: Determine set image type
+            Picasso.with(context).load(image.getImageString()).into(imageView);
+        }
     }
 
 

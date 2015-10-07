@@ -28,4 +28,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.0'
     compile 'com.sachinhandiekar:jInstagram:1.1.4'
     compile files('libs/weka-3.6.6-android.jar')
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

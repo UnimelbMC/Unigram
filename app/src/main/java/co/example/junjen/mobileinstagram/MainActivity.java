@@ -1,6 +1,10 @@
 package co.example.junjen.mobileinstagram;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.StrictMode;
@@ -66,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(mainActivityView);
 
+        // set application context to be accessible by other classes
+        Parameters.context = this.getApplicationContext();
+
         Log.w("test", "main activity created");
 
         // get access token file path
@@ -86,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
             title.setTextSize(Parameters.mainTitleSize);
         }
 
+        // Register to receive messages from NavigationBar activity
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(Parameters.navBarCreated));
+
 //        usernameField = (EditText) findViewById(R.id.login_username_editText);
 //        passwordField = (EditText) findViewById(R.id.login_password_editText);
 //
@@ -96,6 +107,15 @@ public class MainActivity extends AppCompatActivity {
         checkToken();
        // NetParams.NETWORK = new Network();
     }
+
+    // receives message from NavigationBar activity when created so that this activity can finish
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // finish main activity when navigation screen created
+            finish();
+        }
+    };
 
     // action to take when login button is clicked
     public void loginButtonAction(View v){
@@ -230,8 +250,6 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.startActivity(intent);
             }
         }, DELAY);
-
-        finish();
     }
 
     // checks if there is a access token present
@@ -286,12 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
             // TODO: overwrite userImageLink and usernameText using Data Object
 
-
-            if(userImage.equals(Parameters.default_userImageLink)) {
-                userImage.setImageResource(R.drawable.login_user_image);
-            } else {
-//                Image.setImage(userImage, new Image(userImageLink);
-            }
+            Image.setImage(userImage, new Image(userImageLink));
             username.setText(Html.fromHtml("Hello <b>" + usernameText.toUpperCase() + "</b>"));
             username.setTextSize(Parameters.subTitleSize);
             username.setVisibility(View.VISIBLE);
@@ -299,8 +312,7 @@ public class MainActivity extends AppCompatActivity {
 
         // return login to default state when no user is logged in
         } else {
-
-            userImage.setImageResource(R.drawable.empty_user_image);
+            Image.setImage(userImage, new Image(Parameters.default_emptyUserImageLink));
             username.setText(Parameters.default_username.toUpperCase());
             username.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
@@ -380,9 +392,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.v("start","2");
+        Log.v("start", "2");
 
     }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "main activity saved");
@@ -423,5 +436,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 }

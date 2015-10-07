@@ -36,3 +36,6 @@ captures/
 
 # Mac specific
 *.DS_Store
+
+
+app/app.xml

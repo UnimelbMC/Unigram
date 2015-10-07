@@ -3,6 +3,7 @@ package co.example.junjen.mobileinstagram;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,6 +46,9 @@ public class NavigationBar extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // tell MainActivity to finish
+        sendMessage();
 
         // set custom action bar
         actionBar = getSupportActionBar();
@@ -109,6 +113,13 @@ public class NavigationBar extends AppCompatActivity {
                 ft.commit();
             }
         });
+    }
+
+    // send message to MainActivity for it to finish
+    private void sendMessage() {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent(Parameters.navBarCreated);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     // displays a fragment and adds it to a history
@@ -222,7 +233,6 @@ public class NavigationBar extends AppCompatActivity {
     private void goToMain(){
         Intent mainIntent = new Intent(this, MainActivity.class);
         startActivity(mainIntent);
-
         finish();
     }
 
