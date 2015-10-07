@@ -3,20 +3,14 @@ package co.example.junjen.mobileinstagram;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.print.PrintDocumentAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
@@ -43,6 +37,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     private String mParam2;
 
     private ExpandableScrollView userFeedFragment;
+    private ViewGroup userFeedView;
+    private int postCount = 0;
 
     // keep track of timeSince last post generated to generate new set of posts
     private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
@@ -90,11 +86,11 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
         // initialise userFeedFragment if not created yet
         if(userFeedFragment == null){
             userFeedFragment = (ExpandableScrollView)
-                    inflater.inflate(R.layout.fragment_user_feed, container, false);
-
+                    inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
             userFeedFragment.setScrollViewListener(this);
+            userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.expandable_scroll_view);
 
-            getUserFeedPosts(inflater, userFeedFragment);
+            loadUserFeedPosts();
 
             // add layout listener to add content if default screen is not filled
             ViewTreeObserver vto = userFeedFragment.getViewTreeObserver();
@@ -108,10 +104,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
                     userFeedFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     int height = userFeedFragment.getHeight();
 
-
                     if (height < screenHeight) {
-                        LayoutInflater inflater = LayoutInflater.from(getContext());
-                        getUserFeedPosts(inflater, userFeedFragment);
+                        loadUserFeedPosts();
                     }
                 }
             });
@@ -127,20 +121,18 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
         // load new posts if no posts are currently being loaded
         if(loadPosts){
             loadPosts = false;
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            getUserFeedPosts(inflater, scrollView);
+            loadUserFeedPosts();
             loadPosts = true;
         }
     }
 
     // loads a chunk of posts on the user feed view
-    private View getUserFeedPosts(LayoutInflater inflater, View userFeedFragment){
+    private void loadUserFeedPosts(){
 
-        ViewGroup userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.userfeed_view);
+        LayoutInflater inflater = LayoutInflater.from(getContext());
 
         int maxPosts = Parameters.postsToLoad;
-        int i = 0;
-        int index;
+        int i;
         Post post;
         View postView;
         for (i = 0; i < maxPosts; i++){
@@ -153,19 +145,17 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
             postView = post.getPostView(inflater, userFeedView);
 
-            index = userFeedView.getChildCount();
-
             //TESTING
             TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
             if(post.getTimeSince().getTimeSince().equals(Parameters.default_timeSince)){
-                timeSince.setText(Integer.toString(index) + "s");
+                timeSince.setText(Integer.toString(postCount) + "s");
             }
 
-            userFeedView.addView(postView, index);
+            userFeedView.addView(postView, postCount);
+            postCount++;
 
             this.timeSinceLastPost = post.getTimeSince();
         }
-        return userFeedView;
     }
 
     @Override

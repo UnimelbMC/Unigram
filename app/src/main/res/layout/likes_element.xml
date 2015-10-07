@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/comment_margin">
 
-<!-- User image -->
+    <!-- User image -->
     <co.example.junjen.mobileinstagram.customLayouts.UserImageView
         android:layout_width="@dimen/post_header_user_image_width"
         android:layout_height="@dimen/post_header_user_image_width"

@@ -1,66 +1,16 @@
-<ScrollView
+<co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_above="@id/comment_send_bar"
-    android:id="@+id/likes_scroll_view"
-    tools:context="co.example.junjen.mobileinstagram.LikesFragment">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="co.example.junjen.mobileinstagram.UserFeedFragment" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/likes_view"
         android:orientation="vertical">
-
-        <!-- Load more likes -->
-        <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/load_more_likes_bar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/post_header_user_image_width">
-
-            <Space
-                android:layout_width="@dimen/post_header_user_image_width"
-                android:layout_height="@dimen/post_header_user_image_width"
-                android:id="@+id/likes_count_space"
-                android:layout_alignParentTop="true"
-                android:layout_margin="@dimen/comment_margin"/>
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/likes_count_space"
-                android:layout_toEndOf="@id/likes_count_space">
-
-                <!-- Text link -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/load_more_likes"
-                    android:text="@string/default_load_more_likes"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/comment_margin"
-                    android:layout_marginEnd="@dimen/comment_margin"/>
-
-                <!-- Like divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_alignParentBottom="true"/>
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <!-- Likes content -->
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/likes_content"/>
-
     </LinearLayout>
 
-</ScrollView>
+</co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView>

@@ -34,6 +34,7 @@ public class Parameters {
     public static final int postsToLoad = 10;
     public static final int loadCommentThreshold = 20;
     public static final int loadLikeThreshold = 100;
+    public static final int maxLikes = 300;
 
     // Post icon parameters
     public static final int postIconsPerRow = 3;
