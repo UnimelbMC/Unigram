@@ -46,14 +46,12 @@ import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 public class MainActivity extends AppCompatActivity {
-    
+
     int mainActivityView = R.layout.activity_main;
     public static Activity mainActivity;
 
     int loginClickInBrowserCount = 0;
-    int loginClickInBrowserCountMax = 2;
     int urlCount = 0;
-    int urlCountMax = 2;
     int splashScreenDuration = 0;
 
     @Override
@@ -88,11 +86,12 @@ public class MainActivity extends AppCompatActivity {
 
         // check if token is present
         checkToken();
-       // NetParams.NETWORK = new Network();
     }
 
     // action to take when login button is clicked
     public void loginButtonAction(View v){
+
+        Log.w("test", "login button clicked");
 
         // check for token
         checkToken();
@@ -149,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
             else if (url.startsWith(NetParams.LOGIN_URL_HEADER)) {
                 loginClickInBrowserCount++;
 
-                if (loginClickInBrowserCount == loginClickInBrowserCountMax) {
+                if (loginClickInBrowserCount == Parameters.loginClickInBrowserCountMax) {
                     view.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
@@ -159,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             // if login is incorrect enable webview clicking
-            if (loginClickInBrowserCount == loginClickInBrowserCountMax) {
+            if (loginClickInBrowserCount == Parameters.loginClickInBrowserCountMax) {
                 urlCount++;
 
-                if (urlCount > urlCountMax) {
+                if (urlCount > Parameters.urlCountMax) {
                     urlCount = 0;
                     loginClickInBrowserCount = 1;
                     view.setOnTouchListener(new View.OnTouchListener() {
@@ -252,6 +251,8 @@ public class MainActivity extends AppCompatActivity {
             }
             // go to navigation screen
             startNavBar();
+
+            mainActivity.finish();
         }
     }
 
@@ -324,5 +325,12 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.w("test", "main activity destroyed");
+
+        super.onDestroy();
     }
 }

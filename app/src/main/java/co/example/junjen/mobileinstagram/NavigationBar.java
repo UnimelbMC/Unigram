@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -43,6 +44,8 @@ public class NavigationBar extends AppCompatActivity {
     private final int discoverButtonId = R.id.discover_button;
     private final int activityFeedButtonId = R.id.activityfeed_button;
     private final int profileButtonId = R.id.profile_button;
+
+    private int logoutBrowserCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,7 +279,6 @@ public class NavigationBar extends AppCompatActivity {
             myWebView.setWebViewClient(new LogoutWebViewClient());
             myWebView.loadUrl("https://instagram.com/accounts/logout");
 
-            goToMain();
             return true;
         }
 
@@ -295,7 +297,14 @@ public class NavigationBar extends AppCompatActivity {
         public void onLoadResource(WebView view, String url) {
             Log.w("test", url);
 
-            // wait for 4 occurences of  https://instagram then only show login button
+            if (url.startsWith(Params.LOGOUT_URL_HEADER)) {
+                logoutBrowserCount++;
+
+                if (logoutBrowserCount >= Parameters.logoutBrowserCountMax){
+                    goToMain();
+                    view.destroy();
+                }
+            }
         }
     }
 }
