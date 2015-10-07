@@ -212,6 +212,7 @@ public class NavigationBar extends AppCompatActivity {
         }
     }
 
+    // destroy the access token
     public void clearToken(){
         File file = new File(Params.ACCESS_TOKEN_FILEPATH);
         if(file.exists()) {
@@ -221,6 +222,7 @@ public class NavigationBar extends AppCompatActivity {
         Params.ACCESS_TOKEN = null;
     }
 
+    // go back to login screen
     private void goToMain(){
         Intent mainIntent = new Intent(this, MainActivity.class);
         startActivity(mainIntent);
