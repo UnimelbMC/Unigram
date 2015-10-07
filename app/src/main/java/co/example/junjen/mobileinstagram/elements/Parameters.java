@@ -11,6 +11,8 @@ public class Parameters {
     public static final String mainTitle = "UniGram";
     public static final String commentsTitle = "COMMENTS";
     public static final String likesTitle = "LIKERS";
+    public static final String followersTitle = "FOLLOWERS";
+    public static final String followingTitle = "FOLLOWING";
     public static final float mainTitleSize = 20;
     public static final float subTitleSize = 15;
 

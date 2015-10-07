@@ -1,5 +1,7 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import android.text.SpannableString;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -8,7 +10,10 @@ import android.widget.TextView;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.CommentsFragment;
+import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.UsersFragment;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
@@ -30,8 +35,6 @@ public class Profile implements Serializable{
     private int followingCount;
 
     private ArrayList<Post> posts;
-    private ArrayList<Username> followers;
-    private ArrayList<Username> following;
 
     // Profile view
     private ExpandableScrollView profileView;
@@ -51,8 +54,6 @@ public class Profile implements Serializable{
         this.followingCount = 100;
 
         this.posts = new ArrayList<>();
-        this.followers = new ArrayList<>();
-        this.following = new ArrayList<>();
 
         int i;
         Post post;
@@ -63,20 +64,9 @@ public class Profile implements Serializable{
             post = new Post();
             this.posts.add(post);
         }
-        // create 10 empty followers
-        for (i = 0; i < 10; i++){
-            username = Parameters.default_username + (i + 1);
-            this.followers.add(new Username(username));
-        }
-        // create 10 empty following
-        for (i = 0; i < 10; i++){
-            username = Parameters.default_username + (i + 1);
-            this.following.add(new Username(username));
-        }
     }
 
     public Profile(String username, String userimage, String profName, String profDescrp,
-
                    int postCount, int followerCount, int followingCount,
                    ArrayList<Post> posts){
 
@@ -98,6 +88,8 @@ public class Profile implements Serializable{
 
         profileView = (ExpandableScrollView)
                 inflater.inflate(R.layout.fragment_profile, null, false);
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+        String text;
 
         /** Fixed parameters **/
 
@@ -122,11 +114,61 @@ public class Profile implements Serializable{
 
         // Follower count
         TextView followerCount = (TextView) profileView.findViewById(R.id.profile_follower_count);
-        followerCount.setText(Integer.toString(this.followerCount));
+        text = Integer.toString(this.followerCount);
+        SpannableString followerLink = StringFactory.createLink(text, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigationBar navActivity = ((NavigationBar) v.getContext());
+
+
+                // TODO: get followers from Network
+                ArrayList<User> followers = new ArrayList<>();
+                int i;
+                for(i = 0; i < 50; i++){
+                    String username = Parameters.default_username+i;
+                    followers.add(new User(username, Parameters.default_emptyUserImageLink,
+                            Parameters.default_profName));
+                }
+
+
+                // display followers
+                navActivity.showFragment(UsersFragment.
+                        newInstance(followers, Parameters.followersTitle));
+            }
+        });
+        followerCount.setText("");    // remove default text
+        stringComponents.add(followerLink);
+        StringFactory.stringBuilder(followerCount, stringComponents);
+        stringComponents.clear();
 
         // Following count
         TextView followingCount = (TextView) profileView.findViewById(R.id.profile_following_count);
-        followingCount.setText(Integer.toString(this.followingCount));
+        text = Integer.toString(this.followingCount);
+        SpannableString followingLink = StringFactory.createLink(text, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigationBar navActivity = ((NavigationBar) v.getContext());
+
+
+                // TODO: get followers from Network
+                ArrayList<User> following = new ArrayList<>();
+                int i;
+                for(i = 0; i < 50; i++){
+                    String username = Parameters.default_username+i;
+                    following.add(new User(username, Parameters.default_emptyUserImageLink,
+                            Parameters.default_profName));
+                }
+
+
+                // display followers
+                navActivity.showFragment(UsersFragment.
+                        newInstance(following, Parameters.followingTitle));
+            }
+        });
+        followingCount.setText("");    // remove default text
+        stringComponents.add(followingLink);
+        StringFactory.stringBuilder(followingCount, stringComponents);
+        stringComponents.clear();
 
         // Add post icons
         if(this.postCount > 0){
@@ -140,9 +182,11 @@ public class Profile implements Serializable{
 
     public void getPostIcons(LayoutInflater inflater){
 
-      //  int postsSize = this.posts.size();
+        Log.w("test", Integer.toString(this.postCount)+","+Integer.toString(this.posts.size()));
 
-        if (postIconCount < this.postCount) {
+        int postsSize = this.posts.size();
+
+        if (postIconCount < postsSize) {
 
             ArrayList<Post> posts = new ArrayList<>();
 
@@ -151,7 +195,7 @@ public class Profile implements Serializable{
             int maxPostIcons = Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
             for (i = 0; i < maxPostIcons; i++) {
                 index = i + postIconCount;
-                if (index < this.postCount) {
+                if (index < postsSize) {
                     posts.add(this.posts.get(index));
                 } else {
                     break;
@@ -189,11 +233,4 @@ public class Profile implements Serializable{
         return posts;
     }
 
-    public ArrayList<Username> getFollowers() {
-        return followers;
-    }
-
-    public ArrayList<Username> getFollowing() {
-        return following;
-    }
 }

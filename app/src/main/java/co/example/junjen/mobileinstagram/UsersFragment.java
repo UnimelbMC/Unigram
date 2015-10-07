@@ -25,23 +25,25 @@ import co.example.junjen.mobileinstagram.elements.StringFactory;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FollowFragment.OnFragmentInteractionListener} interface
+ * {@link UsersFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FollowFragment#newInstance} factory method to
+ * Use the {@link UsersFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FollowFragment extends Fragment implements ScrollViewListener{
+public class UsersFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String usernames_key = "usernames";
+    private static final String title_key = "title";
 
     // TODO: Rename and change types of parameters
     private ArrayList<User> usernames;
+    private String title;
 
-    private ExpandableScrollView likesFragment;
-    private ViewGroup likesView;
-    private int likeCount = 0;
-    private int likesSize = 0;
+    private ExpandableScrollView userFragment;
+    private ViewGroup usersView;
+    private int userCount = 0;
+    private int usersSize = 0;
 
     // flag to check if usernames are being loaded before loading new ones
     private boolean loadPosts = true;
@@ -52,19 +54,21 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param likes Parameter 1.
-     * @return A new instance of fragment FollowFragment.
+     * @param user Parameter 1.
+     * @param title Parameter 2.
+     * @return A new instance of fragment UsersFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FollowFragment newInstance(ArrayList<User> likes) {
-        FollowFragment fragment = new FollowFragment();
+    public static UsersFragment newInstance(ArrayList<User> user, String title) {
+        UsersFragment fragment = new UsersFragment();
         Bundle args = new Bundle();
-        args.putSerializable(usernames_key, likes);
+        args.putSerializable(usernames_key, user);
+        args.putString(title_key, title);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public FollowFragment() {
+    public UsersFragment() {
         // Required empty public constructor
     }
 
@@ -73,6 +77,8 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             usernames = (ArrayList<User>) getArguments().getSerializable(usernames_key);
+            title = getArguments().getString(title_key);
+
             // display back button
             ((NavigationBar) this.getActivity()).showBackButton();
         }
@@ -86,15 +92,15 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
         setTitle();
 
         if (usernames != null){
-            likesFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
-            likesFragment.setScrollViewListener(this);
-            likesView = (ViewGroup) likesFragment.findViewById(R.id.expandable_scroll_view);
-            likesSize = usernames.size();
+            userFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
+            userFragment.setScrollViewListener(this);
+            usersView = (ViewGroup) userFragment.findViewById(R.id.expandable_scroll_view);
+            usersSize = usernames.size();
 
             loadLikes();
 
             // add layout listener to add content if default screen is not filled
-            ViewTreeObserver vto = likesFragment.getViewTreeObserver();
+            ViewTreeObserver vto = userFragment.getViewTreeObserver();
             DisplayMetrics displaymetrics = new DisplayMetrics();
             this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             final int screenHeight = displaymetrics.heightPixels;
@@ -102,8 +108,8 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    likesFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    int height = likesFragment.getHeight();
+                    userFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    int height = userFragment.getHeight();
 
                     if (height < screenHeight) {
                         loadLikes();
@@ -112,7 +118,7 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
             });
         }
         // Inflate the layout for this fragment
-        return likesFragment;
+        return userFragment;
     }
 
     // loads another chunk of posts when at the bottom of the user feed ScrollView
@@ -139,17 +145,17 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
         // load chunk of comments based on a threshold
         for (i = 0; i < loadLikeThreshold; i++){
 
-            if (likeCount >= likesSize || likeCount >= Parameters.maxLikes) {
+            if (userCount >= usersSize || userCount >= Parameters.maxLikes) {
                 break;
             }
 
             // load view components
-            View likeElement = inflater.inflate(R.layout.follow_element, likesView, false);
-            ImageView userImage = (ImageView) likeElement.findViewById(R.id.follow_user_image);
-            TextView username = (TextView) likeElement.findViewById(R.id.follow_username);
-            TextView profName = (TextView) likeElement.findViewById(R.id.follow_prof_name);
+            View likeElement = inflater.inflate(R.layout.user_element, usersView, false);
+            ImageView userImage = (ImageView) likeElement.findViewById(R.id.user_user_image);
+            TextView username = (TextView) likeElement.findViewById(R.id.user_username);
+            TextView profName = (TextView) likeElement.findViewById(R.id.user_prof_name);
 
-            User like = usernames.get(likeCount);
+            User like = usernames.get(userCount);
 
             if (like.getUsername().getUsername().startsWith(Parameters.default_username)){
 
@@ -166,8 +172,8 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
 
 
             }
-            likesView.addView(likeElement, likeCount);
-            likeCount++;
+            usersView.addView(likeElement, userCount);
+            userCount++;
         }
     }
 
@@ -176,9 +182,9 @@ public class FollowFragment extends Fragment implements ScrollViewListener{
         View actionBar = ((AppCompatActivity)
                 this.getActivity()).getSupportActionBar().getCustomView();
         if (actionBar != null) {
-            TextView title = (TextView) actionBar.findViewById(R.id.action_bar_title);
-            title.setText(Parameters.likesTitle);
-            title.setTextSize(Parameters.subTitleSize);
+            TextView titleText = (TextView) actionBar.findViewById(R.id.action_bar_title);
+            titleText.setText(title);
+            titleText.setTextSize(Parameters.subTitleSize);
         }
     }
 

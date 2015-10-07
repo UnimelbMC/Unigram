@@ -40,6 +40,7 @@
             android:layout_gravity="center"
             android:id="@+id/login_username"
             android:text="@string/default_username"
+            android:layout_weight="1"
             android:visibility="gone"/>
 
         <Button

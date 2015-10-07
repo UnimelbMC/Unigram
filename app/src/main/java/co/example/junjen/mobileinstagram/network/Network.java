@@ -15,12 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.example.junjen.mobileinstagram.elements.Comment;
-<<<<<<< HEAD
 import co.example.junjen.mobileinstagram.elements.User;
-=======
-import co.example.junjen.mobileinstagram.elements.Like;
 import co.example.junjen.mobileinstagram.elements.Location;
->>>>>>> e76630ac9b41d1790d7d8417d87cbcee7aa0ce48
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
