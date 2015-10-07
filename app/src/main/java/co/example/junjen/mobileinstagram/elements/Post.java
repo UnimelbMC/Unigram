@@ -76,7 +76,7 @@ public class Post implements Serializable{
     }
 
     public Post(String userImage, String username, String location, String timeSince,
-                String postImage, String caption, String likes, String comments){
+                String postImage, String caption, ArrayList<Like> likes, ArrayList<Comment> comments){
 
         // TODO: Assumes strings as parameters. Set appropriately later on.
 
@@ -87,24 +87,8 @@ public class Post implements Serializable{
         this.postImage = new Image(postImage);
         this.caption = caption;
 
-        this.likes = createLikesList(likes);
-        this.comments = createCommentsList(comments);
-    }
-
-    private ArrayList<Like> createLikesList(String likes_string){
-        ArrayList<Like> likes = new ArrayList<>();
-
-        // TODO: method to convert JSON likes_string into ArrayList<Like>
-
-        return likes;
-    }
-
-    private ArrayList<Comment> createCommentsList(String comments_string){
-        ArrayList<Comment> comments = new ArrayList<>();
-
-        // TODO: method to convert comments_string into ArrayList<Comment>
-
-        return comments;
+        this.likes = likes;
+        this.comments = comments;
     }
 
     public View getPostView(LayoutInflater inflater, ViewGroup parentView){

@@ -27,8 +27,14 @@ public class Profile implements Serializable{
     private Image userImage;
     private String profName;
     private String profDescrp;
-    // TODO: store counts only, and a array of 'postsLoaded'
+
+    private int postsCount;
+    private int followersCount;
+    private int followingCount;
+
     private ArrayList<Post> posts;
+
+    // TODO: separate fragment
     private ArrayList<Username> followers;
     private ArrayList<Username> following;
 
@@ -45,58 +51,34 @@ public class Profile implements Serializable{
         this.profName = Parameters.default_profName;
         this.profDescrp = Parameters.default_profDescrp;
 
+        this.postsCount = 50;
+        this.followersCount = 100;
+        this.followingCount = 100;
+
         this.posts = new ArrayList<>();
-        this.followers = new ArrayList<>();
-        this.following = new ArrayList<>();
 
         int i;
         Post post;
-        String username;
 
         // create 10 empty posts
-        for (i = 0; i < 50; i++){
+        for (i = 0; i < this.postsCount; i++){
             post = new Post();
             this.posts.add(post);
-        }
-        // create 10 empty followers
-        for (i = 0; i < 10; i++){
-            username = Parameters.default_username + (i + 1);
-            this.followers.add(new Username(username));
-        }
-        // create 10 empty following
-        for (i = 0; i < 10; i++){
-            username = Parameters.default_username + (i + 1);
-            this.following.add(new Username(username));
         }
     }
 
     public Profile(String username, String userimage, String profName, String profDescrp,
-                   String posts, String followers, String following){
+                   String postsCount, String followersCount, String followingCount,
+                   ArrayList<Post> posts){
 
         this.username = new Username(username);
         this.userImage = new Image(userimage);
         this.profName = profName;
         this.profDescrp = profDescrp;
-        this.posts = createPostsList(posts);
-        this.followers = createUsernameList(followers);
-        this.following = createUsernameList(following);
-
-    }
-
-    private ArrayList<Post> createPostsList(String posts_string){
-        ArrayList<Post> posts = new ArrayList<>();
-
-        // TODO: method to convert JSON posts_string into ArrayList<Like>
-
-        return posts;
-    }
-
-    private ArrayList<Username> createUsernameList(String usernames_string){
-        ArrayList<Username> usernames = new ArrayList<>();
-
-        // TODO: method to convert JSON usernames_string into ArrayList<Like>
-
-        return usernames;
+        this.postsCount = Integer.parseInt(postsCount);
+        this.followersCount = Integer.parseInt(followersCount);
+        this.followingCount = Integer.parseInt(followingCount);
+        this.posts = posts;
     }
 
     public ExpandableScrollView getProfileView(LayoutInflater inflater){

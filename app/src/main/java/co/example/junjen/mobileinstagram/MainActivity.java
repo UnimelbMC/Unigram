@@ -138,9 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.v("TEST_NET", Params.AUHTORIZE_CODE);
                 getAccessCode(Params.AUHTORIZE_CODE);
 
-//                // update details on login screen
-//                updateLoginScreen();
-
                 // update view of main activity
                 view.destroy();
 
@@ -232,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.startActivity(intent);
             }
         }, DELAY);
+
+        finish();
     }
 
     // checks if there is a access token present
