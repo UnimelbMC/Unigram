@@ -33,7 +33,6 @@
 
     <!-- Profile -->
     <style name="profile_stat_tag">
-        <item name="android:singleLine">true</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

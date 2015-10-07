@@ -52,7 +52,6 @@ public class Parameters {
 
     // Application helpers
     public static Context context = null;
-    public static final String navBarCreated = "navBarCreated";
     public static final int loginClickInBrowserCountMax = 2;
     public static final int urlCountMax = 2;
     public static final int logoutBrowserCountMax = 3;

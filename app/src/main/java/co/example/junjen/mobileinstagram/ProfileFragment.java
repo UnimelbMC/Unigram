@@ -25,6 +25,7 @@ import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 /**
@@ -37,16 +38,14 @@ import co.example.junjen.mobileinstagram.elements.TimeSince;
  */
 public class ProfileFragment extends Fragment implements ScrollViewListener{
     // the fragment initialization parameters
-    private static final String profile_key = "profile";
+    private static final String username_key = "username";
     private static final String backButton_key = "backButton";
 
-    private Profile profile;
+    private String username;
     private boolean backButton;
 
     private ExpandableScrollView profileFragment;
-
-    // keep track of timeSince last post generated to generate new set of posts
-    private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
+    private Profile profile;
 
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts = true;
@@ -60,14 +59,15 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param profile Parameter 1.
+     * @param username Parameter 1.
+     * @param backButton Parameter 2.
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(Profile profile, boolean backButton) {
+    public static ProfileFragment newInstance(String username, boolean backButton) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putSerializable(profile_key, profile);
+        args.putSerializable(username_key, username);
         args.putBoolean(backButton_key, backButton);
         fragment.setArguments(args);
         return fragment;
@@ -81,7 +81,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            profile = (Profile) getArguments().getSerializable(profile_key);
+            username = getArguments().getString(username_key);
             backButton = getArguments().getBoolean(backButton_key);
 
             // display back button if profile fragment created from username link
@@ -98,9 +98,12 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         // initialise ProfileFragment if not created yet
         if(profileFragment == null){
 
-            // TODO: get Profile based on Data Object and pass into fragment constructor
-            // currently being created in nav bar activity
-//            profile = new Profile();
+            if(!username.startsWith(Parameters.default_username)){
+                // get Profile based on Data Object and pass into fragment constructor
+                profile = NetParams.NETWORK.getUserProfileFeed(username);
+            } else {
+                profile = new Profile(username);
+            }
 
             setTitle();
 

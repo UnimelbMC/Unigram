@@ -36,15 +36,8 @@ public class Username implements Serializable{
                 Profile profile = null;
                 NavigationBar navActivity = ((NavigationBar) v.getContext());
 
-                if(username.startsWith(Parameters.default_username)){
-                    profile = new Profile();
-                    profile.setUsername(username);
-                } else {
-                    // TODO:respond to click by creating profile object from username
-                }
-
                 // display profile of username
-                navActivity.showFragment(ProfileFragment.newInstance(profile, true));
+                navActivity.showFragment(ProfileFragment.newInstance(username, true));
             }
         };
         return onClickListener;

@@ -41,10 +41,10 @@ public class Profile implements Serializable{
     private int postIconCount = 0;
 
 
-    public Profile(){
+    public Profile(String username){
         // test constructor to create 'empty' Profile objects
 
-        this.username = new Username(Parameters.default_username);
+        this.username = new Username(username);
         this.userImage = new Image(Parameters.default_image);
         this.profName = Parameters.default_profName;
         this.profDescrp = Parameters.default_profDescrp;
@@ -57,7 +57,6 @@ public class Profile implements Serializable{
 
         int i;
         Post post;
-        String username;
 
         // create 10 empty posts
         for (i = 0; i < this.postCount; i++){

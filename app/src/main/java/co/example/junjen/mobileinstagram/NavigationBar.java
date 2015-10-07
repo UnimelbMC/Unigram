@@ -180,7 +180,7 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance(NetParams.NETWORK.getUserProfileFeed(""), false));
+        profileHistory.add(ProfileFragment.newInstance("", false));
     }
 
     // return to previous fragment by programmatically checking the radio button
@@ -191,11 +191,6 @@ public class NavigationBar extends AppCompatActivity {
     // returns the navigation bar object to the camera fragment's back button
     public RadioGroup getNavBar(){
         return navBar;
-    }
-
-    // returns main view in navigation screen
-    public int getMainView(){
-        return mainView;
     }
 
     // show the back button on the action bar
