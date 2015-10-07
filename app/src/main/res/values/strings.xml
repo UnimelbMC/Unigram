@@ -18,6 +18,8 @@
     <string name="hello_camera_fragment">Hello Camera fragment</string>
     <string name="hello_activity_feed_fragment">Hello Activity Feed fragment</string>
     <string name="hello_profile_fragment">Hello Profile fragment</string>
+    <string name="camerabuttom">cameraphoto</string>
+    <string name="title_activity_publish">PublishActivity</string>
 
 
 </resources>
