@@ -19,8 +19,7 @@ public class Parameters {
     public static final String loginUsername_key = "username";
     public static final String loginPassword_key = "password";
     public static final String loginUserImage_key = "loginUserImage";
-    public static final String loginToken_key = "token";
-    public static final int splashScreenDuration = 3000;    // in milliseconds
+    public static final int splashScreenDuration = 2500;    // in milliseconds
 
     // Post parameters
     public static final String default_username = "#username";

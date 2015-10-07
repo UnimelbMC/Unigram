@@ -48,8 +48,7 @@ public class NavigationBar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // tell MainActivity to finish
-        sendMessage();
+        MainActivity.mainActivity.finish();
 
         // set custom action bar
         actionBar = getSupportActionBar();
@@ -114,13 +113,6 @@ public class NavigationBar extends AppCompatActivity {
                 ft.commit();
             }
         });
-    }
-
-    // send message to MainActivity for it to finish
-    private void sendMessage() {
-        Log.d("sender", "Broadcasting message");
-        Intent intent = new Intent(Parameters.navBarCreated);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     // displays a fragment and adds it to a history
@@ -234,6 +226,7 @@ public class NavigationBar extends AppCompatActivity {
     private void goToMain(){
         Intent mainIntent = new Intent(this, MainActivity.class);
         startActivity(mainIntent);
+
         finish();
     }
 
