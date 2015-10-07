@@ -80,7 +80,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
             title = getArguments().getString(title_key);
 
             // display back button
-            ((NavigationBar) this.getActivity()).showBackButton();
+            Parameters.NavigationBarActivity.showBackButton();
         }
     }
 
@@ -88,8 +88,8 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // change action bar title
-        setTitle();
+//        // change action bar title
+//        setTitle();
 
         if (usernames != null){
             userFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
@@ -179,13 +179,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
 
     // sets the action bar title when in a comment fragment
     public void setTitle(){
-        View actionBar = ((AppCompatActivity)
-                this.getActivity()).getSupportActionBar().getCustomView();
-        if (actionBar != null) {
-            TextView titleText = (TextView) actionBar.findViewById(R.id.action_bar_title);
-            titleText.setText(title);
-            titleText.setTextSize(Parameters.subTitleSize);
-        }
+        Parameters.setTitle(Parameters.NavigationBarActivity, title, Parameters.subTitleSize);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -52,6 +52,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+import co.example.junjen.mobileinstagram.elements.Parameters;
 
 
 public class CameraFragment extends Fragment {
@@ -1133,7 +1134,7 @@ public class CameraFragment extends Fragment {
         if (actionBar != null) {
             actionBar.hide();
         }
-        ((NavigationBar) getActivity()).getNavBar().setVisibility(View.GONE);
+        Parameters.NavigationBarActivity.showBackButton();
     }
 
     @Override

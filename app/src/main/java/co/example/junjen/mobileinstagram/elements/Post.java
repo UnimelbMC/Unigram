@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.CommentsFragment;
+import co.example.junjen.mobileinstagram.PostFragment;
 import co.example.junjen.mobileinstagram.UsersFragment;
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
@@ -47,6 +48,7 @@ public class Post implements Serializable{
     public Post(){
         // test constructor to create 'empty' Post objects
 
+        this.postId = Parameters.default_postId;
         this.userImage = new Image(Parameters.default_image);
         this.username = new Username(Parameters.default_username);
         this.location = new Location(Parameters.default_location);
@@ -76,7 +78,7 @@ public class Post implements Serializable{
         }
     }
 
-    public Post(String postId, String userImage, String username, String location, String timeSince,
+    public Post(String postId, String userImage, String username, Location location, String timeSince,
                 String postImage, String caption, ArrayList<User> likes, ArrayList<Comment> comments){
 
         // TODO: Assumes strings as parameters. Set appropriately later on.
@@ -84,7 +86,7 @@ public class Post implements Serializable{
         this.postId = postId;
         this.userImage = new Image(userImage);
         this.username = new Username(username);
-        this.location = new Location(location);
+        this.location = location;
         this.timeSince = new TimeSince(timeSince);
         this.postImage = new Image(postImage);
         this.caption = caption;
@@ -93,15 +95,10 @@ public class Post implements Serializable{
         this.comments = comments;
     }
 
-    public View getPostView(LayoutInflater inflater, ViewGroup parentView){
-
-        // TODO: set 'onClickListener" for any applicable views
-        // Example:
-        // TextView t2 = (TextView) findViewById(R.id.text2);
-        // t2.setMovementMethod(LinkMovementMethod.getInstance());
+    public View getPostView(LayoutInflater inflater){
 
         postView = (RelativeLayout)
-                inflater.inflate(R.layout.post, parentView, false);
+                inflater.inflate(R.layout.post, null, false);
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
         /** Fixed parameters **/
@@ -157,17 +154,14 @@ public class Post implements Serializable{
             // add link to all likes if more than threshold
             if(likeCount > likeThreshold){
                 likeCountText.setText(likeCount + " likes");
-
-
                 String text = likeCount + " likes";
 
                 SpannableString likeLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        NavigationBar navActivity = ((NavigationBar) v.getContext());
-
                         // display post's likes
-                        navActivity.showFragment(UsersFragment.newInstance(likes, Parameters.likesTitle));
+                        Parameters.NavigationBarActivity.showFragment
+                                (UsersFragment.newInstance(likes, Parameters.likesTitle));
                     }
                 });
                 likeCountText.setText("");    // remove default text
@@ -223,10 +217,8 @@ public class Post implements Serializable{
                 SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        NavigationBar navActivity = ((NavigationBar) v.getContext());
-
                         // display post's comments
-                        navActivity.showFragment(CommentsFragment.
+                        Parameters.NavigationBarActivity.showFragment(CommentsFragment.
                                 newInstance(comments, username, userImage, caption, timeSince));
                     }
                 });
@@ -307,6 +299,9 @@ public class Post implements Serializable{
                         Image.setImage(imageView, post.getPostImage());
                     }
 
+                    imageView.setContentDescription((CharSequence) post.getPostId());
+                    imageView.setOnClickListener(Post.postIconOnClickListener());
+
                 } else {
                     imageView.setImageResource(0);
                 }
@@ -316,6 +311,30 @@ public class Post implements Serializable{
             // add row to list
             postIconList.addView(postIconRow, postIconList.getChildCount());
         }
+    }
+
+    // OnClickListener for post icon clicks
+    public static View.OnClickListener postIconOnClickListener(){
+
+        View.OnClickListener postIconOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String postId = (String) v.getContentDescription();
+
+                if(postId.equals(Parameters.default_postId)){
+
+                } else {
+
+                    // TODO: get post based on postId through Network
+
+                    // display post's comments
+                    Parameters.NavigationBarActivity.showFragment(PostFragment.newInstance(postId));
+
+                }
+            }
+        };
+
+        return postIconOnClickListener;
     }
 
     public String getPostId() {

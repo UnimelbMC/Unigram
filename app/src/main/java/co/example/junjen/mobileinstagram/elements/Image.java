@@ -27,7 +27,7 @@ public class Image implements Serializable {
 
     public static void setImage(ImageView imageView, Image image){
 
-        Context context = Parameters.context;
+        Context context = Parameters.MainActivityContext;
         String imageLink = image.getImageString();
 
         if(imageView != null) {

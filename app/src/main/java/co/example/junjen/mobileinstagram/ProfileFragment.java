@@ -149,13 +149,8 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
 
     // sets the action bar title when in a profile fragment
     public void setTitle(){
-        View actionBar = ((AppCompatActivity)
-                this.getActivity()).getSupportActionBar().getCustomView();
-        if (actionBar != null) {
-            TextView title = (TextView) actionBar.findViewById(R.id.action_bar_title);
-            title.setText(profile.getUsername().getUsername().toUpperCase());
-            title.setTextSize(Parameters.subTitleSize);
-        }
+        Parameters.setTitle(Parameters.NavigationBarActivity,
+                profile.getUsername().getUsername().toUpperCase(), Parameters.subTitleSize);
     }
 
     @Override

@@ -49,6 +49,7 @@ public class NavigationBar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         MainActivity.mainActivity.finish();
+        Parameters.NavigationBarActivity = this;
 
         // set custom action bar
         actionBar = getSupportActionBar();

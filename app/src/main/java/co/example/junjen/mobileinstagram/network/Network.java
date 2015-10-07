@@ -120,11 +120,12 @@ public class Network {
             Log.v("POST1",Integer.toString(mediaFeeds.size()));
             for (MediaFeedData thisPost : mediaFeeds) {
                 Log.v("POST2",thisPost.toString());
-                String loc;
+                Location loc;
                 if (thisPost.getLocation()== null){
                     loc = null;
                 }else{
-                    loc = thisPost.getLocation().toString();
+                    loc = new Location(thisPost.getLocation().getId(), thisPost.getLocation().getName(),
+                            thisPost.getLocation().getLatitude(), thisPost.getLocation().getLongitude());
                 }
                 Post post = new Post(thisPost.getId(),thisPost.getUser().getProfilePictureUrl(),
                         thisPost.getUser().getUserName(),loc,
@@ -147,8 +148,15 @@ public class Network {
         //        String postImage, String caption, ArrayList< User > likes, ArrayList< Comment > comments
         try {
             MediaFeedData thisPost = instagram.getMediaInfo(postId).getData();
+            Location loc;
+            if (thisPost.getLocation()== null){
+                loc = null;
+            }else{
+                loc = new Location(thisPost.getLocation().getId(), thisPost.getLocation().getName(),
+                        thisPost.getLocation().getLatitude(), thisPost.getLocation().getLongitude());
+            }
             return new Post(thisPost.getId(),thisPost.getUser().getProfilePictureUrl(),
-                    thisPost.getUser().getUserName(),thisPost.getLocation().toString(),
+                    thisPost.getUser().getUserName(),loc,
                     thisPost.getCreatedTime(), thisPost.getImages().getStandardResolution().getImageUrl(),
                     thisPost.getCaption().getText(),getLikesByPostId(postId),
                     getCommentsByPostId(postId));

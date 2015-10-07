@@ -90,6 +90,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             userFeedFragment.setScrollViewListener(this);
             userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.expandable_scroll_view);
 
+            setTitle();
+
             loadUserFeedPosts();
 
             // add layout listener to add content if default screen is not filled
@@ -143,7 +145,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             // add an if (getPost != null) condition
             post = new Post();
 
-            postView = post.getPostView(inflater, userFeedView);
+            postView = post.getPostView(inflater);
 
             //TESTING
             TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
@@ -158,17 +160,18 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
         }
     }
 
+    private void setTitle(){
+        Parameters.setTitle(Parameters.NavigationBarActivity,
+                Parameters.mainTitle, Parameters.mainTitleSize);
+    }
+
     @Override
     // sets the action bar title when in a user feed fragment
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        View actionBar = ((AppCompatActivity)
-                this.getActivity()).getSupportActionBar().getCustomView();
-        if (actionBar != null) {
-            TextView title = (TextView) actionBar.findViewById(R.id.action_bar_title);
-            title.setText(Parameters.mainTitle);
-            title.setTextSize(Parameters.mainTitleSize);
+        if(userFeedFragment != null){
+            setTitle();
         }
     }
 

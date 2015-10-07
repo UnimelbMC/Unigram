@@ -1,11 +1,7 @@
 package co.example.junjen.mobileinstagram;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.StrictMode;
@@ -13,14 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,9 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.network.Network;
@@ -61,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
         mainActivity = this;
 
-        // set application context to be accessible by other classes
-        Parameters.context = this.getApplicationContext();
+        // set application MainActivityContext to be accessible by other classes
+        Parameters.MainActivityContext = this.getApplicationContext();
 
         Log.w("test", "main activity created");
 

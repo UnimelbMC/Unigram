@@ -117,7 +117,6 @@ public class Profile implements Serializable{
         SpannableString followerLink = StringFactory.createLink(text, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavigationBar navActivity = ((NavigationBar) v.getContext());
 
 
                 // TODO: get followers from Network
@@ -131,7 +130,7 @@ public class Profile implements Serializable{
 
 
                 // display followers
-                navActivity.showFragment(UsersFragment.
+                Parameters.NavigationBarActivity.showFragment(UsersFragment.
                         newInstance(followers, Parameters.followersTitle));
             }
         });
@@ -146,7 +145,6 @@ public class Profile implements Serializable{
         SpannableString followingLink = StringFactory.createLink(text, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavigationBar navActivity = ((NavigationBar) v.getContext());
 
 
                 // TODO: get followers from Network
@@ -160,7 +158,7 @@ public class Profile implements Serializable{
 
 
                 // display followers
-                navActivity.showFragment(UsersFragment.
+                Parameters.NavigationBarActivity.showFragment(UsersFragment.
                         newInstance(following, Parameters.followingTitle));
             }
         });

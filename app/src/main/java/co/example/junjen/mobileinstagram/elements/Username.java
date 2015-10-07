@@ -34,10 +34,9 @@ public class Username implements Serializable{
             public void onClick(View v) {
 
                 Profile profile = null;
-                NavigationBar navActivity = ((NavigationBar) v.getContext());
 
                 // display profile of username
-                navActivity.showFragment(ProfileFragment.newInstance(username, true));
+                Parameters.NavigationBarActivity.showFragment(ProfileFragment.newInstance(username, true));
             }
         };
         return onClickListener;

@@ -99,7 +99,7 @@ public class CommentsFragment extends Fragment {
             timeSince = (TimeSince) getArguments().getSerializable(timeSince_key);
 
             // display back button
-            ((NavigationBar) this.getActivity()).showBackButton();
+            Parameters.NavigationBarActivity.showBackButton();
         }
     }
 
@@ -255,13 +255,8 @@ public class CommentsFragment extends Fragment {
 
     // sets the action bar title when in a comment fragment
     public void setTitle(){
-        View actionBar = ((AppCompatActivity)
-                this.getActivity()).getSupportActionBar().getCustomView();
-        if (actionBar != null) {
-            TextView title = (TextView) actionBar.findViewById(R.id.action_bar_title);
-            title.setText(Parameters.commentsTitle);
-            title.setTextSize(Parameters.subTitleSize);
-        }
+        Parameters.setTitle(Parameters.NavigationBarActivity, Parameters.commentsTitle,
+                Parameters.subTitleSize);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
