@@ -14,9 +14,9 @@ public class Comment implements Serializable{
     private String comment;
     private TimeSince timeSince;
 
-    public Comment(String username, Image userImage, String comment, TimeSince timeSince){
+    public Comment(String username, String userImage, String comment, TimeSince timeSince){
         this.username = new Username(username);
-        this.userImage = userImage;
+        this.userImage = new Image(userImage);
         this.comment = comment;
         this.timeSince = timeSince;
     }

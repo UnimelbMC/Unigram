@@ -3,14 +3,12 @@ package co.example.junjen.mobileinstagram;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -22,7 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 public class NavigationBar extends AppCompatActivity {
@@ -183,7 +180,7 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance(NetParams.NETWORK.getProfileFromAPI(), false));
+        profileHistory.add(ProfileFragment.newInstance(NetParams.NETWORK.getUserProfileFeed(""), false));
     }
 
     // return to previous fragment by programmatically checking the radio button
