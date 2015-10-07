@@ -1,10 +1,7 @@
 package co.example.junjen.mobileinstagram.elements;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,8 +25,8 @@ public class Profile implements Serializable{
     private String profName;
     private String profDescrp;
 
-    private int postsCount;
-    private int followersCount;
+    private int postCount;
+    private int followerCount;
     private int followingCount;
 
     private ArrayList<Post> posts;
@@ -51,8 +48,8 @@ public class Profile implements Serializable{
         this.profName = Parameters.default_profName;
         this.profDescrp = Parameters.default_profDescrp;
 
-        this.postsCount = 50;
-        this.followersCount = 100;
+        this.postCount = 50;
+        this.followerCount = 100;
         this.followingCount = 100;
 
         this.posts = new ArrayList<>();
@@ -61,23 +58,23 @@ public class Profile implements Serializable{
         Post post;
 
         // create 10 empty posts
-        for (i = 0; i < this.postsCount; i++){
+        for (i = 0; i < this.postCount; i++){
             post = new Post();
             this.posts.add(post);
         }
     }
 
     public Profile(String username, String userimage, String profName, String profDescrp,
-                   String postsCount, String followersCount, String followingCount,
+                   int postCount, int followerCount, int followingCount,
                    ArrayList<Post> posts){
 
         this.username = new Username(username);
         this.userImage = new Image(userimage);
         this.profName = profName;
         this.profDescrp = profDescrp;
-        this.postsCount = Integer.parseInt(postsCount);
-        this.followersCount = Integer.parseInt(followersCount);
-        this.followingCount = Integer.parseInt(followingCount);
+        this.postCount = postCount;
+        this.followerCount = followerCount;
+        this.followingCount = followingCount;
         this.posts = posts;
     }
 
@@ -107,19 +104,18 @@ public class Profile implements Serializable{
 
         // Post count
         TextView postCount = (TextView) profileView.findViewById(R.id.profile_post_count);
-        int postsSize = this.posts.size();
-        postCount.setText(Integer.toString(postsSize));
+        postCount.setText(Integer.toString(this.postCount));
 
         // Follower count
         TextView followerCount = (TextView) profileView.findViewById(R.id.profile_follower_count);
-        followerCount.setText(Integer.toString(this.followers.size()));
+        followerCount.setText(Integer.toString(this.followerCount));
 
         // Following count
         TextView followingCount = (TextView) profileView.findViewById(R.id.profile_following_count);
-        followingCount.setText(Integer.toString(this.following.size()));
+        followingCount.setText(Integer.toString(this.followingCount));
 
         // Add post icons
-        if(postsSize > 0){
+        if(this.postCount > 0){
             TextView postFlag = (TextView) profileView.findViewById(R.id.profile_no_post_flag);
             postFlag.setVisibility(View.GONE);
             getPostIcons(inflater);
@@ -147,9 +143,6 @@ public class Profile implements Serializable{
                     break;
                 }
             }
-
-            int postIconRowCount = postIconCount / Parameters.postIconsPerRow;
-
             Post.getPostIcons(inflater,
                     (LinearLayout) profileView.findViewById(R.id.profile_post_icons),
                     posts);
