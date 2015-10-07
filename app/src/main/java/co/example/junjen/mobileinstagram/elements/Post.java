@@ -6,8 +6,12 @@ package co.example.junjen.mobileinstagram.elements;
  * This class creates Post objects.
  */
 
+import android.content.Context;
 import android.text.SpannableString;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -23,6 +27,7 @@ import co.example.junjen.mobileinstagram.PostFragment;
 import co.example.junjen.mobileinstagram.UsersFragment;
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.customLayouts.PostImageView;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
@@ -81,8 +86,6 @@ public class Post implements Serializable{
     public Post(String postId, String userImage, String username, Location location, String timeSince,
                 String postImage, String caption, ArrayList<User> likes, ArrayList<Comment> comments){
 
-        // TODO: Assumes strings as parameters. Set appropriately later on.
-
         this.postId = postId;
         this.userImage = new Image(userImage);
         this.username = new Username(username);
@@ -123,8 +126,11 @@ public class Post implements Serializable{
 
         // Post image
         if(!this.postImage.getImageString().equals(Parameters.default_image)) {
-            ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
+            PostImageView postImage = (PostImageView) postView.findViewById(R.id.post_image);
             Image.setImage(postImage, this.postImage);
+            postImage.setContentDescription(postId);
+
+            // TODO: Handle double click on post image
         }
 
         // TODO: Handle clicks for like button
@@ -299,7 +305,7 @@ public class Post implements Serializable{
                         Image.setImage(imageView, post.getPostImage());
                     }
 
-                    imageView.setContentDescription((CharSequence) post.getPostId());
+                    imageView.setContentDescription(post.getPostId());
                     imageView.setOnClickListener(Post.postIconOnClickListener());
 
                 } else {

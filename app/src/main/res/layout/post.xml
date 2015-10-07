@@ -9,7 +9,7 @@
         android:id="@+id/post_header"/>
 
     <!-- Post image -->
-    <ImageView
+    <co.example.junjen.mobileinstagram.customLayouts.PostImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/post_image"
