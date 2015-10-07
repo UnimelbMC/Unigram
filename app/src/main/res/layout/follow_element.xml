@@ -1,0 +1,59 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/comment_margin">
+
+    <!-- User image -->
+    <co.example.junjen.mobileinstagram.customLayouts.UserImageView
+        android:layout_width="@dimen/post_header_user_image_width"
+        android:layout_height="@dimen/post_header_user_image_width"
+        android:id="@+id/follow_user_image"
+        android:layout_centerVertical="true"
+        android:src="@drawable/empty_user_image"
+        android:adjustViewBounds="true"
+        android:layout_margin="@dimen/comment_margin"
+        android:contentDescription="Post User Image"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/like_bar_height"
+        android:layout_toRightOf="@id/follow_user_image"
+        android:layout_toEndOf="@id/follow_user_image">
+
+        <!-- Profile name -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_prof_name"
+            android:id="@+id/follow_prof_name"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="@dimen/comment_margin"
+            android:layout_marginEnd="@dimen/comment_margin"
+            android:singleLine="true"
+            android:layout_marginBottom="@dimen/comment_margin"/>
+
+        <!-- Username -->
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_username"
+            android:id="@+id/follow_username"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/follow_prof_name"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginTop="@dimen/post_margin"
+            android:layout_marginBottom="@dimen/post_margin"/>
+
+        <!-- Like divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/darker_gray"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
