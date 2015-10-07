@@ -20,5 +20,7 @@ public class Params {
     public static String ACCESS_TOKEN_FILENAME = "/unigram_access_token";
     public static String ACCESS_TOKEN_FILEPATH = null;
 
+    public static Network NETWORK = null;
+
 }
 
