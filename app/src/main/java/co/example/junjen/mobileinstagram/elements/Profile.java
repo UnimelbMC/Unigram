@@ -107,7 +107,7 @@ public class Profile implements Serializable{
         if(!this.userImage.getImageString().equals(Parameters.default_image)) {
             UserImageView userImage = (UserImageView)
                     profileView.findViewById(R.id.profile_user_image);
-            Image.setImage(userImage, this.userImage.getImage());
+            Image.setImage(userImage, this.userImage);
         }
 
         // Profile name
@@ -142,9 +142,9 @@ public class Profile implements Serializable{
 
     public void getPostIcons(LayoutInflater inflater){
 
-        int postsSize = this.posts.size();
+      //  int postsSize = this.posts.size();
 
-        if (postIconCount < postsSize) {
+        if (postIconCount < this.postCount) {
 
             ArrayList<Post> posts = new ArrayList<>();
 
@@ -153,7 +153,7 @@ public class Profile implements Serializable{
             int maxPostIcons = Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
             for (i = 0; i < maxPostIcons; i++) {
                 index = i + postIconCount;
-                if (index < postsSize) {
+                if (index < this.postCount) {
                     posts.add(this.posts.get(index));
                 } else {
                     break;

@@ -55,8 +55,10 @@ public class Network {
         UserInfoData uData;
         try {
             if (username == "") {
+                Log.v("NETWORK","getPRofileFromAPI1");
                 uData = thisUserData;
             }else {
+                Log.v("NETWORK","getPRofileFromAPI2");
                 uData = instagram.getUserInfo(username).getData();
             }
             return new Profile(uData.getUsername(), uData.getProfilePicture(), uData.getFirstName(),
@@ -69,7 +71,7 @@ public class Network {
     }
 
     private ArrayList<Post> buildPostList(){
-        return null;
+        return new ArrayList<Post>();
     }
 
     public Post getPostById(int postId){

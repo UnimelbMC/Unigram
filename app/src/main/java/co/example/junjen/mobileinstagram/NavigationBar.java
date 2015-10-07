@@ -180,7 +180,7 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance(new Profile(), false));
+        profileHistory.add(ProfileFragment.newInstance(NetParams.NETWORK.getProfileFromAPI(), false));
     }
 
     // return to previous fragment by programmatically checking the radio button
