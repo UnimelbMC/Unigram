@@ -5,18 +5,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.SpannableString;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
+import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Like;
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.StringFactory;
 
 
@@ -28,7 +31,7 @@ import co.example.junjen.mobileinstagram.elements.StringFactory;
  * Use the {@link LikesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LikesFragment extends Fragment {
+public class LikesFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String likes_key = "likes";
@@ -36,11 +39,13 @@ public class LikesFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private ArrayList<Like> likes;
 
-    private ScrollView likesScrollView;
-    private View loadMoreLikesBar;
-    private ViewGroup likesContent;
+    private ExpandableScrollView likesFragment;
+    private ViewGroup likesView;
     private int likeCount = 0;
     private int likesSize = 0;
+
+    // flag to check if likes are being loaded before loading new ones
+    private boolean loadPosts = true;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,82 +86,71 @@ public class LikesFragment extends Fragment {
         // change action bar title
         setTitle();
 
-        View likesFragment = inflater.inflate(R.layout.fragment_likes, container, false);
-
-        likesScrollView = (ScrollView) likesFragment.findViewById(R.id.likes_scroll_view);
-        ArrayList<CharSequence> stringComponents = new ArrayList<>();
-
         if (likes != null){
-            likesContent = (ViewGroup) likesFragment.findViewById(R.id.likes_content);
-            loadMoreLikesBar = likesFragment.findViewById(R.id.load_more_likes_bar);
-
+            likesFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
+            likesFragment.setScrollViewListener(this);
+            likesView = (ViewGroup) likesFragment.findViewById(R.id.expandable_scroll_view);
             likesSize = likes.size();
 
-            // "Load more likes" link
-            TextView loadMoreLikes = (TextView) loadMoreLikesBar.findViewById(R.id.load_more_likes);
+            loadLikes();
 
-            if (likesSize <= Parameters.loadLikeThreshold){
-                loadMoreLikesBar.setVisibility(View.GONE);
-            } else {
-                // TODO: set onclick listener to load more comments
+            // add layout listener to add content if default screen is not filled
+            ViewTreeObserver vto = likesFragment.getViewTreeObserver();
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            final int screenHeight = displaymetrics.heightPixels;
 
-                String text = this.getActivity().getResources().getString(R.string.default_load_more_likes);
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    likesFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    int height = likesFragment.getHeight();
 
-                SpannableString likeLink = StringFactory.createLink(text, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // TODO: load more comments
-                        loadMoreLikes();
+                    if (height < screenHeight) {
+                        loadLikes();
                     }
-                });
-                loadMoreLikes.setText("");    // remove default text
-                stringComponents.add(likeLink);
-                StringFactory.stringBuilder(loadMoreLikes, stringComponents);
-                stringComponents.clear();
-            }
-
-            // Comments content
-            loadMoreLikes();
+                }
+            });
         }
-
-        // focus to most recent comment at the bottom
-        likesScrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                likesScrollView.fullScroll(View.FOCUS_DOWN);
-            }
-        });
-
         // Inflate the layout for this fragment
         return likesFragment;
     }
 
+    // loads another chunk of posts when at the bottom of the user feed ScrollView
+    @Override
+    public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
+
+        // load new posts if no posts are currently being loaded
+        if(loadPosts){
+            loadPosts = false;
+            loadLikes();
+            loadPosts = true;
+        }
+    }
+
     // loads a number of comments based on a threshold
-    public void loadMoreLikes(){
+    private void loadLikes(){
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
         int i;
-        int index;
         int loadLikeThreshold = Parameters.loadLikeThreshold;
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
         // load chunk of comments based on a threshold
         for (i = 0; i < loadLikeThreshold; i++){
-            index = likesSize - 1 - likeCount;
 
-            if (index > likesSize - 1 || index < 0) {
-                loadMoreLikesBar.setVisibility(View.GONE);
+            if (likeCount >= likesSize || likeCount >= Parameters.maxLikes) {
                 break;
             }
 
             // load view components
-            View likeElement = inflater.inflate(R.layout.likes_element, likesContent, false);
+            View likeElement = inflater.inflate(R.layout.likes_element, likesView, false);
             ImageView userImage = (ImageView) likeElement.findViewById(R.id.like_user_image);
             TextView username = (TextView) likeElement.findViewById(R.id.like_username);
             TextView profName = (TextView) likeElement.findViewById(R.id.like_prof_name);
 
-            Like like = likes.get(index);
+            Like like = likes.get(likeCount);
 
             if (like.getUsername().getUsername().startsWith(Parameters.default_username)){
 
@@ -167,9 +161,13 @@ public class LikesFragment extends Fragment {
 
                 profName.setText(like.getProfName());
             } else {
+
+
                 // TODO: get Data Object
+
+
             }
-            likesContent.addView(likeElement, 0);
+            likesView.addView(likeElement, likeCount);
             likeCount++;
         }
     }

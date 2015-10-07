@@ -65,7 +65,7 @@ public class Post implements Serializable{
         for (i = 0; i < 20; i++){
             username = Parameters.default_username + (i + 1);
             this.likes.add(new Like(username, new Image(Parameters.default_image),
-                    Parameters.default_profName, new TimeSince(Parameters.default_timeSince)));
+                    Parameters.default_profName));
         }
         // create 10 empty comments
         for (i = 0; i < 10; i++){

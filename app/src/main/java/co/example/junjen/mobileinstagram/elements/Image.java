@@ -30,16 +30,18 @@ public class Image implements Serializable {
         Context context = Parameters.context;
         String imageLink = image.getImageString();
 
-        if(imageLink.equals(Parameters.default_loginUserImageLink)) {
-            imageView.setImageResource(R.drawable.login_user_image);
-        } else if(imageLink.equals(Parameters.default_emptyUserImageLink)){
-            imageView.setImageResource(R.drawable.empty_user_image);
+        if(imageView != null) {
+            if (imageLink.equals(Parameters.default_loginUserImageLink)) {
+                imageView.setImageResource(R.drawable.login_user_image);
+            } else if (imageLink.equals(Parameters.default_emptyUserImageLink)) {
+                imageView.setImageResource(R.drawable.empty_user_image);
 
-        } else {
-            String testUrl = "http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg";
+            } else {
+                String testUrl = "http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg";
 
-            // TODO: Determine set image type
-            Picasso.with(context).load(image.getImageString()).into(imageView);
+                // TODO: Determine set image type
+                Picasso.with(context).load(image.getImageString()).into(imageView);
+            }
         }
     }
 

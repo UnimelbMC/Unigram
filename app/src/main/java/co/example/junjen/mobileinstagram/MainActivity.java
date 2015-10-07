@@ -259,18 +259,16 @@ public class MainActivity extends AppCompatActivity {
     // update details on login screen
     public void updateLoginScreen(){
 
-        View mainActivityView = this.findViewById(android.R.id.content);
-
         ImageView userImage = (ImageView) this.findViewById(R.id.login_user_image);
         TextView username = (TextView) this.findViewById(R.id.login_username);
         Button loginButton = (Button) this.findViewById(R.id.login_button);
 
         //fill login screen with user that is currently logged in
-        if (NetParams.ACCESS_TOKEN != null){
+        if (NetParams.ACCESS_TOKEN != null) {
             // initialise Network object
             String userImageLink;
-            String usernameText ;
-            if ( NetParams.NETWORK == null) {
+            String usernameText;
+            if (NetParams.NETWORK == null) {
                 NetParams.NETWORK = new Network();
             }
             userImageLink = NetParams.NETWORK.getProfilePic();
@@ -284,8 +282,9 @@ public class MainActivity extends AppCompatActivity {
             username.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.GONE);
 
-        // return login to default state when no user is logged in
-        } else {
+        } else if (userImage != null && username != null && loginButton != null){
+            // return login to default state when no user is logged in
+
             Image.setImage(userImage, new Image(Parameters.default_emptyUserImageLink));
             username.setText(Parameters.default_username.toUpperCase());
             username.setVisibility(View.GONE);
