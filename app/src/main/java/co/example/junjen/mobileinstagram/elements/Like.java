@@ -11,11 +11,13 @@ public class Like implements Serializable{
 
     private Username username;
     private Image userImage;
+    private String profName;
     private TimeSince timeSince;
 
-    public Like(String username, Image userImage, TimeSince timeSince){
+    public Like(String username, Image userImage, String profName, TimeSince timeSince){
         this.username = new Username(username);
         this.userImage = userImage;
+        this.profName = profName;
         this.timeSince = timeSince;
     }
 
@@ -27,6 +29,9 @@ public class Like implements Serializable{
         return userImage;
     }
 
+    public String getProfName() {
+        return profName;
+    }
 
     public TimeSince getTimeSince() {
         return timeSince;

@@ -68,7 +68,10 @@ public class CommentsFragment extends Fragment {
      * @return A new instance of fragment CommentsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CommentsFragment newInstance(ArrayList<Comment> comments, Username username, Image userImage, String caption, TimeSince timeSince) {
+    public static CommentsFragment newInstance(ArrayList<Comment> comments, Username username,
+                                               Image userImage, String caption,
+                                               TimeSince timeSince) {
+
         CommentsFragment fragment = new CommentsFragment();
         Bundle args = new Bundle();
         args.putSerializable(comments_key, comments);
@@ -145,7 +148,11 @@ public class CommentsFragment extends Fragment {
                     stringComponents.clear();
                     timeSince.setText(this.timeSince.getTimeSince());
                 } else {
+
+
                     // TODO: get Data Object
+
+
                 }
             } else {
                 commentsCaption.setVisibility(View.GONE);
@@ -154,7 +161,7 @@ public class CommentsFragment extends Fragment {
             commentsSize = comments.size();
 
             // "Load more comments" link
-            final TextView loadMoreComments = (TextView) loadMoreCommentsBar.findViewById(R.id.load_more_comments);
+            TextView loadMoreComments = (TextView) loadMoreCommentsBar.findViewById(R.id.load_more_comments);
 
             if (commentsSize <= Parameters.loadCommentThreshold){
                 loadMoreCommentsBar.setVisibility(View.GONE);
@@ -239,7 +246,8 @@ public class CommentsFragment extends Fragment {
 
     // send the comment in the input field when send button is clicked
     public void sendComment(){
-        // TODO: send comment by posting using data class
+
+        // TODO: send comment by posting using Data Object
 
         // clear input field
         commentToSend.setText("");

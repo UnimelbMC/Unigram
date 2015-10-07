@@ -29,6 +29,8 @@
     <string name="default_comment">Comment</string>
     <string name="default_load_more_comments">Load more comments</string>
     <string name="comment_hint">Add a comment...</string>
+    <string name="default_load_more_likes">Load more likes</string>
+    <string name="default_prof_name">Profile Name</string>
 
     <!-- Profile -->
     <string name="profile_post_count_label">posts</string>

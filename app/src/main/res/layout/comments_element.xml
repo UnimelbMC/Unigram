@@ -1,14 +1,15 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/comment_margin">
 
     <!-- User image -->
     <co.example.junjen.mobileinstagram.customLayouts.UserImageView
         android:layout_width="@dimen/post_header_user_image_width"
         android:layout_height="@dimen/post_header_user_image_width"
         android:id="@+id/comment_user_image"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:src="@drawable/empty_user_image"
         android:adjustViewBounds="true"
         android:layout_margin="@dimen/comment_margin"
@@ -18,8 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/comment_user_image"
-        android:layout_toEndOf="@id/comment_user_image"
-        android:layout_marginTop="@dimen/comment_margin">
+        android:layout_toEndOf="@id/comment_user_image">
 
         <!-- Time since commented -->
         <TextView

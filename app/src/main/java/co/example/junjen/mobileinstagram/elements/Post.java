@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.CommentsFragment;
+import co.example.junjen.mobileinstagram.LikesFragment;
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
@@ -64,7 +65,7 @@ public class Post implements Serializable{
         for (i = 0; i < 20; i++){
             username = Parameters.default_username + (i + 1);
             this.likes.add(new Like(username, new Image(Parameters.default_image),
-                    new TimeSince(Parameters.default_timeSince)));
+                    Parameters.default_profName, new TimeSince(Parameters.default_timeSince)));
         }
         // create 10 empty comments
         for (i = 0; i < 10; i++){
@@ -148,21 +149,40 @@ public class Post implements Serializable{
         // Likes
         RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
         if (this.likes != null){
-            TextView likes = (TextView) postView.findViewById(R.id.like_count);
+            TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
             int likeCount = this.likes.size();
             int likeThreshold = Parameters.likeThreshold;
+
+            // add link to all likes if more than threshold
             if(likeCount > likeThreshold){
-                likes.setText(likeCount + " likes");
+                likeCountText.setText(likeCount + " likes");
+
+
+                String text = likeCount + " likes";
+
+                SpannableString likeLink = StringFactory.createLink(text, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NavigationBar navActivity = ((NavigationBar) v.getContext());
+
+                        // display post's comments
+                        navActivity.showFragment(LikesFragment.newInstance(likes));
+                    }
+                });
+                likeCountText.setText("");    // remove default text
+                stringComponents.add(likeLink);
+                StringFactory.stringBuilder(likeCountText, stringComponents);
+                stringComponents.clear();
             }
             else {
-                likes.setText("");  // remove default text
+                likeCountText.setText("");  // remove default text
                 int i;
                 for (i = 0; i < likeCount; i++){
                     stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
                     stringComponents.add(", ");
                 }
                 stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
-                StringFactory.stringBuilder(likes, stringComponents);
+                StringFactory.stringBuilder(likeCountText, stringComponents);
                 stringComponents.clear();
             }
         } else {
@@ -202,7 +222,6 @@ public class Post implements Serializable{
                 SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: go to comments view
                         NavigationBar navActivity = ((NavigationBar) v.getContext());
 
                         // display post's comments

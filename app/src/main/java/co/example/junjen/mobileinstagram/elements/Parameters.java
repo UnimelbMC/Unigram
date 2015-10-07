@@ -10,6 +10,7 @@ public class Parameters {
     // Titles
     public static final String mainTitle = "UniGram";
     public static final String commentsTitle = "COMMENTS";
+    public static final String likesTitle = "LIKERS";
     public static final float mainTitleSize = 20;
     public static final float subTitleSize = 15;
 
@@ -33,6 +34,7 @@ public class Parameters {
     public static final int commentThreshold = 3;
     public static final int postsToLoad = 10;
     public static final int loadCommentThreshold = 20;
+    public static final int loadLikeThreshold = 100;
 
     // Post icon parameters
     public static final int postIconsPerRow = 3;
