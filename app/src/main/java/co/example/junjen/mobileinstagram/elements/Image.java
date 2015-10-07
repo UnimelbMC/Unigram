@@ -31,6 +31,13 @@ public class Image implements Serializable {
     }
 
     public static void setImage(ImageView imageView, Image image){
+
+
         // TODO: Determine set image type
+
+
+        // test url: http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg
     }
+
+
 }

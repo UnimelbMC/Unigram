@@ -254,6 +254,9 @@ public class MainActivity extends AppCompatActivity {
         updateLoginScreen();
 
         if (Params.ACCESS_TOKEN != null){
+            // initialise Network object
+            //        Params.Network = new Network();
+
             // go to navigation screen
             startNavBar();
         }
@@ -270,10 +273,19 @@ public class MainActivity extends AppCompatActivity {
 
         //fill login screen with user that is currently logged in
         if (Params.ACCESS_TOKEN != null){
-            // TODO: update login screen with user image and username using Data Object
 
-            userImage.setImageResource(R.drawable.login_user_image);
-            username.setText(Html.fromHtml("Hello <b>" + Parameters.default_username.toUpperCase() + "</b>"));
+            String userImageLink = Parameters.default_userImageLink;
+            String usernameText = Parameters.default_username;
+
+            // TODO: overwrite userImageLink and usernameText using Data Object
+
+
+            if(userImage.equals(Parameters.default_userImageLink)) {
+                userImage.setImageResource(R.drawable.login_user_image);
+            } else {
+//                Image.setImage(userImage, new Image(userImageLink);
+            }
+            username.setText(Html.fromHtml("Hello <b>" + usernameText.toUpperCase() + "</b>"));
             username.setTextSize(Parameters.subTitleSize);
             username.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.GONE);
