@@ -37,7 +37,7 @@ import java.util.Map;
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.network.Network;
-import co.example.junjen.mobileinstagram.network.Params;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         Log.w("test", "main activity created");
 
         // get access token file path
-        Params.ACCESS_TOKEN_FILEPATH = getFilesDir().getPath().toString() + Params.ACCESS_TOKEN_FILENAME;
+        NetParams.ACCESS_TOKEN_FILEPATH = getFilesDir().getPath().toString() + NetParams.ACCESS_TOKEN_FILENAME;
 
         //Set permission for library to access the internet
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         // check if token is present
         checkToken();
+       // NetParams.NETWORK = new Network();
     }
 
     // action to take when login button is clicked
@@ -103,13 +104,13 @@ public class MainActivity extends AppCompatActivity {
         checkToken();
 
         // if no access token found, go to browser to authenticate
-        if (Params.ACCESS_TOKEN == null) {
+        if (NetParams.ACCESS_TOKEN == null) {
 
             WebView myWebView = new WebView(getApplicationContext());
             myWebView.clearFormData();
             setContentView(myWebView);
             myWebView.setWebViewClient(new LoginWebViewClient());
-            myWebView.loadUrl(Params.AUTHORIZE_URL);
+            myWebView.loadUrl(NetParams.AUTHORIZE_URL);
         }
     }
 
@@ -128,15 +129,15 @@ public class MainActivity extends AppCompatActivity {
         public void onLoadResource(WebView view, String url) {
 
             // if redirected, access code is in url
-            if (url.startsWith(Params.REDIRECT_URI)) {
+            if (url.startsWith(NetParams.REDIRECT_URI)) {
                 loginClickInBrowserCount = 0;
                 urlCount = 0;
 
                 // extract access code
                 String[] parts = url.split("=");
-                Params.AUHTORIZE_CODE = parts[1];
-                Log.v("TEST_NET", Params.AUHTORIZE_CODE);
-                getAccessCode(Params.AUHTORIZE_CODE);
+                NetParams.AUHTORIZE_CODE = parts[1];
+                Log.v("TEST_NET", NetParams.AUHTORIZE_CODE);
+                getAccessCode(NetParams.AUHTORIZE_CODE);
 
                 // update view of main activity
                 view.destroy();
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             }
             // if login button in webview clicked, disable clicking
             // (prevents error page popup from spamming the login button)
-            else if (url.startsWith(Params.LOGIN_URL_HEADER)) {
+            else if (url.startsWith(NetParams.LOGIN_URL_HEADER)) {
                 loginClickInBrowserCount++;
 
                 if (loginClickInBrowserCount == loginClickInBrowserCountMax) {
@@ -184,9 +185,9 @@ public class MainActivity extends AppCompatActivity {
     // retrieve access code
     private void getAccessCode(String code){
         InstagramService service = new InstagramAuthService()
-                .apiKey(Params.CLIENT_ID)
-                .apiSecret(Params.CLIENT_SECRET)
-                .callback(Params.REDIRECT_URI)
+                .apiKey(NetParams.CLIENT_ID)
+                .apiSecret(NetParams.CLIENT_SECRET)
+                .callback(NetParams.REDIRECT_URI)
                 .build();
         // Note : An empty token can be define as follows -
 
@@ -195,18 +196,18 @@ public class MainActivity extends AppCompatActivity {
         //String authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
         // Getting the Access Token
         Verifier verifier = new Verifier(code);
-        Params.ACCESS_TOKEN = service.getAccessToken(EMPTY_TOKEN, verifier);
-        Log.v("TEST_ACCESS", Params.ACCESS_TOKEN.toString());
+        NetParams.ACCESS_TOKEN = service.getAccessToken(EMPTY_TOKEN, verifier);
+        Log.v("TEST_ACCESS", NetParams.ACCESS_TOKEN.toString());
 
         // writing ACCESS_TOKEN to access token file
         try {
-            File accessTokenFile = new File(Params.ACCESS_TOKEN_FILEPATH);
+            File accessTokenFile = new File(NetParams.ACCESS_TOKEN_FILEPATH);
             if(!accessTokenFile.exists()) {
                 accessTokenFile.createNewFile();
             }
             FileOutputStream fos = new FileOutputStream(accessTokenFile);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(Params.ACCESS_TOKEN);
+            oos.writeObject(NetParams.ACCESS_TOKEN);
             oos.close();
         } catch (FileNotFoundException e) {
             Log.w("test","file not found");
@@ -237,26 +238,25 @@ public class MainActivity extends AppCompatActivity {
     private void checkToken(){
 
         // read from saved access token if available
-        Params.ACCESS_TOKEN = null;
+        NetParams.ACCESS_TOKEN = null;
         try {
-            File accessTokenFile = new File(Params.ACCESS_TOKEN_FILEPATH);
+            File accessTokenFile = new File(NetParams.ACCESS_TOKEN_FILEPATH);
             if(accessTokenFile.exists()) {
                 FileInputStream fis = new FileInputStream(accessTokenFile);
                 ObjectInputStream ois = new ObjectInputStream(fis);
-                Params.ACCESS_TOKEN = (Token) ois.readObject();
+                NetParams.ACCESS_TOKEN = (Token) ois.readObject();
                 Log.w("test", "token exists");
             }
         } catch (Exception e){
             e.printStackTrace();
         }
-
+        if (NetParams.ACCESS_TOKEN != null){
+            NetParams.NETWORK = new Network();
+        }
         // update details on login screen
         updateLoginScreen();
 
-        if (Params.ACCESS_TOKEN != null){
-            // initialise Network object
-            //        Params.Network = new Network();
-
+        if (NetParams.ACCESS_TOKEN != null){
             // go to navigation screen
             startNavBar();
         }
@@ -272,10 +272,17 @@ public class MainActivity extends AppCompatActivity {
         Button loginButton = (Button) this.findViewById(R.id.login_button);
 
         //fill login screen with user that is currently logged in
-        if (Params.ACCESS_TOKEN != null){
-
-            String userImageLink = Parameters.default_userImageLink;
-            String usernameText = Parameters.default_username;
+        if (NetParams.ACCESS_TOKEN != null){
+            // initialise Network object
+            String userImageLink ;
+            String usernameText ;
+            if ( NetParams.NETWORK != null) {
+               // userImageLink = NetParams.NETWORK.getProfilePic();
+                usernameText = NetParams.NETWORK.getUsername();
+            }else {
+                userImageLink = Parameters.default_userImageLink;
+                usernameText = Parameters.default_username;
+            }
 
             // TODO: overwrite userImageLink and usernameText using Data Object
 

@@ -5,7 +5,7 @@ import org.jinstagram.auth.model.Token;
 /**
  * Created by Jaime on 10/4/2015.
  */
-public class Params {
+public class NetParams {
     public static final String CLIENT_ID = "c978ebb2c7544f28a0403cf0a0c90fc7";
     public static final String CLIENT_SECRET = "afba876a0eac4d79b6cc8520c2b5e330";
     public static final String REDIRECT_URI = "network://localhost/redirect/";

@@ -1,7 +1,8 @@
 package co.example.junjen.mobileinstagram.network;
 
+import android.util.Log;
+
 import org.jinstagram.Instagram;
-import org.jinstagram.entity.users.basicinfo.UserInfo;
 import org.jinstagram.entity.users.basicinfo.UserInfoData;
 import org.jinstagram.exceptions.InstagramException;
 
@@ -18,20 +19,32 @@ public class Network {
     private Instagram instagram;
     private UserInfoData thisUserData;
     public Network() {
-        instagram = new Instagram(Params.ACCESS_TOKEN);
-        try {
-            thisUserData = instagram.getCurrentUserInfo().getData();
-        } catch (InstagramException e) {
-            e.printStackTrace();
+        instagram = new Instagram(NetParams.ACCESS_TOKEN);
+        boolean gotData = false;
+        Log.v("NETWORK", "enterConstructor");
+        while(gotData) {
+            try {
+                thisUserData = instagram.getCurrentUserInfo().getData();
+                gotData = true;
+                Log.v("NETWORK", "accesstoken succeeded");
+            } catch (InstagramException e) {
+                Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
+            }
         }
     }
 
     public String getProfilePic(){
-        return thisUserData.getProfilePicture();
+        if (thisUserData.getProfilePicture()!= null) {
+            Log.v("NETWORK", "getProfilePic " + thisUserData.getProfilePicture());
+            return thisUserData.getProfilePicture();
+        }
+        return "profilePic";
     }
     public String getUsername(){
+        Log.v("NETWORK", "getUsername " + thisUserData.getUsername());
         return thisUserData.getUsername();
     }
+
     //Build profile view from userData
     public Profile getProfileFromAPI(){
         return getProfileFromAPI("");
