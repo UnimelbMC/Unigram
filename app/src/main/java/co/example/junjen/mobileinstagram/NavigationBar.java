@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 import java.io.File;
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.network.NetParams;
 

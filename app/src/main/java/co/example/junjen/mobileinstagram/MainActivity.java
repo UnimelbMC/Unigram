@@ -268,13 +268,14 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e){
             e.printStackTrace();
         }
-        if (NetParams.ACCESS_TOKEN != null){
-            NetParams.NETWORK = new Network();
-        }
         // update details on login screen
         updateLoginScreen();
 
         if (NetParams.ACCESS_TOKEN != null){
+            //If we have token but no Network, initialise
+            if ( NetParams.NETWORK == null) {
+                NetParams.NETWORK = new Network();
+            }
             // go to navigation screen
             startNavBar();
         }
@@ -292,15 +293,13 @@ public class MainActivity extends AppCompatActivity {
         //fill login screen with user that is currently logged in
         if (NetParams.ACCESS_TOKEN != null){
             // initialise Network object
-            String userImageLink ;
+            String userImageLink;
             String usernameText ;
-            if ( NetParams.NETWORK != null) {
-               // userImageLink = NetParams.NETWORK.getProfilePic();
-                usernameText = NetParams.NETWORK.getUsername();
-            }else {
-                userImageLink = Parameters.default_userImageLink;
-                usernameText = Parameters.default_username;
+            if ( NetParams.NETWORK == null) {
+                NetParams.NETWORK = new Network();
             }
+            userImageLink = NetParams.NETWORK.getProfilePic();
+            usernameText = NetParams.NETWORK.getUsername();
 
             // TODO: overwrite userImageLink and usernameText using Data Object
 

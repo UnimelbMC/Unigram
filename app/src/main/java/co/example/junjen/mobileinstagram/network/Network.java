@@ -20,12 +20,12 @@ public class Network {
     private UserInfoData thisUserData;
     public Network() {
         instagram = new Instagram(NetParams.ACCESS_TOKEN);
-        boolean gotData = false;
+        boolean gotData = true;
         Log.v("NETWORK", "enterConstructor");
         while(gotData) {
             try {
                 thisUserData = instagram.getCurrentUserInfo().getData();
-                gotData = true;
+                gotData = false;
                 Log.v("NETWORK", "accesstoken succeeded");
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
