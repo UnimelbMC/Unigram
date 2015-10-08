@@ -1,7 +1,9 @@
 package co.example.junjen.mobileinstagram;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -51,6 +53,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 
@@ -294,7 +297,7 @@ public class CameraFragment extends Fragment {
                     showTakenPicture(bitmap);
                     //showImageView.setImageBitmap(bitmap);
                     Toast.makeText(getActivity(),
-                            "Picture Captured Successfully:", Toast.LENGTH_LONG)
+                            "Picture Captured Successfully", Toast.LENGTH_LONG)
                             .show();
                 } else {
                     Toast.makeText(getActivity(),
@@ -630,10 +633,97 @@ public class CameraFragment extends Fragment {
     private View.OnClickListener btnAcceptListener= new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            PublishActivity.openWithPhotoUri(getActivity(), Uri.fromFile(photoPath));
+            //PublishActivity.openWithPhotoUri(getActivity(), Uri.fromFile(photoPath));
+
+            try {
+            File miDirs = new File(
+                    Environment.getExternalStorageDirectory() + "/myphotos");
+            if (!miDirs.exists())
+                miDirs.mkdirs();
+
+            final Calendar c = Calendar.getInstance();
+            String new_Date = c.get(Calendar.DAY_OF_MONTH) + "-"
+                    + ((c.get(Calendar.MONTH)) + 1) + "-"
+                    + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR)
+                    + "-" + c.get(Calendar.MINUTE) + "-"
+                    + c.get(Calendar.SECOND);
+
+            String imageFilePath = String.format(
+                    Environment.getExternalStorageDirectory() + "/myphotos"
+                            + "/%s.jpg", "te1t(" + new_Date + ")");
+
+            Uri selectedImage = Uri.parse(imageFilePath);
+
+            Bitmap bitmap=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
+            //create a file to write bitmap data
+            File f = new File(imageFilePath);
+                f.createNewFile();
+
+//Convert bitmap to byte array
+            //Bitmap bitmap = your bitmap;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+
+
+                if (verificaInstagram()) {
+
+                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    shareIntent.setType("image/*");
+                    final ContentResolver cr = getActivity().getContentResolver();
+                    final String[] p1 = new String[] {
+                            MediaStore.Images.ImageColumns._ID, MediaStore.Images.ImageColumns.TITLE, MediaStore.Images.ImageColumns.DATE_TAKEN
+                    };
+                    Cursor c1 = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, p1, null, null, p1[1] + " DESC");
+
+                    if (c1.moveToFirst() ) {
+                        Log.i("Teste", "last picture (" + c1.getString(1) + ") taken on: " + new Date(c1.getLong(2)));
+                    }
+
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
+                    shareIntent.setPackage("com.instagram.android");
+
+                    startActivity(Intent.createChooser(shareIntent, "Share to"));;
+                    //startActivity(shareIntent);
+
+                    c1.close();
+                }else{
+                    Toast.makeText(getActivity(),
+                            "Please Install Instagram before publish", Toast.LENGTH_LONG);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+
+
+
+
 
         }
     };
+
+    private boolean verificaInstagram(){
+        boolean installed = false;
+
+        try {
+            ApplicationInfo info = getActivity().getPackageManager().getApplicationInfo("com.instagram.android", 0);
+            installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            installed = false;
+        }
+        return installed;
+    }
 
 
 
