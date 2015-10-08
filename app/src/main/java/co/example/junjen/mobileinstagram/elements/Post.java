@@ -133,7 +133,11 @@ public class Post implements Serializable{
             // TODO: Handle double click on post image
         }
 
+        // Like Button
         // TODO: Handle clicks for like button
+
+        // Comment Button
+//        ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_bu)
 
         /** Optional parameters **/
 
@@ -182,7 +186,9 @@ public class Post implements Serializable{
                     stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
                     stringComponents.add(", ");
                 }
-                stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
+                if(likeCount > 0){
+                    stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
+                }
                 StringFactory.stringBuilder(likeCountText, stringComponents);
                 stringComponents.clear();
             }

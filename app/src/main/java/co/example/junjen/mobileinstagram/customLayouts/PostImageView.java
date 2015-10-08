@@ -5,12 +5,17 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
+import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.elements.Parameters;
 
 /**
  * Created by junjen on 8/10/2015.
@@ -19,6 +24,7 @@ import android.widget.ImageView;
  */
 
 public class PostImageView extends ImageView {
+
     private Context context;
     private GestureListener mGestureListener;
     private GestureDetector mGestureDetector;
@@ -50,13 +56,10 @@ public class PostImageView extends ImageView {
             public boolean onTouch(View v, MotionEvent event) {
                 mGestureDetector.onTouchEvent(event);
 
-//                if (mGestureDetector.onTouchEvent(event)){
-//                    Log.w("test","double tap?");
-//                }
-
                 invalidate();
                 return true; // indicate event was handled
             }
+
         });
     }
 
@@ -67,9 +70,12 @@ public class PostImageView extends ImageView {
             String postId = (String) getContentDescription();
 
             Log.w("test","double tap: "+ postId);
-//            ((ImageView) context).getContentDescription()
-
-//            context.get
+            getResources();
+            Drawable[] layers = new Drawable[2];
+            layers[0] = getDrawable();
+            layers[1] = Parameters.MainActivityContext.getResources().getDrawable(R.drawable.like_button_feedback);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+            setImageDrawable(layerDrawable);
 
             return true;
         }
