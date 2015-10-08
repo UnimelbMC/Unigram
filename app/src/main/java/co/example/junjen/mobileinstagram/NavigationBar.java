@@ -225,7 +225,7 @@ public class NavigationBar extends AppCompatActivity {
     // destroy the access token
     public void clearToken(){
         File file = new File(NetParams.ACCESS_TOKEN_FILEPATH);
-        if(file.exists()) {
+        if (file.exists()) {
             file.delete();
             Log.w("test", "token deleted");
         }
