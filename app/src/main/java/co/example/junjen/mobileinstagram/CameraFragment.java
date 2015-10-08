@@ -1128,7 +1128,6 @@ public class CameraFragment extends Fragment {
         if (actionBar != null) {
             actionBar.hide();
         }
-        ((NavigationBar) getActivity()).getNavBar().setVisibility(View.GONE);
     }
 
     @Override
@@ -1141,7 +1140,6 @@ public class CameraFragment extends Fragment {
         if (actionBar != null) {
             actionBar.show();
         }
-        ((NavigationBar) getActivity()).getNavBar().setVisibility(View.VISIBLE);
     }
 
     /**
