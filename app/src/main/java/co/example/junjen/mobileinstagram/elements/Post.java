@@ -137,7 +137,9 @@ public class Post implements Serializable{
         // TODO: Handle clicks for like button
 
         // Comment Button
-//        ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_bu)
+        ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
+        commentButton.setOnClickListener(this.commentButtonOnClickListener());
+
 
         /** Optional parameters **/
 
@@ -312,7 +314,7 @@ public class Post implements Serializable{
                     }
 
                     imageView.setContentDescription(post.getPostId());
-                    imageView.setOnClickListener(Post.postIconOnClickListener());
+                    imageView.setOnClickListener(post.postIconOnClickListener());
 
                 } else {
                     imageView.setImageDrawable(null);
@@ -326,27 +328,33 @@ public class Post implements Serializable{
     }
 
     // OnClickListener for post icon clicks
-    public static View.OnClickListener postIconOnClickListener(){
+    public View.OnClickListener postIconOnClickListener(){
 
         View.OnClickListener postIconOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String postId = (String) v.getContentDescription();
 
-                if(postId.equals(Parameters.default_postId)){
+                // display post
+                Parameters.NavigationBarActivity.showFragment(PostFragment.newInstance(postId));
+            }
+        };
+        return postIconOnClickListener;
+    }
 
-                } else {
+    // OnClickListener for post icon clicks
+    public View.OnClickListener commentButtonOnClickListener(){
 
-                    // TODO: get post based on postId through Network
-
-                    // display post's comments
-                    Parameters.NavigationBarActivity.showFragment(PostFragment.newInstance(postId));
-
-                }
+        View.OnClickListener commentButtonOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // display post's comments
+                Parameters.NavigationBarActivity.showFragment(CommentsFragment.
+                        newInstance(comments, username, userImage, caption, timeSince));
             }
         };
 
-        return postIconOnClickListener;
+        return commentButtonOnClickListener;
     }
 
     public String getPostId() {

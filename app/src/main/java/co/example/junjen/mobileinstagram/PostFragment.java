@@ -70,7 +70,12 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Post post = NetParams.NETWORK.getPostById(postId);
+        Post post;
+        if(!postId.equals(Parameters.default_postId)){
+            post = NetParams.NETWORK.getPostById(postId);
+        } else {
+            post = new Post();
+        }
 
         ViewGroup postFragment = (ViewGroup) inflater.inflate(R.layout.fragment_post, container, false);
         postFragment.addView(post.getPostView(inflater));

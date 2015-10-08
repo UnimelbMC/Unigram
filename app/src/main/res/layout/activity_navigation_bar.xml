@@ -11,7 +11,8 @@
         android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="co.example.junjen.mobileinstagram.NavigationBar">
+        tools:context="co.example.junjen.mobileinstagram.NavigationBar"
+        android:layout_marginBottom="@dimen/nav_bar_height">
     </RelativeLayout>
 
     <!-- Navigation Bar -->

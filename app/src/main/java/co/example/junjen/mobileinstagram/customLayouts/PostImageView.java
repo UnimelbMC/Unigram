@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import co.example.junjen.mobileinstagram.R;
@@ -76,6 +79,20 @@ public class PostImageView extends ImageView {
             layers[1] = Parameters.MainActivityContext.getResources().getDrawable(R.drawable.like_button_feedback);
             LayerDrawable layerDrawable = new LayerDrawable(layers);
             setImageDrawable(layerDrawable);
+
+
+//            RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
+//            anim.setInterpolator(new LinearInterpolator());
+//            anim.setRepeatCount(Animation.INFINITE);
+//            anim.setDuration(700);
+//
+//            // Start animating the image
+//            final ImageView splash = (ImageView) findViewById(R.id.splash);
+//            splash.startAnimation(anim);
+//
+//            // Later.. stop the animation
+//            splash.setAnimation(null);
+
 
             return true;
         }
