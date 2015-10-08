@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +49,7 @@ public class NavigationBar extends AppCompatActivity {
     private final int profileButtonId = R.id.profile_button;
 
     private int logoutBrowserCount = 0;
+    private boolean cameraOn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,7 @@ public class NavigationBar extends AppCompatActivity {
                         break;
                     case R.id.camera_button:
                         ft.replace(navigationViewId, cameraFragment);
+                        cameraOn = true;
                         break;
                     case activityFeedButtonId:
                         ft.replace(navigationViewId,
@@ -120,8 +123,6 @@ public class NavigationBar extends AppCompatActivity {
             }
         });
     }
-
-
 
     // displays a fragment and adds it to a history
     public void showFragment(Fragment fragment){
@@ -152,35 +153,43 @@ public class NavigationBar extends AppCompatActivity {
 
     // go back to the previous fragment using the back button
     public void goBack(){
-        int size = 0;
 
         switch (prevNavButtonId) {
             case userFeedButtonId:
-                replaceView(userFeedHistory.get(userFeedHistory.size()-2));
-                userFeedHistory.remove(userFeedHistory.size()-1);
-                size = userFeedHistory.size();
+                updateHistory(userFeedHistory);
                 break;
             case discoverButtonId:
-                replaceView(discoverHistory.get(discoverHistory.size()-2));
-                discoverHistory.remove(discoverHistory.size() - 1);
-                size = discoverHistory.size();
+                updateHistory(discoverHistory);
                 break;
             case activityFeedButtonId:
-                replaceView(activityFeedHistory.get(activityFeedHistory.size()-2));
-                activityFeedHistory.remove(activityFeedHistory.size() - 1);
-                size = activityFeedHistory.size();
+                updateHistory(activityFeedHistory);
                 break;
             case profileButtonId:
-                replaceView(profileHistory.get(profileHistory.size()-2));
-                profileHistory.remove(profileHistory.size() - 1);
-                size = profileHistory.size();
+                updateHistory(profileHistory);
                 break;
         }
+
+    }
+
+    // update history when back button is clicked
+    public void updateHistory(ArrayList<Fragment> history){
+        int size = 0;
+
+        if(!cameraOn) {
+            replaceView(history.get(history.size() - 2));
+            history.remove(history.size() - 1);
+        } else {
+            cameraOn = false;
+            replaceView(history.get(history.size() - 1));
+        }
+        size = history.size();
+
         // hide back button if fragment history is only the current fragment
         if (size == 1){
             hideBackButton();
         }
     }
+
 
     // TODO: update argument to receive token
     private void createFragments(){
@@ -231,6 +240,16 @@ public class NavigationBar extends AppCompatActivity {
         startActivity(mainIntent);
 
         finish();
+    }
+
+    // android back button goes back to previous fragment when in camera fragment
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && cameraOn) {
+            goBack();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
