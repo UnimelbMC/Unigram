@@ -50,7 +50,7 @@ public class Network {
             }
         }
 
-        Suggestion su = new Suggestion();
+        Suggestion su = new Suggestion("self");
         thisUserData = new UserInfoData();
         thisUserData.setUsername(Parameters.default_username);
         thisUserData.setBio(Parameters.default_profDescrp);
