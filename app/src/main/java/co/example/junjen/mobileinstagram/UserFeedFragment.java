@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,14 +105,18 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
                 @Override
                 public void onGlobalLayout() {
                     userFeedFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    int height = userFeedFragment.getHeight();
 
-                    if (height < screenHeight) {
+                    int[] location = new int[2];
+                    userFeedFragment.getLocationOnScreen(location);
+                    int height = location[1] + userFeedFragment.getChildAt(0).getHeight();
+
+                    Log.w("test", "userfeed: " + Integer.toString(height) + " (" + Integer.toString(screenHeight) + ")");
+
+                    if (height <= screenHeight) {
                         loadUserFeedPosts();
                     }
                 }
             });
-
         }
         return userFeedFragment;
     }

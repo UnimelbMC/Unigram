@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_profile"
     android:fillViewport="true"
     android:orientation="vertical"
     tools:context="co.example.junjen.mobileinstagram.ProfileFragment">

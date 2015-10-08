@@ -64,6 +64,7 @@ public class Parameters {
     public static final int loginClickInBrowserCountMax = 2;
     public static final int urlCountMax = 2;
     public static final int logoutBrowserCountMax = 3;
+    public static int NavigationViewHeight = 0;
 
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){

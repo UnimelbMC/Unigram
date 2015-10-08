@@ -17,6 +17,7 @@ import co.example.junjen.mobileinstagram.UsersFragment;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 
+
 /**
  * Created by junjen on 30/09/2015.
  *

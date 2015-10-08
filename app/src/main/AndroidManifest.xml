@@ -39,7 +39,8 @@
         </activity>
         <activity
             android:name=".NavigationBar"
-            android:label="@string/title_activity_navigation_bar">
+            android:label="@string/title_activity_navigation_bar"
+            android:configChanges="orientation|screenSize">
 
         </activity>
         <activity

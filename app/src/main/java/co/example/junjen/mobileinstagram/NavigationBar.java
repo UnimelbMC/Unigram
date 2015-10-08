@@ -1,15 +1,19 @@
 package co.example.junjen.mobileinstagram;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
@@ -33,7 +37,7 @@ public class NavigationBar extends AppCompatActivity {
     private String token;
     private RadioGroup navBar;
     private int prevNavButtonId;
-    private int mainView = R.id.view1;
+    private int navigationViewId = R.id.view1;
     private ActionBar actionBar;
 
     // Button IDs
@@ -91,23 +95,23 @@ public class NavigationBar extends AppCompatActivity {
                 ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case userFeedButtonId:
-                        ft.replace(mainView, userFeedHistory.get(userFeedHistory.size() - 1));
+                        ft.replace(navigationViewId, userFeedHistory.get(userFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
                         break;
                     case discoverButtonId:
-                        ft.replace(mainView, discoverHistory.get(discoverHistory.size() - 1));
+                        ft.replace(navigationViewId, discoverHistory.get(discoverHistory.size() - 1));
                         prevNavButtonId = checkedId;
                         break;
                     case R.id.camera_button:
-                        ft.replace(mainView, cameraFragment);
+                        ft.replace(navigationViewId, cameraFragment);
                         break;
                     case activityFeedButtonId:
-                        ft.replace(mainView,
+                        ft.replace(navigationViewId,
                                 activityFeedHistory.get(activityFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
                         break;
                     case profileButtonId:
-                        ft.replace(mainView, profileHistory.get(profileHistory.size() - 1));
+                        ft.replace(navigationViewId, profileHistory.get(profileHistory.size() - 1));
                         prevNavButtonId = checkedId;
                         break;
                 }
@@ -115,6 +119,8 @@ public class NavigationBar extends AppCompatActivity {
             }
         });
     }
+
+
 
     // displays a fragment and adds it to a history
     public void showFragment(Fragment fragment){
@@ -139,7 +145,7 @@ public class NavigationBar extends AppCompatActivity {
     // replaces the main view with a fragment
     public void replaceView(Fragment fragment){
         ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(mainView, fragment);
+        ft.replace(navigationViewId, fragment);
         ft.commit();
     }
 

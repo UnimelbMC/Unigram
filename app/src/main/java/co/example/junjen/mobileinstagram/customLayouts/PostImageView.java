@@ -1,5 +1,9 @@
 package co.example.junjen.mobileinstagram.customLayouts;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -46,6 +50,10 @@ public class PostImageView extends ImageView {
             public boolean onTouch(View v, MotionEvent event) {
                 mGestureDetector.onTouchEvent(event);
 
+                if (mGestureDetector.onTouchEvent(event)){
+                    Log.w("test","double tap?");
+                }
+
                 invalidate();
                 return true; // indicate event was handled
             }
@@ -60,8 +68,7 @@ public class PostImageView extends ImageView {
             String postId = (String) getContentDescription();
 
             Log.w("test","double tap: "+ postId);
-
-
+            
             return true;
         }
     }
