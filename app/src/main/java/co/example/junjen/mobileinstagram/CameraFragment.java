@@ -1118,11 +1118,6 @@ public class CameraFragment extends Fragment {
         }
     }
 
-    // returns to the previous fragment when the back button is clicked
-    public void onBackButtonClick(){
-        ((NavigationBar) getActivity()).checkPreviousNavButton();
-    }
-
     @Override
      // sets the action bar title when in a user feed fragment
      public void onAttach(Context context) {

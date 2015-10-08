@@ -42,7 +42,7 @@ public class PostImageView extends ImageView {
     private void sharedConstructing(Context context) {
         super.setClickable(true);
         this.context = context;
-        mGestureListener=new GestureListener();
+        mGestureListener = new GestureListener();
         mGestureDetector = new GestureDetector( context, mGestureListener, null, true );
         setOnTouchListener(new OnTouchListener() {
 
@@ -50,9 +50,9 @@ public class PostImageView extends ImageView {
             public boolean onTouch(View v, MotionEvent event) {
                 mGestureDetector.onTouchEvent(event);
 
-                if (mGestureDetector.onTouchEvent(event)){
-                    Log.w("test","double tap?");
-                }
+//                if (mGestureDetector.onTouchEvent(event)){
+//                    Log.w("test","double tap?");
+//                }
 
                 invalidate();
                 return true; // indicate event was handled
@@ -67,8 +67,9 @@ public class PostImageView extends ImageView {
             String postId = (String) getContentDescription();
 
             Log.w("test","double tap: "+ postId);
-
 //            ((ImageView) context).getContentDescription()
+
+//            context.get
 
             return true;
         }

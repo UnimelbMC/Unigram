@@ -181,7 +181,8 @@ public class NavigationBar extends AppCompatActivity {
             history.remove(history.size() - 1);
         } else {
             cameraOn = false;
-            navBar.check(cameraButtonId);
+            RadioButton rb = (RadioButton) findViewById(prevNavButtonId);
+            rb.setChecked(true);
             replaceView(history.get(history.size() - 1));
         }
         size = history.size();
@@ -199,12 +200,7 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance(Parameters.default_username, false));
-    }
-
-    // return to previous fragment by programmatically checking the radio button
-    public void checkPreviousNavButton(){
-        navBar.check(prevNavButtonId);
+        profileHistory.add(ProfileFragment.newInstance("", false));
     }
 
     // returns the navigation bar object to the camera fragment's back button
