@@ -22,6 +22,7 @@ import co.example.junjen.mobileinstagram.elements.Location;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
+import co.example.junjen.mobileinstagram.suggestion.Classification;
 import co.example.junjen.mobileinstagram.suggestion.Suggestion;
 
 /**
@@ -39,23 +40,31 @@ public class Network {
         int gotData = 0;
         fakePost.add(new Post());
         Log.v("NETWORK", "enterConstructor");
+
         while(gotData<10) {
             try {
                 thisUserData = instagram.getCurrentUserInfo().getData();
+                Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-                return;
+//                why the is there a return here?? This made me lose a lot of time
+//                somebody is gonna get their ass seriously kicked
+//                return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
                 gotData += 1;
             }
         }
 
-        Suggestion su = new Suggestion("self");
+
         thisUserData = new UserInfoData();
         thisUserData.setUsername(Parameters.default_username);
         thisUserData.setBio(Parameters.default_profDescrp);
         thisUserData.setCounts(new Counts());
         thisUserData.setProfilePicture(Parameters.default_image);
+
+//        Log.d("Network", "Suggestions should go here");
+//        Suggestion sug = new Suggestion("self");
+        Classification cls = new Classification();
 
 
     }

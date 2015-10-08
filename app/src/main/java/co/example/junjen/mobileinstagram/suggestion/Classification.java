@@ -8,9 +8,7 @@ import org.jinstagram.entity.users.feed.UserFeedData;
 import org.jinstagram.exceptions.InstagramException;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import co.example.junjen.mobileinstagram.network.NetParams;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instances;
@@ -20,54 +18,64 @@ import weka.core.Instances;
  */
 public class Classification {
 
-    public static ArrayList<Attribute> attributeList;
-    Suggestion suggestion;
-    public static String currUserId;
-    private static final int ATTR_PER_SELF = 10;
-
-
+    private static Suggestion suggestion;
+    private static String selfUserId;
+    private ArrayList<Attribute> attributeList;
+    private FastVector featureLabels;
+    private Attribute cls;
+//    private ArrayList<String> userIdList;
+    private Instances dataset;
 
     public Classification(){
+        this.selfUserId = "self";
         attributeList = new ArrayList<Attribute>();
-        this.currUserId = "self";
-        suggestion= new Suggestion(currUserId);
-
+        featureLabels = new FastVector();
+        Log.d("classification","this is classificati");
+        createInstances();
     }
 
-//    public ArrayList getAttributes(String userId, int numberofUsers){
-//        ArrayList<String> followsList = suggestion.follows(userId, numberofUsers);
-//        ArrayList<Attribute> featuresList = new ArrayList<Attribute>();
-//        for(int i = 0; i<10; i++){
-//            featuresList.add(new Attribute(followsList.get(i)));
-//        };
-//
-//        return featuresList;
-//    }
 
     public void createAttributes(){
         String feature_name;
-        for(int i=0; i< suggestion.getUsersIdList().size(); i++){
-            if(i<10){
-                feature_name = "follows_user_";
-            }else{
-                feature_name = "not_following_user_";
-            }
-            attributeList.add(new Attribute(feature_name+suggestion.getUsersIdList().get(i)));
+        suggestion = new Suggestion(selfUserId);
+        featureLabels.addElement("0");
+        featureLabels.addElement("1");
+        // Suggested users attributes
+        for(int i=0; i< suggestion.getSuggestedUsersIdList().size(); i++){
+            attributeList.add(new Attribute(suggestion.getSuggestedUsersIdList().get(i),
+                                                                                    featureLabels));
+//            featureLabels.addElement(suggestion.getSuggestedUsersIdList().get(i));
         }
-        Log.d("attributeList",attributeList.toString());
+        // Not suggested users attributes
+        for(int i=0; i< suggestion.getNotSuggestedUsersIdList().size(); i++){
+            attributeList.add(new Attribute(suggestion.getNotSuggestedUsersIdList().get(i),
+                                                                                    featureLabels));
+//            featureLabels.addElement(suggestion.getNotSuggestedUsersIdList().get(i));
+        }
+
+        Log.d("attributeList", attributeList.toString());
+//        Log.d("featureLabels", featureLabels.toString());
     }
 
-    public Attribute createLabels(){
+    public void createClsLabels(){
         FastVector labels = new FastVector();
         labels.addElement("suggest");
         labels.addElement("notSuggest");
-        Attribute cls = new Attribute("class", labels);
-        return cls;
+        cls = new Attribute("class", labels);
     }
 
-    public void createInstance(String userId){
+    public void createInstances(){
+        createAttributes();
+        createClsLabels();
+        FastVector attributes = new FastVector();
+        for(Attribute a : this.attributeList){
+            attributes.addElement(a);
+        }
+        attributes.addElement(cls);
 
+        this.dataset = new Instances("user-dataset",attributes,20);
 
+        Log.d("dataset",dataset.toString());
     }
 
 
