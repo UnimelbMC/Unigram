@@ -6,6 +6,7 @@ import org.jinstagram.Instagram;
 import org.jinstagram.entity.comments.CommentData;
 import org.jinstagram.entity.comments.MediaCommentsFeed;
 import org.jinstagram.entity.likes.LikesFeed;
+import org.jinstagram.entity.users.basicinfo.Counts;
 import org.jinstagram.entity.users.basicinfo.UserInfoData;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.example.junjen.mobileinstagram.elements.Comment;
+import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.elements.Location;
 import co.example.junjen.mobileinstagram.elements.Post;
@@ -29,19 +31,32 @@ public class Network {
     private final int MAX_USER_FEED_POSTS = 9;
     private Instagram instagram;
     private UserInfoData thisUserData;
+    private ArrayList<Post> fakePost = new ArrayList<>();
+
     public Network() {
         instagram = new Instagram(NetParams.ACCESS_TOKEN);
-        boolean gotData = true;
+        int gotData = 0;
+        fakePost.add(new Post());
         Log.v("NETWORK", "enterConstructor");
-        while(gotData) {
+        while(gotData<10) {
             try {
                 thisUserData = instagram.getCurrentUserInfo().getData();
-                gotData = false;
-                Log.v("NETWORK", "accesstoken succeeded");
+                gotData = 100;
+                return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
+                gotData += 1;
             }
         }
+        thisUserData = new UserInfoData();
+        thisUserData.setUsername(Parameters.default_username);
+        thisUserData.setBio(Parameters.default_profDescrp);
+        thisUserData.setCounts(new Counts());
+        thisUserData.setProfilePicture(Parameters.default_image);
+     //   thisUserData.setUsername(Parameters.default_username);
+      //  thisUserData.setUsername(Parameters.default_username);
+
+
     }
 
     public String getProfilePic(){
@@ -56,33 +71,13 @@ public class Network {
         return thisUserData.getUsername();
     }
 
-
-    public Profile getProfileFromAPI(String username){
-    /*String username, String userimage, String profName, String profDescrp,
-        String postsCount, String followersCount, String followingCount,ArrayList<Post> posts)*/
-        UserInfoData uData;
-        try {
-            if (username == "") {
-                uData = thisUserData;
-            }else {
-
-                uData = instagram.getUserInfo(username).getData();
-            }
-            return new Profile(uData.getUsername(), uData.getProfilePicture(), uData.getFirstName(),
-                    uData.getBio(), uData.getCounts().getMedia(), uData.getCounts().getFollowedBy(),
-                    uData.getCounts().getFollows(), buildPostList());
-        } catch (InstagramException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private ArrayList<Post> buildPostList(){
         return new ArrayList<Post>();
     }
     public Profile getUserProfileFeed(String username){
         return getUserProfileFeed(username,null,null);
     }
+
     public Profile getUserProfileFeed(String username,String minId,String maxId){
         String uImage;
         String profName;
@@ -123,10 +118,24 @@ public class Network {
                     followingCount, thePosts);
         }catch(InstagramException e) {
             e.printStackTrace();
+            return new Profile(Parameters.default_username);
         }
-        return null;
-    }
 
+    }
+    public ArrayList<Post> getUserFeed(){
+        return getUserFeed(null,null);
+    }
+    public ArrayList<Post> getUserFeed(String minId, String maxId){
+
+        try {
+            MediaFeed feed = instagram.getUserFeeds(maxId, minId, Parameters.postsToLoad);
+            List<MediaFeedData> userFeed = feed.getData();
+            return getPostsList(userFeed,false);
+        } catch (InstagramException e) {
+            e.printStackTrace();
+           return fakePost;
+        }
+    }
     //Get arrayList of Posts
     public ArrayList<Post> getPostsList(List<MediaFeedData> mediaFeeds,boolean thumb){
         ArrayList<Post> thePosts = new ArrayList<>();
@@ -149,6 +158,7 @@ public class Network {
                     thisPost.getCreatedTime(), imgUrl, cap,getLikesByPostId(thisPost.getId()), getCommentsByPostId(thisPost.getId()));
             thePosts.add(post);
         }
+        Log.v("NETWORK","size of the post from ingram"+Integer.toString(thePosts.size()));
         return thePosts;
     }
     //Get a media from instagram and return Post object for layout
@@ -171,8 +181,9 @@ public class Network {
                     getCommentsByPostId(postId));
         } catch (InstagramException e) {
             e.printStackTrace();
+            return new Post();
         }
-        return null;
+
     }
     //Build Comments list to return to layout
     public ArrayList<Comment> getCommentsByPostId(String postId){

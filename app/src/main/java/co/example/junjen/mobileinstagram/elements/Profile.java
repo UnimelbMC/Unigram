@@ -50,7 +50,7 @@ public class Profile implements Serializable{
         this.profName = Parameters.default_profName;
         this.profDescrp = Parameters.default_profDescrp;
 
-        this.postCount = 1;
+        this.postCount = 50;
         this.followerCount = 100;
         this.followingCount = 100;
 

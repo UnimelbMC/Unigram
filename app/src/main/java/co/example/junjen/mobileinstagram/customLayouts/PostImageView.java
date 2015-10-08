@@ -68,6 +68,8 @@ public class PostImageView extends ImageView {
 
             Log.w("test","double tap: "+ postId);
 
+//            ((ImageView) context).getContentDescription()
+
             return true;
         }
     }

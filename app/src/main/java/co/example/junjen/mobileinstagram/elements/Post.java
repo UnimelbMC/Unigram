@@ -309,7 +309,7 @@ public class Post implements Serializable{
                     imageView.setOnClickListener(Post.postIconOnClickListener());
 
                 } else {
-                    imageView.setImageResource(0);
+                    imageView.setImageDrawable(null);
                 }
                 // add post icon into row
                 postIconRow.addView(imageView, postIconRow.getChildCount());
