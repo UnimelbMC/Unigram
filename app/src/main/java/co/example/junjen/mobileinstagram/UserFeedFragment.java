@@ -97,9 +97,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
             // add layout listener to add content if default screen is not filled
             ViewTreeObserver vto = userFeedFragment.getViewTreeObserver();
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            final int screenHeight = displaymetrics.heightPixels;
+            final int screenHeight = Parameters.NavigationViewHeight;
 
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
