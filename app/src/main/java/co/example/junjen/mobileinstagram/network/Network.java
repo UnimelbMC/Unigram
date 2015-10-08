@@ -26,6 +26,7 @@ import co.example.junjen.mobileinstagram.elements.TimeSince;
  */
 public class Network {
     // Object used to retrieve data from Instagram API
+    private final int MAX_USER_FEED_POSTS = 9;
     private Instagram instagram;
     private UserInfoData thisUserData;
     public Network() {
@@ -55,10 +56,7 @@ public class Network {
         return thisUserData.getUsername();
     }
 
-    //Build profile view from userData
-    public Profile getProfileFromAPI(){
-        return getProfileFromAPI("");
-    }
+
     public Profile getProfileFromAPI(String username){
     /*String username, String userimage, String profName, String profDescrp,
         String postsCount, String followersCount, String followingCount,ArrayList<Post> posts)*/
@@ -82,8 +80,10 @@ public class Network {
     private ArrayList<Post> buildPostList(){
         return new ArrayList<Post>();
     }
-
     public Profile getUserProfileFeed(String username){
+        return getUserProfileFeed(username,null,null);
+    }
+    public Profile getUserProfileFeed(String username,String minId,String maxId){
         String uImage;
         String profName;
         String profDesc;
@@ -97,7 +97,7 @@ public class Network {
         try {
             MediaFeed mediaFeed;
             if(username=="") {
-                mediaFeed = instagram.getRecentMediaFeed("self");
+                mediaFeed = instagram.getRecentMediaFeed("self", MAX_USER_FEED_POSTS,minId,maxId,null,null);
                 username = thisUserData.getUsername();
                 uImage = thisUserData.getProfilePicture();
                 profName = thisUserData.getFullName();
@@ -106,9 +106,8 @@ public class Network {
                 followersCount = thisUserData.getCounts().getFollowedBy();
                 followingCount = thisUserData.getCounts().getFollows();
             }else{
-                mediaFeed = instagram.getRecentMediaFeed(username);
+                mediaFeed = instagram.getRecentMediaFeed(username, MAX_USER_FEED_POSTS,minId,maxId,null,null);
                 UserInfoData otherUser = instagram.getUserInfo(username).getData();
-
                 uImage = otherUser.getProfilePicture();
                 profName = otherUser.getFullName();
                 profDesc = otherUser.getBio();
@@ -117,23 +116,8 @@ public class Network {
                 followingCount = otherUser.getCounts().getFollows();
             }
             List<MediaFeedData> mediaFeeds = mediaFeed.getData();
-            Log.v("POST1",Integer.toString(mediaFeeds.size()));
-            for (MediaFeedData thisPost : mediaFeeds) {
-                Log.v("POST2",thisPost.toString());
-                Location loc;
-                if (thisPost.getLocation()== null){
-                    loc = null;
-                }else{
-                    loc = new Location(thisPost.getLocation().getId(), thisPost.getLocation().getName(),
-                            thisPost.getLocation().getLatitude(), thisPost.getLocation().getLongitude());
-                }
-                Post post = new Post(thisPost.getId(),thisPost.getUser().getProfilePictureUrl(),
-                        thisPost.getUser().getUserName(),loc,
-                        thisPost.getCreatedTime(), thisPost.getImages().getThumbnail().getImageUrl()
-                        ,thisPost.getCaption().getText(),getLikesByPostId(thisPost.getId()),
-                        getCommentsByPostId(thisPost.getId()));
-                thePosts.add(post);
-            }
+            thePosts = getPostsList(mediaFeeds);
+            Log.v("NETWORK",Integer.toString(thePosts.size()));
             return new Profile(username, uImage, profName,
                   profDesc,postsCount, followersCount,
                     followingCount, thePosts);
@@ -141,6 +125,28 @@ public class Network {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //Get arrayList of Posts
+    public ArrayList<Post> getPostsList(List<MediaFeedData> mediaFeeds){
+        ArrayList<Post> thePosts = new ArrayList<>();
+        for (MediaFeedData thisPost : mediaFeeds) {
+            Location loc = null;
+            String cap = null;
+            if (thisPost.getLocation()!= null){
+                loc = new Location(thisPost.getLocation().getId(), thisPost.getLocation().getName(),
+                        thisPost.getLocation().getLatitude(), thisPost.getLocation().getLongitude());
+            }
+            if (thisPost.getCaption()!= null){
+                cap = thisPost.getCaption().getText();
+            }
+            Post post = new Post(thisPost.getId(),thisPost.getUser().getProfilePictureUrl(),
+                    thisPost.getUser().getUserName(),loc,
+                    thisPost.getCreatedTime(), thisPost.getImages().getThumbnail().getImageUrl()
+                    ,cap,getLikesByPostId(thisPost.getId()), getCommentsByPostId(thisPost.getId()));
+            thePosts.add(post);
+        }
+        return thePosts;
     }
     //Get a media from instagram and return Post object for layout
     public Post getPostById(String postId){
