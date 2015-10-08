@@ -26,6 +26,7 @@ import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
+import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 
@@ -105,6 +106,11 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
             } else {
                 profile = new Profile(username);
             }
+
+            // save login username and profile
+            Parameters.loginUsername = profile.getUsername().getUsername();
+            Parameters.loginUser = new User(profile.getUsername().getUsername(),
+                    profile.getUserImage().getImageString(), profile.getProfName());
 
             setTitle();
 

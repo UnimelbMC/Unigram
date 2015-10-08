@@ -113,7 +113,7 @@ public class Network {
             List<MediaFeedData> mediaFeeds = mediaFeed.getData();
             thePosts = getPostsList(mediaFeeds, false);
             Log.v("NETWORK","thePosts size() "+Integer.toString(thePosts.size()));
-            return new Profile(username, uImage, profName,
+            return new Profile(new User(username, uImage, profName),
                   profDesc,postsCount, followersCount,
                     followingCount, thePosts);
         }catch(InstagramException e) {

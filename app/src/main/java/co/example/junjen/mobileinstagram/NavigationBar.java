@@ -99,11 +99,13 @@ public class NavigationBar extends AppCompatActivity {
                 ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case userFeedButtonId:
-                        ft.replace(navigationViewId, userFeedHistory.get(userFeedHistory.size() - 1));
+                        ft.replace(navigationViewId,
+                                userFeedHistory.get(userFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
                         break;
                     case discoverButtonId:
-                        ft.replace(navigationViewId, discoverHistory.get(discoverHistory.size() - 1));
+                        ft.replace(navigationViewId,
+                                discoverHistory.get(discoverHistory.size() - 1));
                         prevNavButtonId = checkedId;
                         break;
                     case cameraButtonId:
@@ -116,7 +118,8 @@ public class NavigationBar extends AppCompatActivity {
                         prevNavButtonId = checkedId;
                         break;
                     case profileButtonId:
-                        ft.replace(navigationViewId, profileHistory.get(profileHistory.size() - 1));
+                        ft.replace(navigationViewId,
+                                profileHistory.get(profileHistory.size() - 1));
                         prevNavButtonId = checkedId;
                         break;
                 }
@@ -169,7 +172,6 @@ public class NavigationBar extends AppCompatActivity {
                 updateHistory(profileHistory);
                 break;
         }
-
     }
 
     // update history when back button is clicked

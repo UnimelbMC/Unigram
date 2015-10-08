@@ -16,6 +16,8 @@ public class Parameters {
     // Login parameters
     public static final String selfLogin_key = "";
     public static boolean dummyData = false;
+    public static String loginUsername = null;
+    public static User loginUser = null;
 
     // Titles
     public static final String mainTitle = "UniGram";
@@ -38,7 +40,7 @@ public class Parameters {
     public static final String default_caption = "Caption";
     public static final String default_comment = "Comment";
     public static final String default_image = "#Image";
-    public static final int default_likeCount = 20;
+    public static final int default_likeCount = 2;
     public static final int default_commentCount = 50;
     public static final int likeThreshold = 10;
     public static final int commentThreshold = 3;
@@ -52,6 +54,11 @@ public class Parameters {
     public static final int likeStayDuration = 800;
     public static final int likeDisappearDuration = 100;
     public static final float animationStartEndScale = 0;
+
+    // Like flags
+    public static final String checkLike = "check";
+    public static final String like = "like";
+    public static final String unlike = "unlike";
 
     // Post icon parameters
     public static final int postIconsPerRow = 3;

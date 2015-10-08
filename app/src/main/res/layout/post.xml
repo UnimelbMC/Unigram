@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <!-- Post image -->
-        <co.example.junjen.mobileinstagram.customLayouts.PostImageView
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/post_image"

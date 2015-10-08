@@ -6,30 +6,30 @@ package co.example.junjen.mobileinstagram.elements;
  * This class creates Post objects.
  */
 
-import android.content.Context;
 import android.text.SpannableString;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import co.example.junjen.mobileinstagram.CommentsFragment;
 import co.example.junjen.mobileinstagram.PostFragment;
 import co.example.junjen.mobileinstagram.UsersFragment;
-import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
-import co.example.junjen.mobileinstagram.customLayouts.PostImageView;
+import co.example.junjen.mobileinstagram.customLayouts.LikeButton;
+import co.example.junjen.mobileinstagram.customLayouts.LikeListener;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
+import weka.classifiers.bayes.net.ParentSet;
 
 public class Post implements Serializable{
 
@@ -49,6 +49,9 @@ public class Post implements Serializable{
 
     // post view
     private RelativeLayout postView;
+    private LikeButton likeButton;
+
+    private String liked = Parameters.checkLike;
 
     public Post(){
         // test constructor to create 'empty' Post objects
@@ -83,8 +86,9 @@ public class Post implements Serializable{
         }
     }
 
-    public Post(String postId, String userImage, String username, Location location, String timeSince,
-                String postImage, String caption, ArrayList<User> likes, ArrayList<Comment> comments){
+    public Post(String postId, String userImage, String username, Location location,
+                String timeSince, String postImage, String caption, ArrayList<User> likes,
+                ArrayList<Comment> comments){
 
         this.postId = postId;
         this.userImage = new Image(userImage);
@@ -125,12 +129,12 @@ public class Post implements Serializable{
         timeSince.setText(this.timeSince.getTimeSince());
 
         // Post image
-        PostImageView postImage = (PostImageView) postView.findViewById(R.id.post_image);
+        ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
         if(!this.postImage.getImageString().equals(Parameters.default_image)) {
             Image.setImage(postImage, this.postImage);
-            postImage.setContentDescription(postId);
 
-            // TODO: Handle double click on post image
+            // set listener to handle double tap likes on post image
+            new LikeListener(postImage, this);
         }
 
         // Like Feedback
@@ -140,12 +144,23 @@ public class Post implements Serializable{
         likeFeedback.setVisibility(View.INVISIBLE);
 
         // Like Button
-        // TODO: Handle clicks for like button
+        likeButton = (LikeButton) postView.findViewById(R.id.like_button);
+        likeButton.setOnClickListener(new View.OnClickListener() {
+
+            // Handle clicks for like button
+            @Override
+            public void onClick(View v) {
+                if(likeButton.isChecked()){
+                    likePost(true);
+                } else {
+                    likePost(false);
+                }
+            }
+        });
 
         // Comment Button
         ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
         commentButton.setOnClickListener(this.commentButtonOnClickListener());
-
 
         /** Optional parameters **/
 
@@ -163,46 +178,7 @@ public class Post implements Serializable{
         }
 
         // Likes
-        RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
-        if (this.likes != null){
-            TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
-            int likeCount = this.likes.size();
-            int likeThreshold = Parameters.likeThreshold;
-
-            // add link to all likes if more than threshold
-            if(likeCount > likeThreshold){
-                likeCountText.setText(likeCount + " likes");
-                String text = likeCount + " likes";
-
-                SpannableString likeLink = StringFactory.createLink(text, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // display post's likes
-                        Parameters.NavigationBarActivity.showFragment
-                                (UsersFragment.newInstance(likes, Parameters.likesTitle));
-                    }
-                });
-                likeCountText.setText("");    // remove default text
-                stringComponents.add(likeLink);
-                StringFactory.stringBuilder(likeCountText, stringComponents);
-                stringComponents.clear();
-            }
-            else {
-                likeCountText.setText("");  // remove default text
-                int i;
-                for (i = 0; i < likeCount; i++){
-                    stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
-                    stringComponents.add(", ");
-                }
-                if(likeCount > 0){
-                    stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
-                }
-                StringFactory.stringBuilder(likeCountText, stringComponents);
-                stringComponents.clear();
-            }
-        } else {
-            likeLine.setVisibility(View.GONE);
-        }
+        updateLikes();
 
         // Caption
         TextView caption = (TextView) postView.findViewById(R.id.post_caption);
@@ -333,6 +309,111 @@ public class Post implements Serializable{
         }
     }
 
+    // updates list of Likes based or like button clicks or post image double taps
+    public void likePost(boolean like){
+        if(like && liked.equals(Parameters.unlike) || !like && liked.equals(Parameters.like)) {
+            int i;
+            int likesSize = likes.size();
+
+            for (Iterator iter = likes.listIterator(); iter.hasNext();) {
+                User thisUser = (User) iter.next();
+                if (thisUser.getUsername().getUsername().equals(Parameters.loginUsername)) {
+                    if (!like) {
+                        iter.remove();
+                        liked = Parameters.unlike;
+                        updateLikes();
+                    }
+                    break;
+                }
+            }
+
+
+//            for (i = 0; i < likesSize; i++) {
+//                if (likes.get(i).getUsername().getUsername().equals(Parameters.loginUsername)) {
+//                    if (!like) {
+//                        likes.remove(i);
+//                        liked = Parameters.unlike;
+//                        updateLikes();
+//                    }
+//                    break;
+//                }
+//            }
+            if (like) {
+                likes.add(0, Parameters.loginUser);
+                liked = Parameters.like;
+                updateLikes();
+            }
+        }
+        Log.w("test", Integer.toString(likes.size()));
+    }
+
+    // update likes list and like button
+    public void updateLikes(){
+
+        if (liked.equals(Parameters.checkLike)){
+            liked = Parameters.unlike;
+            for(User user : likes){
+                if(user.getUsername().getUsername().equals(Parameters.loginUsername)){
+                    liked = Parameters.like;
+                    break;
+                }
+            }
+        }
+
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+
+        RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
+        if (this.likes != null){
+            TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
+            int likeCount = this.likes.size();
+            int likeThreshold = Parameters.likeThreshold;
+
+            // add link to all likes if more than threshold
+            if(likeCount > likeThreshold){
+                likeCountText.setText(likeCount + " likes");
+                String text = likeCount + " likes";
+
+                SpannableString likeLink = StringFactory.createLink(text, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // display post's likes
+                        Parameters.NavigationBarActivity.showFragment
+                                (UsersFragment.newInstance(likes, Parameters.likesTitle));
+                    }
+                });
+                likeCountText.setText("");    // remove default text
+                stringComponents.add(likeLink);
+                StringFactory.stringBuilder(likeCountText, stringComponents);
+                stringComponents.clear();
+            }
+            else {
+                likeCountText.setText("");  // remove default text
+                int i;
+                for (i = 0; i < likeCount; i++){
+                    stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
+                    stringComponents.add(", ");
+                }
+                if(likeCount > 0){
+                    stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
+                }
+                StringFactory.stringBuilder(likeCountText, stringComponents);
+                stringComponents.clear();
+            }
+        } else {
+            likeLine.setVisibility(View.GONE);
+        }
+        checkLikeButton();
+    }
+
+    // updates like button
+    public void checkLikeButton(){
+        if(liked.equals(Parameters.like)){
+            likeButton.setChecked(true);
+        } else {
+            likeButton.setChecked(false);
+        }
+    }
+
     // OnClickListener for post icon clicks
     public View.OnClickListener postIconOnClickListener(){
 
@@ -361,6 +442,10 @@ public class Post implements Serializable{
         };
 
         return commentButtonOnClickListener;
+    }
+
+    public void setLiked(String checker){
+        this.liked = checker;
     }
 
     public String getPostId() {

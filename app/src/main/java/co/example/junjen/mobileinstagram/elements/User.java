@@ -13,7 +13,6 @@ public class User implements Serializable{
     private Image userImage;
     private String profName;
 
-
     public User(String username, String userImage, String profName){
         this.username = new Username(username);
         this.userImage =  new Image(userImage);;

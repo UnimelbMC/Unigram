@@ -66,13 +66,12 @@ public class Profile implements Serializable{
         }
     }
 
-    public Profile(String username, String userimage, String profName, String profDescrp,
-                   int postCount, int followerCount, int followingCount,
-                   ArrayList<Post> posts){
+    public Profile(User user, String profDescrp, int postCount, int followerCount,
+                   int followingCount, ArrayList<Post> posts){
 
-        this.username = new Username(username);
-        this.userImage = new Image(userimage);
-        this.profName = profName;
+        this.username = user.getUsername();
+        this.userImage = user.getUserImage();
+        this.profName = user.getProfName();
         this.profDescrp = profDescrp;
 
         this.postCount = postCount;
