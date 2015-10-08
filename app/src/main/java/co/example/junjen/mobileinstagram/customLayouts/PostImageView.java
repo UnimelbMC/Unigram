@@ -57,7 +57,6 @@ public class PostImageView extends ImageView {
                 invalidate();
                 return true; // indicate event was handled
             }
-
         });
     }
 
@@ -68,7 +67,7 @@ public class PostImageView extends ImageView {
             String postId = (String) getContentDescription();
 
             Log.w("test","double tap: "+ postId);
-            
+
             return true;
         }
     }
