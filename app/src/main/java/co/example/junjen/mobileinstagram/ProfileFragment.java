@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -112,19 +113,20 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
 
             // add layout listener to add content if default screen is not filled
             ViewTreeObserver vto = profileFragment.getViewTreeObserver();
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            final int screenHeight = displaymetrics.heightPixels;
+            final int screenHeight = Parameters.NavigationViewHeight;
 
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     profileFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    int height = profileFragment.getHeight();
 
-                    Log.w("test","profile: "+Integer.toString(height)+" ("+Integer.toString(screenHeight)+")");
+                    int[] location = new int[2];
+                    profileFragment.getLocationOnScreen(location);
+                    int height = location[1] + profileFragment.getChildAt(0).getHeight();
 
-                    if(height < screenHeight){
+                    Log.w("test", "profile: " + Integer.toString(height) + " (" + Integer.toString(screenHeight) + ")");
+
+                    if (height <= screenHeight) {
                         LayoutInflater inflater = LayoutInflater.from(getContext());
                         profile.getPostIcons(inflater);
                     }

@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
 
+import co.example.junjen.mobileinstagram.elements.Parameters;
+
 /**
  * Created by junjen on 1/10/2015.
  *
@@ -48,5 +50,4 @@ public class ExpandableScrollView extends ScrollView{
         }
         super.onScrollChanged(x, y, oldx, oldy);
     }
-
 }

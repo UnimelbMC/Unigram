@@ -175,7 +175,6 @@ public class CameraFragment extends Fragment {
         backButton=(ImageButton) v.findViewById(R.id.btnBack);
         backButton.setOnClickListener(backButtonListener);
 
-
         ImageButton noFilterButton=(ImageButton) v.findViewById(R.id.NormalImagebutton);
         ImageButton filter1Button=(ImageButton) v.findViewById(R.id.Filter1);
         ImageButton filter2Button=(ImageButton) v.findViewById(R.id.Filter2);
@@ -1119,11 +1118,6 @@ public class CameraFragment extends Fragment {
         }
     }
 
-    // returns to the previous fragment when the back button is clicked
-    public void onBackButtonClick(){
-        ((NavigationBar) getActivity()).checkPreviousNavButton();
-    }
-
     @Override
      // sets the action bar title when in a user feed fragment
      public void onAttach(Context context) {
@@ -1134,7 +1128,6 @@ public class CameraFragment extends Fragment {
         if (actionBar != null) {
             actionBar.hide();
         }
-        Parameters.NavigationBarActivity.showBackButton();
     }
 
     @Override
@@ -1147,7 +1140,6 @@ public class CameraFragment extends Fragment {
         if (actionBar != null) {
             actionBar.show();
         }
-        ((NavigationBar) getActivity()).getNavBar().setVisibility(View.VISIBLE);
     }
 
     /**

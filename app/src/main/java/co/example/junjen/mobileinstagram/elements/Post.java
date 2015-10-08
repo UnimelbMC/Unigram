@@ -133,7 +133,13 @@ public class Post implements Serializable{
             // TODO: Handle double click on post image
         }
 
+        // Like Button
         // TODO: Handle clicks for like button
+
+        // Comment Button
+        ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
+        commentButton.setOnClickListener(this.commentButtonOnClickListener());
+
 
         /** Optional parameters **/
 
@@ -182,7 +188,9 @@ public class Post implements Serializable{
                     stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
                     stringComponents.add(", ");
                 }
-                stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
+                if(likeCount > 0){
+                    stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
+                }
                 StringFactory.stringBuilder(likeCountText, stringComponents);
                 stringComponents.clear();
             }
@@ -306,10 +314,10 @@ public class Post implements Serializable{
                     }
 
                     imageView.setContentDescription(post.getPostId());
-                    imageView.setOnClickListener(Post.postIconOnClickListener());
+                    imageView.setOnClickListener(post.postIconOnClickListener());
 
                 } else {
-                    imageView.setImageResource(0);
+                    imageView.setImageDrawable(null);
                 }
                 // add post icon into row
                 postIconRow.addView(imageView, postIconRow.getChildCount());
@@ -320,27 +328,33 @@ public class Post implements Serializable{
     }
 
     // OnClickListener for post icon clicks
-    public static View.OnClickListener postIconOnClickListener(){
+    public View.OnClickListener postIconOnClickListener(){
 
         View.OnClickListener postIconOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String postId = (String) v.getContentDescription();
 
-                if(postId.equals(Parameters.default_postId)){
+                // display post
+                Parameters.NavigationBarActivity.showFragment(PostFragment.newInstance(postId));
+            }
+        };
+        return postIconOnClickListener;
+    }
 
-                } else {
+    // OnClickListener for post icon clicks
+    public View.OnClickListener commentButtonOnClickListener(){
 
-                    // TODO: get post based on postId through Network
-
-                    // display post's comments
-                    Parameters.NavigationBarActivity.showFragment(PostFragment.newInstance(postId));
-
-                }
+        View.OnClickListener commentButtonOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // display post's comments
+                Parameters.NavigationBarActivity.showFragment(CommentsFragment.
+                        newInstance(comments, username, userImage, caption, timeSince));
             }
         };
 
-        return postIconOnClickListener;
+        return commentButtonOnClickListener;
     }
 
     public String getPostId() {

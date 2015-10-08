@@ -27,6 +27,6 @@
         android:layout_toLeftOf="@id/comment_send_button"
         android:hint="@string/comment_hint"
         android:background="@color/white"
-        android:layout_margin="@dimen/comment_input_margin"/>
+        android:layout_margin="@dimen/comment_total_margin"/>
 
 </RelativeLayout>

@@ -5,16 +5,19 @@
     android:layout_height="match_parent"
     tools:context="co.example.junjen.mobileinstagram.NavigationBar">
 
+    <!-- Navigation View -->
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/nav_bar_height"
-        tools:context="co.example.junjen.mobileinstagram.NavigationBar">
+        tools:context="co.example.junjen.mobileinstagram.NavigationBar"
+        android:layout_marginBottom="@dimen/nav_bar_height">
     </RelativeLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <!-- Navigation Bar -->
+    <co.example.junjen.mobileinstagram.customLayouts.NavigationBar
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/view2"
         android:layout_width="match_parent"
@@ -64,5 +67,6 @@
                 android:layout_marginLeft="@dimen/nav_button_margin"
                 />
         </RadioGroup>
-    </RelativeLayout>
+    </co.example.junjen.mobileinstagram.customLayouts.NavigationBar>
+
 </RelativeLayout>

@@ -53,7 +53,10 @@
         android:layout_below="@+id/post_details"
         android:id="@+id/post_comment_count"
         android:text="View all 0 comments"
-        android:layout_margin="@dimen/post_margin"/>
+        android:layout_marginTop="@dimen/post_margin"
+        android:layout_marginBottom="@dimen/post_margin"
+        android:layout_marginLeft="@dimen/comment_total_margin"
+        android:layout_marginRight="@dimen/comment_total_margin"/>
 
     <!-- Comments preview -->
     <LinearLayout
@@ -61,7 +64,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/post_comment_count"
-        android:id="@+id/post_comments"/>
+        android:id="@+id/post_comments"
+        android:layout_marginLeft="@dimen/post_margin"
+        android:layout_marginRight="@dimen/post_margin"/>
 
     <!-- Space between posts -->
     <Space
@@ -70,6 +75,5 @@
         android:layout_below="@id/post_comments"
         android:id="@+id/post_space"
         android:layout_alignParentBottom="true"/>
-
 
 </RelativeLayout>

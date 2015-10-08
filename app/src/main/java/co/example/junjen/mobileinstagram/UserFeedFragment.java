@@ -4,19 +4,20 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
-import co.example.junjen.mobileinstagram.elements.TimeSince;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +42,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     private int postCount = 0;
 
     // keep track of timeSince last post generated to generate new set of posts
-    private TimeSince timeSinceLastPost = new TimeSince(Parameters.default_timeSince);
+    private String maxPostId;
+    private String minPostId;
 
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts = true;
@@ -96,22 +98,24 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
             // add layout listener to add content if default screen is not filled
             ViewTreeObserver vto = userFeedFragment.getViewTreeObserver();
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            final int screenHeight = displaymetrics.heightPixels;
+            final int screenHeight = Parameters.NavigationViewHeight;
 
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     userFeedFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    int height = userFeedFragment.getHeight();
 
-                    if (height < screenHeight) {
+                    int[] location = new int[2];
+                    userFeedFragment.getLocationOnScreen(location);
+                    int height = location[1] + userFeedFragment.getChildAt(0).getHeight();
+
+                    Log.w("test", "userfeed: " + Integer.toString(height) + " (" + Integer.toString(screenHeight) + ")");
+
+                    if (height <= screenHeight) {
                         loadUserFeedPosts();
                     }
                 }
             });
-
         }
         return userFeedFragment;
     }
@@ -135,15 +139,32 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
 
         int maxPosts = Parameters.postsToLoad;
         int i;
-        Post post;
+     //  Post post;
         View postView;
-        for (i = 0; i < maxPosts; i++){
+
+        ArrayList<Post> userFeed;
+        if(!Parameters.skeleton) {
+            userFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
+            int uFSize = userFeed.size();
+            Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
+            //Posts earlier than last
+            maxPostId = userFeed.get(uFSize - 1).getPostId();
+            //Posts after first
+            minPostId = userFeed.get(0).getPostId();
+        } else {
+            userFeed = new ArrayList<>();
+            for (i = 0; i < Parameters.postsToLoad; i++){
+                userFeed.add(new Post());
+            }
+        }
+
+        for (Post post : userFeed) {
 
             // TODO: use getPost(..) method from Data Object class based on timeSinceLastPost
             // if timeSinceLastPost is default, get latest posts
             // else get posts later than timeSinceLastPost
             // add an if (getPost != null) condition
-            post = new Post();
+          //  post = new Post();
 
             postView = post.getPostView(inflater);
 
@@ -156,7 +177,6 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             userFeedView.addView(postView, postCount);
             postCount++;
 
-            this.timeSinceLastPost = post.getTimeSince();
         }
     }
 
