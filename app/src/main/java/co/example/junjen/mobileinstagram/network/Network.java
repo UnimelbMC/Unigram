@@ -20,6 +20,7 @@ import co.example.junjen.mobileinstagram.elements.Location;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
+import co.example.junjen.mobileinstagram.suggestion.Suggestion;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -41,7 +42,10 @@ public class Network {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
             }
         }
+        Suggestion su = new Suggestion();
+
     }
+
 
     public String getProfilePic(){
         if (thisUserData.getProfilePicture()!= null) {
