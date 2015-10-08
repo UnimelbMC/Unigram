@@ -197,7 +197,9 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance("", false));
+//        profileHistory.add(ProfileFragment.newInstance("", false));
+        profileHistory.add(ProfileFragment.newInstance(Parameters.default_username, false));
+
     }
 
     // return to previous fragment by programmatically checking the radio button
@@ -227,7 +229,7 @@ public class NavigationBar extends AppCompatActivity {
     // destroy the access token
     public void clearToken(){
         File file = new File(NetParams.ACCESS_TOKEN_FILEPATH);
-        if(file.exists()) {
+        if (file.exists()) {
             file.delete();
             Log.w("test", "token deleted");
         }

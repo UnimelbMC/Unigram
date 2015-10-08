@@ -116,8 +116,8 @@ public class Network {
                 followingCount = otherUser.getCounts().getFollows();
             }
             List<MediaFeedData> mediaFeeds = mediaFeed.getData();
-            thePosts = getPostsList(mediaFeeds);
-            Log.v("NETWORK",Integer.toString(thePosts.size()));
+            thePosts = getPostsList(mediaFeeds,false);
+            Log.v("NETWORK","thePosts size() "+Integer.toString(thePosts.size()));
             return new Profile(username, uImage, profName,
                   profDesc,postsCount, followersCount,
                     followingCount, thePosts);
@@ -128,11 +128,12 @@ public class Network {
     }
 
     //Get arrayList of Posts
-    public ArrayList<Post> getPostsList(List<MediaFeedData> mediaFeeds){
+    public ArrayList<Post> getPostsList(List<MediaFeedData> mediaFeeds,boolean thumb){
         ArrayList<Post> thePosts = new ArrayList<>();
         for (MediaFeedData thisPost : mediaFeeds) {
             Location loc = null;
             String cap = null;
+            String imgUrl = thisPost.getImages().getStandardResolution().getImageUrl();
             if (thisPost.getLocation()!= null){
                 loc = new Location(thisPost.getLocation().getId(), thisPost.getLocation().getName(),
                         thisPost.getLocation().getLatitude(), thisPost.getLocation().getLongitude());
@@ -140,10 +141,12 @@ public class Network {
             if (thisPost.getCaption()!= null){
                 cap = thisPost.getCaption().getText();
             }
+            if (thumb){
+                imgUrl = thisPost.getImages().getThumbnail().getImageUrl();
+            }
             Post post = new Post(thisPost.getId(),thisPost.getUser().getProfilePictureUrl(),
                     thisPost.getUser().getUserName(),loc,
-                    thisPost.getCreatedTime(), thisPost.getImages().getThumbnail().getImageUrl()
-                    ,cap,getLikesByPostId(thisPost.getId()), getCommentsByPostId(thisPost.getId()));
+                    thisPost.getCreatedTime(), imgUrl, cap,getLikesByPostId(thisPost.getId()), getCommentsByPostId(thisPost.getId()));
             thePosts.add(post);
         }
         return thePosts;
