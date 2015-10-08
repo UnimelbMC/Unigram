@@ -91,7 +91,7 @@ public class Network {
 
         try {
             MediaFeed mediaFeed;
-            if(username=="") {
+            if(username==Parameters.selfLogin_key) {
                 mediaFeed = instagram.getRecentMediaFeed("self", MAX_USER_FEED_POSTS,minId,maxId,null,null);
                 username = thisUserData.getUsername();
                 uImage = thisUserData.getProfilePicture();
@@ -111,7 +111,7 @@ public class Network {
                 followingCount = otherUser.getCounts().getFollows();
             }
             List<MediaFeedData> mediaFeeds = mediaFeed.getData();
-            thePosts = getPostsList(mediaFeeds,false);
+            thePosts = getPostsList(mediaFeeds, false);
             Log.v("NETWORK","thePosts size() "+Integer.toString(thePosts.size()));
             return new Profile(username, uImage, profName,
                   profDesc,postsCount, followersCount,

@@ -143,7 +143,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
         View postView;
 
         ArrayList<Post> userFeed;
-        if(!Parameters.skeleton) {
+        if(!Parameters.dummyData) {
             userFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
             int uFSize = userFeed.size();
             Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));

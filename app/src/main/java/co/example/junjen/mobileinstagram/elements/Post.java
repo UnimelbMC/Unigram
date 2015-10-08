@@ -68,14 +68,14 @@ public class Post implements Serializable{
         String username;
         String comment;
 
-        // create 20 empty likes
-        for (i = 0; i < 20; i++){
+        // create empty likes
+        for (i = 0; i < Parameters.default_likeCount; i++){
             username = Parameters.default_username + (i + 1);
             this.likes.add(new User(username, Parameters.default_image,
                     Parameters.default_profName));
         }
-        // create 10 empty comments
-        for (i = 0; i < 10; i++){
+        // create empty comments
+        for (i = 0; i < Parameters.default_commentCount; i++){
             username = Parameters.default_username + (i + 1);
             comment = Parameters.default_comment + (i + 1);
             this.comments.add(new Comment(username, Parameters.default_image, comment,
@@ -125,13 +125,19 @@ public class Post implements Serializable{
         timeSince.setText(this.timeSince.getTimeSince());
 
         // Post image
+        PostImageView postImage = (PostImageView) postView.findViewById(R.id.post_image);
         if(!this.postImage.getImageString().equals(Parameters.default_image)) {
-            PostImageView postImage = (PostImageView) postView.findViewById(R.id.post_image);
             Image.setImage(postImage, this.postImage);
             postImage.setContentDescription(postId);
 
             // TODO: Handle double click on post image
         }
+
+        // Like Feedback
+        ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
+        ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
+        likeFeedback.setLayoutParams(layoutParams);
+        likeFeedback.setVisibility(View.INVISIBLE);
 
         // Like Button
         // TODO: Handle clicks for like button

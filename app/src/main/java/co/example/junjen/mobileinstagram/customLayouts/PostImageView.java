@@ -1,8 +1,5 @@
 package co.example.junjen.mobileinstagram.customLayouts;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -12,10 +9,14 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.animation.AnimatorSet;
+import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.elements.Parameters;
@@ -73,26 +74,42 @@ public class PostImageView extends ImageView {
             String postId = (String) getContentDescription();
 
             Log.w("test","double tap: "+ postId);
-            getResources();
-            Drawable[] layers = new Drawable[2];
-            layers[0] = getDrawable();
-            layers[1] = Parameters.MainActivityContext.getResources().getDrawable(R.drawable.like_button_feedback);
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-            setImageDrawable(layerDrawable);
 
+            ImageView likeFeedback = (ImageView) ((RelativeLayout)getParent()).getChildAt(1);
 
-//            RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
-//            anim.setInterpolator(new LinearInterpolator());
-//            anim.setRepeatCount(Animation.INFINITE);
-//            anim.setDuration(700);
-//
-//            // Start animating the image
-//            final ImageView splash = (ImageView) findViewById(R.id.splash);
-//            splash.startAnimation(anim);
-//
-//            // Later.. stop the animation
-//            splash.setAnimation(null);
+            /** On post image double tap, animate like icon as feedback **/
 
+            float scale = Parameters.animationStartEndScale;
+            int offsetDuration = 0;
+
+            // make like button appear
+            ScaleAnimation animationAppear = new ScaleAnimation(scale, 1, scale, 1,
+                    Animation.RELATIVE_TO_SELF, (float)0.5, Animation.RELATIVE_TO_SELF, (float)0.5);
+            animationAppear.setRepeatCount(0);
+            animationAppear.setDuration(Parameters.likeAppearDuration);
+            offsetDuration += animationAppear.getDuration();
+
+            // make like button stay
+            ScaleAnimation animationStay = new ScaleAnimation(1, 1, 1, 1,
+                    Animation.RELATIVE_TO_SELF, (float)0.5, Animation.RELATIVE_TO_SELF, (float)0.5);
+            animationStay.setRepeatCount(0);
+            animationStay.setDuration(Parameters.likeStayDuration);
+            animationStay.setStartOffset(offsetDuration);
+            offsetDuration += animationStay.getDuration();
+
+            // make like button disappear
+            ScaleAnimation animationDisappear = new ScaleAnimation(1, scale, 1, scale,
+                    Animation.RELATIVE_TO_SELF, (float)0.5, Animation.RELATIVE_TO_SELF, (float)0.5);
+            animationDisappear.setRepeatCount(0);
+            animationDisappear.setDuration(Parameters.likeDisappearDuration);
+            animationDisappear.setStartOffset(offsetDuration);
+
+            // start animation set
+            AnimationSet animationSet = new AnimationSet(true);
+            animationSet.addAnimation(animationAppear);
+            animationSet.addAnimation(animationStay);
+            animationSet.addAnimation(animationDisappear);
+            likeFeedback.startAnimation(animationSet);
 
             return true;
         }

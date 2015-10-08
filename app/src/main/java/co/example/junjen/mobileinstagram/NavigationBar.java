@@ -200,7 +200,7 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance("", false));
+        profileHistory.add(ProfileFragment.newInstance(Parameters.selfLogin_key, false));
     }
 
     // returns the navigation bar object to the camera fragment's back button

@@ -13,6 +13,10 @@ import co.example.junjen.mobileinstagram.R;
  */
 public class Parameters {
 
+    // Login parameters
+    public static final String selfLogin_key = "";
+    public static boolean dummyData = false;
+
     // Titles
     public static final String mainTitle = "UniGram";
     public static final String commentsTitle = "COMMENTS";
@@ -24,11 +28,6 @@ public class Parameters {
     public static final float subTitleSize = 15;
 
     // Login screen parameters
-    public static final String usernameFieldHint = "Username";
-    public static final String passwordFieldHint = "Password";
-    public static final String loginUsername_key = "username";
-    public static final String loginPassword_key = "password";
-    public static final String loginUserImage_key = "loginUserImage";
     public static final int splashScreenDuration = 2500;    // in milliseconds
 
     // Post parameters
@@ -39,12 +38,20 @@ public class Parameters {
     public static final String default_caption = "Caption";
     public static final String default_comment = "Comment";
     public static final String default_image = "#Image";
+    public static final int default_likeCount = 20;
+    public static final int default_commentCount = 50;
     public static final int likeThreshold = 10;
     public static final int commentThreshold = 3;
     public static final int postsToLoad = 10;
     public static final int loadCommentThreshold = 20;
     public static final int loadLikeThreshold = 100;
     public static final int maxLikes = 300;
+
+    // Like feedback animation parameters
+    public static final int likeAppearDuration = 100;
+    public static final int likeStayDuration = 800;
+    public static final int likeDisappearDuration = 100;
+    public static final float animationStartEndScale = 0;
 
     // Post icon parameters
     public static final int postIconsPerRow = 3;
@@ -53,6 +60,9 @@ public class Parameters {
     // Profile parameters
     public static final String default_profName = "Username";
     public static final String default_profDescrp = "My Profile";
+    public static final int default_postCount = 50;
+    public static final int default_followerCount = 100;
+    public static final int default_followingCount = 75;
 
     // Image Links
     public static final String default_loginUserImageLink = "0";
@@ -65,9 +75,6 @@ public class Parameters {
     public static final int urlCountMax = 2;
     public static final int logoutBrowserCountMax = 3;
     public static int NavigationViewHeight = 0;
-
-    public static boolean skeleton = false;
-
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){
         View actionBar = activity.getSupportActionBar().getCustomView();

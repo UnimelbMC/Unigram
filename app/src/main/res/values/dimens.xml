@@ -23,6 +23,7 @@
     <dimen name="post_margin_bottom">30dp</dimen>
     <dimen name="post_divider_margin">10dp</dimen>
     <dimen name="space_between_posts">30dp</dimen>
+    <dimen name="like_feedback_width">60dp</dimen>
 
     <!-- Profile -->
     <dimen name="profile_header_user_image_width">100dp</dimen>
