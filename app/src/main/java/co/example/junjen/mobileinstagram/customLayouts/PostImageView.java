@@ -5,12 +5,20 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+
+import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.elements.Parameters;
 
 /**
  * Created by junjen on 8/10/2015.
@@ -19,6 +27,7 @@ import android.widget.ImageView;
  */
 
 public class PostImageView extends ImageView {
+
     private Context context;
     private GestureListener mGestureListener;
     private GestureDetector mGestureDetector;
@@ -42,7 +51,7 @@ public class PostImageView extends ImageView {
     private void sharedConstructing(Context context) {
         super.setClickable(true);
         this.context = context;
-        mGestureListener=new GestureListener();
+        mGestureListener = new GestureListener();
         mGestureDetector = new GestureDetector( context, mGestureListener, null, true );
         setOnTouchListener(new OnTouchListener() {
 
@@ -50,13 +59,10 @@ public class PostImageView extends ImageView {
             public boolean onTouch(View v, MotionEvent event) {
                 mGestureDetector.onTouchEvent(event);
 
-                if (mGestureDetector.onTouchEvent(event)){
-                    Log.w("test","double tap?");
-                }
-
                 invalidate();
                 return true; // indicate event was handled
             }
+
         });
     }
 
@@ -67,8 +73,26 @@ public class PostImageView extends ImageView {
             String postId = (String) getContentDescription();
 
             Log.w("test","double tap: "+ postId);
+            getResources();
+            Drawable[] layers = new Drawable[2];
+            layers[0] = getDrawable();
+            layers[1] = Parameters.MainActivityContext.getResources().getDrawable(R.drawable.like_button_feedback);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+            setImageDrawable(layerDrawable);
 
-//            ((ImageView) context).getContentDescription()
+
+//            RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
+//            anim.setInterpolator(new LinearInterpolator());
+//            anim.setRepeatCount(Animation.INFINITE);
+//            anim.setDuration(700);
+//
+//            // Start animating the image
+//            final ImageView splash = (ImageView) findViewById(R.id.splash);
+//            splash.startAnimation(anim);
+//
+//            // Later.. stop the animation
+//            splash.setAnimation(null);
+
 
             return true;
         }
