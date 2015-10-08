@@ -22,6 +22,8 @@ import co.example.junjen.mobileinstagram.elements.Location;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
+import co.example.junjen.mobileinstagram.suggestion.Classification;
+import co.example.junjen.mobileinstagram.suggestion.Suggestion;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -38,26 +40,35 @@ public class Network {
         int gotData = 0;
         fakePost.add(new Post());
         Log.v("NETWORK", "enterConstructor");
+
         while(gotData<10) {
             try {
                 thisUserData = instagram.getCurrentUserInfo().getData();
+                Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-                return;
+//                why the is there a return here?? This made me lose a lot of time
+//                somebody is gonna get their ass seriously kicked
+//                return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
                 gotData += 1;
             }
         }
+
+
         thisUserData = new UserInfoData();
         thisUserData.setUsername(Parameters.default_username);
         thisUserData.setBio(Parameters.default_profDescrp);
         thisUserData.setCounts(new Counts());
         thisUserData.setProfilePicture(Parameters.default_image);
-     //   thisUserData.setUsername(Parameters.default_username);
-      //  thisUserData.setUsername(Parameters.default_username);
+
+//        Log.d("Network", "Suggestions should go here");
+//        Suggestion sug = new Suggestion("self");
+        Classification cls = new Classification();
 
 
     }
+
 
     public String getProfilePic(){
         if (thisUserData.getProfilePicture()!= null) {
@@ -75,7 +86,7 @@ public class Network {
         return new ArrayList<Post>();
     }
     public Profile getUserProfileFeed(String username){
-        return getUserProfileFeed(username,null,null);
+        return getUserProfileFeed(username, null, null);
     }
 
     public Profile getUserProfileFeed(String username,String minId,String maxId){
