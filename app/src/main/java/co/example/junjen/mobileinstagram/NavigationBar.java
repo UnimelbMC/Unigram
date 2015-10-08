@@ -45,6 +45,7 @@ public class NavigationBar extends AppCompatActivity {
     // Button IDs
     private final int userFeedButtonId = R.id.userfeed_button;
     private final int discoverButtonId = R.id.discover_button;
+    private final int cameraButtonId = R.id.camera_button;
     private final int activityFeedButtonId = R.id.activityfeed_button;
     private final int profileButtonId = R.id.profile_button;
 
@@ -105,7 +106,7 @@ public class NavigationBar extends AppCompatActivity {
                         ft.replace(navigationViewId, discoverHistory.get(discoverHistory.size() - 1));
                         prevNavButtonId = checkedId;
                         break;
-                    case R.id.camera_button:
+                    case cameraButtonId:
                         ft.replace(navigationViewId, cameraFragment);
                         cameraOn = true;
                         break;
@@ -180,6 +181,7 @@ public class NavigationBar extends AppCompatActivity {
             history.remove(history.size() - 1);
         } else {
             cameraOn = false;
+            navBar.check(cameraButtonId);
             replaceView(history.get(history.size() - 1));
         }
         size = history.size();
@@ -197,7 +199,7 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance("", false));
+        profileHistory.add(ProfileFragment.newInstance(Parameters.default_username, false));
     }
 
     // return to previous fragment by programmatically checking the radio button
