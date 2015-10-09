@@ -95,6 +95,7 @@ public class NavigationBar extends AppCompatActivity {
 
             navigationBar = findViewById(R.id.nav_bar);
             ViewTreeObserver vto = navigationBar.getViewTreeObserver();
+            final int screenHeight = Parameters.NavigationViewHeight;
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
