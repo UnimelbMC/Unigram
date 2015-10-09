@@ -108,6 +108,9 @@ public class CommentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // remove loading animation
+        Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
         // change action bar title
         setTitle();
 

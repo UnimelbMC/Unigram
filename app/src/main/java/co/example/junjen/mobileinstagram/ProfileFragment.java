@@ -86,11 +86,19 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // remove loading animation
+        Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
         // initialise ProfileFragment if not created yet
         if(profileFragment == null){
 
-            if(userId.equals(Parameters.default_userId)){
-                profile = new Profile(userId);
+            if(userId.startsWith(Parameters.default_userId)){
+                String[] parts = userId.split(Parameters.default_userId);
+                if(parts.length > 0){
+                    profile = new Profile(parts[1]);
+                } else {
+                    profile = new Profile(Parameters.default_username);
+                }
             } else if (!userId.equals(Parameters.loginUserId)){
                 profile = NetParams.NETWORK.getUserProfileFeed(userId);
             } else {

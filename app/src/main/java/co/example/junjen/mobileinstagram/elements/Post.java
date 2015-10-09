@@ -60,7 +60,7 @@ public class Post implements Serializable{
         this.userImage = new Image(Parameters.default_image);
         this.username = new Username(Parameters.default_userId, Parameters.default_username);
         this.location = new Location(Parameters.default_location);
-        this.timeSince = new TimeSince(Parameters.default_timeSince);
+        this.timeSince = new TimeSince();
         this.postImage = new Image(Parameters.default_image);
         this.caption = Parameters.default_caption;
 
@@ -68,21 +68,24 @@ public class Post implements Serializable{
         this.comments = new ArrayList<>();
 
         int i;
+        String userId;
         String username;
         String comment;
 
         // create empty likes
         for (i = 0; i < Parameters.default_likeCount; i++){
+            userId = Parameters.default_userId + (i + 1);
             username = Parameters.default_username + (i + 1);
-            this.likes.add(new User(Parameters.default_userId, username, Parameters.default_image,
+            this.likes.add(new User(userId, username, Parameters.default_image,
                     Parameters.default_profName));
         }
         // create empty comments
         for (i = 0; i < Parameters.default_commentCount; i++){
+            userId = Parameters.default_userId + (i + 1);
             username = Parameters.default_username + (i + 1);
             comment = Parameters.default_comment + (i + 1);
-            this.comments.add(new Comment(Parameters.default_userId, username,
-                    Parameters.default_image, comment, new TimeSince(Parameters.default_timeSince)));
+            this.comments.add(new Comment(userId, username,
+                    Parameters.default_image, comment, new TimeSince()));
         }
     }
 
@@ -126,7 +129,7 @@ public class Post implements Serializable{
 
         // Time since posted
         TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
-        timeSince.setText(this.timeSince.getTimeSince());
+        timeSince.setText(this.timeSince.getTimeSinceDisplay());
 
         // Post image
         ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);

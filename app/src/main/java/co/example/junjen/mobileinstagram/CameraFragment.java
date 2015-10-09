@@ -148,6 +148,10 @@ public class CameraFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // remove loading animation
+        Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
         View v = inflater.inflate(R.layout.fragment_camera, container, false);
         // ((MainActivity) getActivity()).getSupportActionBar().hide();
 

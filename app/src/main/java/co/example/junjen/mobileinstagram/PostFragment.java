@@ -70,6 +70,9 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // remove loading animation
+        Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
         Post post;
         if(!postId.equals(Parameters.default_postId)){
             post = NetParams.NETWORK.getPostById(postId);

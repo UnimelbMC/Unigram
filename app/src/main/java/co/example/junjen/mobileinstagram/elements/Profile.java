@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.CommentsFragment;
@@ -42,12 +43,19 @@ public class Profile implements Serializable{
     private int postIconCount = 0;
 
 
-    public Profile(String username){
+    public Profile(String userCount){
         // test constructor to create 'empty' Profile objects
 
-        this.username = new Username(Parameters.default_userId, username);
+        if(userCount.equals(Parameters.default_username) ||
+                userCount.equals(Parameters.default_userId) ||
+                userCount.equals("")){
+            userCount = "";
+        }
+
+        this.username = new Username(Parameters.default_userId + userCount,
+                Parameters.default_username + userCount);
         this.userImage = new Image(Parameters.default_image);
-        this.profName = Parameters.default_profName;
+        this.profName = Parameters.default_profName + userCount;
         this.profDescrp = Parameters.default_profDescrp;
 
         this.postCount = Parameters.default_postCount;
@@ -113,11 +121,11 @@ public class Profile implements Serializable{
 
         // Post count
         TextView postCount = (TextView) profileView.findViewById(R.id.profile_post_count);
-        postCount.setText(Integer.toString(this.postCount));
+        postCount.setText(formatCount(this.postCount));
 
         // Follower count
         TextView followerCount = (TextView) profileView.findViewById(R.id.profile_follower_count);
-        text = Integer.toString(this.followerCount);
+        text = formatCount(this.followerCount);
         SpannableString followerLink = StringFactory.createLink(text, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,7 +153,7 @@ public class Profile implements Serializable{
 
         // Following count
         TextView followingCount = (TextView) profileView.findViewById(R.id.profile_following_count);
-        text = Integer.toString(this.followingCount);
+        text = formatCount(this.followingCount);
         SpannableString followingLink = StringFactory.createLink(text, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,6 +215,34 @@ public class Profile implements Serializable{
 
             postIconCount += i;
         }
+    }
+
+    // format counts into thousands or millions if applicable
+    private String formatCount(int count){
+
+        String formattedCount = Integer.toString(count);
+        float convertedCount;
+        int million = 1000000;
+        int hundredThousand = 100000;
+        int tenThousand = 10000;
+        int thousand = 1000;
+
+        // eg: 1.1m
+        if (count >= million){
+            convertedCount = (float)count/million;
+            formattedCount = String.format("%.1f", convertedCount) + "m";
+        }
+        // eg: 111k
+        else if (count >= hundredThousand){
+            convertedCount = (float)count/thousand;
+            formattedCount = String.format("%.0f", convertedCount) + "k";
+        }
+        // eg: 11.1k
+        else if (count >= tenThousand){
+            convertedCount = (float)count/thousand;
+            formattedCount = String.format("%.1f", convertedCount) + "k";
+        }
+        return formattedCount;
     }
 
     public Username getUsername() {

@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.ProfileFragment;
+import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 /**
  * Created by junjen on 30/09/2015.
@@ -34,6 +36,10 @@ public class Username implements Serializable{
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // show loading animation
+                Parameters.NavigationBarActivity.
+                        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
 
                 Profile profile = null;
 

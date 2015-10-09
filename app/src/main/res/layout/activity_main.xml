@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- User Image -->
         <co.example.junjen.mobileinstagram.customLayouts.UserImageView
             android:layout_width="@dimen/login_user_image_width"
             android:layout_height="@dimen/login_user_image_width"
@@ -24,16 +25,7 @@
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:contentDescription="Login User Image"/>
 
-        <!--<EditText-->
-            <!--android:id="@+id/login_username_editText"-->
-            <!--android:inputType="textPersonName"-->
-            <!--style="@style/login_field"/>-->
-
-        <!--<EditText-->
-            <!--android:id="@+id/login_password_editText"-->
-            <!--android:inputType="textPassword"-->
-            <!--style="@style/login_field"/>-->
-
+        <!-- Username -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,6 +35,7 @@
             android:layout_weight="1"
             android:visibility="gone"/>
 
+        <!-- Login Button -->
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

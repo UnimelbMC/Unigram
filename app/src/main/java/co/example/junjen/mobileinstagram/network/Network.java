@@ -56,6 +56,7 @@ public class Network {
 
         thisUserData = new UserInfoData();
         thisUserData.setUsername(Parameters.default_username);
+        thisUserData.setId(Parameters.default_userId);
         thisUserData.setBio(Parameters.default_profDescrp);
         thisUserData.setCounts(new Counts());
         thisUserData.setProfilePicture(Parameters.default_image);
@@ -101,7 +102,7 @@ public class Network {
 
         try {
             MediaFeed mediaFeed;
-            if(userId.equals(Parameters.default_userId)) {
+            if(userId.equals(Parameters.login_key)) {
                 mediaFeed = instagram.getRecentMediaFeed(
                         "self", MAX_USER_FEED_POSTS,minId,maxId,null,null);
                 userId = thisUserData.getId();

@@ -88,8 +88,8 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        // change action bar title
-//        setTitle();
+        // remove loading animation
+        Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
         if (usernames != null){
             userFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);

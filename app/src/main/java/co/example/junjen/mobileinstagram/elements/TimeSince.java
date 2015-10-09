@@ -24,11 +24,47 @@ public class TimeSince implements Serializable{
 
     public TimeSince(String timeSince){
         this.timeSince = timeSince;
-        this.timeSinceDisplay = timeSince;
+        this.timeSinceDisplay = formatTime(timeSince);
     }
 
     public String formatTime(String timeSince){
-        return "";
+
+        // get time duration that has pass from timeSince activity till now
+        long time = (System.currentTimeMillis() / 1000L) - Long.parseLong(timeSince);
+
+        String formattedTime = Long.toString(time) + "s";  // default eg: 11s
+        int convertedTime;
+        int minute = 60;
+        int hour = 60 * minute;
+        int day = 24 * hour;
+        int week = 7 * day;
+
+        // eg: 11w
+        if (time >= week){
+            convertedTime = (int) Math.floor(time/week);
+            formattedTime = Integer.toString(convertedTime) + "w";
+        }
+        // eg: 11d
+        else if (time >= day){
+            convertedTime = (int) Math.floor(time/day);
+            formattedTime = Integer.toString(convertedTime) + "d";
+        }
+        // eg: 11h
+        else if (time >= hour){
+            convertedTime = (int) Math.floor(time/hour);
+            formattedTime = Integer.toString(convertedTime) + "h";
+        }
+        // eg: 11m
+        else if (time >= minute){
+            convertedTime = (int) Math.floor(time/minute);
+            formattedTime = Integer.toString(convertedTime) + "m";
+        }
+        return formattedTime;
+    }
+
+    public void setTimeSince(String timeSince){
+        this.timeSince = timeSince;
+        this.timeSinceDisplay = formatTime(timeSince);
     }
 
     public String getTimeSince() {

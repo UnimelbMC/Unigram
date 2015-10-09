@@ -83,20 +83,20 @@ public class NavigationBar extends AppCompatActivity {
 
         // get username and password
         if (savedInstanceState == null) {
-            createFragments();
-
             // save current user profile
             Parameters.loginProfile = NetParams.NETWORK.getUserProfileFeed(
-                    Parameters.default_userId);
-            Parameters.loginUser = new User(Parameters.loginProfile.getUsername().getUserId(),
-                    Parameters.loginProfile.getUsername().getUsername(),
+                    Parameters.login_key);
+            Parameters.loginUserId = Parameters.loginProfile.getUsername().getUserId();
+            Parameters.loginUsername = Parameters.loginProfile.getUsername().getUsername();
+            Parameters.loginUser = new User(Parameters.loginUserId, Parameters.loginUsername,
                     Parameters.loginProfile.getUserImage().getImageString(),
                     Parameters.loginProfile.getProfName());
-            Parameters.loginUsername = Parameters.loginProfile.getUsername().getUsername();
 
+            createFragments();
+
+            // get navigation view height when navBar layout changes
             navigationBar = findViewById(R.id.nav_bar);
             ViewTreeObserver vto = navigationBar.getViewTreeObserver();
-            final int screenHeight = Parameters.NavigationViewHeight;
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
@@ -122,6 +122,9 @@ public class NavigationBar extends AppCompatActivity {
         navBar = (RadioGroup) findViewById(R.id.nav_bar);
         navBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // remove loading animation
+                Parameters.NavigationBarActivity.
+                        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case userFeedButtonId:
@@ -221,19 +224,13 @@ public class NavigationBar extends AppCompatActivity {
         }
     }
 
-
-    // TODO: update argument to receive token
+    // create navigation fragments
     private void createFragments(){
         userFeedHistory.add(new UserFeedFragment());
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance(Parameters.default_userId, false));
-    }
-
-    // returns the navigation bar object to the camera fragment's back button
-    public RadioGroup getNavBar(){
-        return navBar;
+        profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
     }
 
     // show the back button on the action bar

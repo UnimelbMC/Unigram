@@ -15,7 +15,8 @@ public class Parameters {
 
     // Login parameters
     public static boolean dummyData = false;
-    public static String loginUserId = "";
+    public static final String login_key = "@thisIsMyLogin";
+    public static String loginUserId = null;
     public static String loginUsername = null;
     public static User loginUser = null;
     public static Profile loginProfile = null;
@@ -34,11 +35,10 @@ public class Parameters {
     public static final int splashScreenDuration = 2500;    // in milliseconds
 
     // Post parameters
-    public static final String default_postId = "";
-    public static final String default_userId = "";
+    public static final String default_postId = "#";
+    public static final String default_userId = "#";
     public static final String default_username = "#username";
     public static final String default_location = "Location";
-    public static final String default_timeSince = "TimeSince";
     public static final String default_caption = "Caption";
     public static final String default_comment = "Comment";
     public static final String default_image = "#Image";

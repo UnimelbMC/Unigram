@@ -85,6 +85,9 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // remove loading animation
+        Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
         // initialise userFeedFragment if not created yet
         if(userFeedFragment == null){
             userFeedFragment = (ExpandableScrollView)
@@ -152,25 +155,24 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             minPostId = userFeed.get(0).getPostId();
         } else {
             userFeed = new ArrayList<>();
+            int temp = postCount;
             for (i = 0; i < Parameters.postsToLoad; i++){
                 userFeed.add(new Post());
+                temp++;
             }
         }
 
         for (Post post : userFeed) {
 
-            // TODO: use getPost(..) method from Data Object class based on timeSinceLastPost
-            // if timeSinceLastPost is default, get latest posts
-            // else get posts later than timeSinceLastPost
-            // add an if (getPost != null) condition
-          //  post = new Post();
-
             postView = post.getPostView(inflater);
 
-            //TESTING
-            TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
-            if(post.getTimeSince().getTimeSince().equals(Parameters.default_timeSince)){
-                timeSince.setText(Integer.toString(postCount) + "s");
+            // if post is from dummyData
+            TextView timeSinceText = (TextView) postView.findViewById(R.id.post_header_time_since);
+            String timeSince = post.getTimeSince().getTimeSince();
+            if(post.getUsername().getUserId().equals(Parameters.default_userId)){
+                int time = Integer.parseInt(timeSince) - postCount;
+                post.getTimeSince().setTimeSince(Integer.toString(time));
+                timeSinceText.setText(post.getTimeSince().getTimeSinceDisplay());
             }
 
             userFeedView.addView(postView, postCount);
