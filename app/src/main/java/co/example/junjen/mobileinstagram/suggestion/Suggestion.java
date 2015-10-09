@@ -22,23 +22,22 @@ import weka.core.Attribute;
  *
  */
 
-
 public class Suggestion {
 
     Instagram instagram;
     private ArrayList<String> suggestedUsersIdList;
     private ArrayList<String> notSuggestedUsersIdList;
-    private String userId;
 
+    private ArrayList<String> possibleUsers;
+    private String userId;
 
     public Suggestion(String userId){
         this.instagram = new Instagram(NetParams.ACCESS_TOKEN);
         this.suggestedUsersIdList = new ArrayList<String>();
         this.notSuggestedUsersIdList = new ArrayList<String>();
+        this.possibleUsers = new ArrayList<String>();
         this.userId = userId;
 //        Log.d("suggest","suggestion");
-        filterUsersList();
-
     }
 
     public ArrayList<String> getSuggestedUsersIdList() {
@@ -47,7 +46,14 @@ public class Suggestion {
     }
 
     public ArrayList<String> getNotSuggestedUsersIdList() {
+        filterNotSuggetedUsersList();
+//        Log.d("notsuggest",notSuggestedUsersIdList.toString());
         return notSuggestedUsersIdList;
+    }
+
+    public ArrayList<String> getPossibleUsers() {
+        fetchPossibleUsers();
+        return possibleUsers;
     }
 
     //the people user with userId follows, with an option to limit the amount of users returned
@@ -66,6 +72,7 @@ public class Suggestion {
             }
         } catch (InstagramException e) {
             e.printStackTrace();
+
         }
         Collections.sort(followsUsersId);
         return followsUsersId;
@@ -78,7 +85,7 @@ public class Suggestion {
             ArrayList<String> followList = fetchFollowsList(userId, 50, true);
             List<UserFeedData> followedByList =  instagram.getUserFollowedByList(userId).getUserList();
             int counter = 0;
-            while(notInterestingUsers.size() < 10 && followedByList.size() == 0 ){
+            while(notInterestingUsers.size() < 10 && !(followedByList.size() == 0) ){
                 if(!followList.contains(followedByList.get(counter))){
                     notInterestingUsers.add(followedByList.get(counter).getId());
                     counter++;
@@ -88,20 +95,20 @@ public class Suggestion {
             e.printStackTrace();
         }
         Collections.sort(notInterestingUsers);
+//        Log.d("notInteresting", notInterestingUsers.toString());
         return notInterestingUsers;
     }
 
 
-//  filtering users that self does not follow but not interesting users follow
-    public void filterUsersList(){
+//  filtering (max 2) users that self does not follow but not interesting users follow
+    public void filterNotSuggetedUsersList(){
         //  suggested self list
         ArrayList<String> selfList = getSuggestedUsersIdList();
         // not interesting users list for userId
         ArrayList<String> notInterestingUsersList = fetchNotInterestingUsers();
-//        System.out.println(selfList.toString());
-//        Log.d("selfList", selfList.toString());
-//        Log.d("notIntList",notInterestingUsersList.toString());
+
         String userId1;
+        Log.d("filterWHile", "here");
         while(notSuggestedUsersIdList.size()<10 && !(notInterestingUsersList.size()==0)){
             for(String userId2: notInterestingUsersList){
                 int i = 0;
@@ -123,29 +130,19 @@ public class Suggestion {
                     break;
                 }
             }
-            Log.d("userIdList",Integer.toString(notSuggestedUsersIdList.size()));
-            Log.d("userIdList",notSuggestedUsersIdList.toString());
+//            Log.d("userIdList",Integer.toString(notSuggestedUsersIdList.size()));
+//            Log.d("userIdList",notSuggestedUsersIdList.toString());
         }
         Collections.sort(notSuggestedUsersIdList);
     }
 
 
     //check whether user(self) is related to target user with userId
-//    public boolean followedBy(String userId){
-//        String outgoing;
-//        String incoming;
-//        boolean related = false;
-//        try{
-//            outgoing = instagram.getUserRelationship(userId).getData().getOutgoingStatus();
-//            incoming = instagram.getUserRelationship(userId).getData().getIncomingStatus();
-//            if (outgoing.equals("none")&& incoming.equals("none")){
-//                related = true;
-//            }
-//        }catch (InstagramException e){
-//            e.printStackTrace();
-//        }
-//        return related;
-//    }
+    public void fetchPossibleUsers(){
+        for(String user : suggestedUsersIdList){
+            possibleUsers.add(fetchFollowsList(user,1,true).get(0));
+        }
+    }
 
 
 

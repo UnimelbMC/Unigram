@@ -46,6 +46,7 @@ public class Network {
                 thisUserData = instagram.getCurrentUserInfo().getData();
                 Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
+                Classification cls = new Classification();
                 return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
@@ -53,19 +54,12 @@ public class Network {
             }
         }
 
-
         thisUserData = new UserInfoData();
         thisUserData.setUsername(Parameters.default_username);
         thisUserData.setId(Parameters.default_userId);
         thisUserData.setBio(Parameters.default_profDescrp);
         thisUserData.setCounts(new Counts());
         thisUserData.setProfilePicture(Parameters.default_image);
-
-//        Log.d("Network", "Suggestions should go here");
-//        Suggestion sug = new Suggestion("self");
-        Classification cls = new Classification();
-
-
     }
 
 
