@@ -168,12 +168,11 @@ public class Profile implements Serializable{
         stringComponents.clear();
 
         // Add post icons
-        if(this.postCount > 0){
+        if(this.posts.size() == 0 && this.postCount == 0){
             TextView postFlag = (TextView) profileView.findViewById(R.id.profile_no_post_flag);
-            postFlag.setVisibility(View.GONE);
+            postFlag.setVisibility(View.VISIBLE);
             getPostIcons(inflater);
         }
-
         return profileView;
     }
 

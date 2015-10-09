@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 public class NavigationBar extends AppCompatActivity {
@@ -41,6 +43,7 @@ public class NavigationBar extends AppCompatActivity {
     private int prevNavButtonId;
     private int navigationViewId = R.id.view1;
     private ActionBar actionBar;
+    private View navigationBar;
 
     // Button IDs
     private final int userFeedButtonId = R.id.userfeed_button;
@@ -81,6 +84,27 @@ public class NavigationBar extends AppCompatActivity {
         // get username and password
         if (savedInstanceState == null) {
             createFragments();
+
+            // save current user profile
+            Parameters.loginProfile = NetParams.NETWORK.getUserProfileFeed(
+                    Parameters.selfLogin_key);
+            Parameters.loginUser = new User(Parameters.loginProfile.getUsername().getUsername(),
+                    Parameters.loginProfile.getUserImage().getImageString(),
+                    Parameters.loginProfile.getProfName());
+            Parameters.loginUsername = Parameters.loginProfile.getUsername().getUsername();
+
+            navigationBar = findViewById(R.id.nav_bar);
+            ViewTreeObserver vto = navigationBar.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    navigationBar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                    int[] location = new int[2];
+                    navigationBar.getLocationOnScreen(location);
+                    Parameters.NavigationViewHeight = location[1];
+                }
+            });
 
             // set default fragment to User Feed
             RadioButton userFeedButton = (RadioButton) findViewById(userFeedButtonId);
@@ -306,7 +330,6 @@ public class NavigationBar extends AppCompatActivity {
 
         // clear access token on logout
         if (id == R.id.action_logout) {
-
             clearToken();
 
             // logout of instagram account
@@ -315,10 +338,8 @@ public class NavigationBar extends AppCompatActivity {
             setContentView(myWebView);
             myWebView.setWebViewClient(new LogoutWebViewClient());
             myWebView.loadUrl("https://instagram.com/accounts/logout");
-
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

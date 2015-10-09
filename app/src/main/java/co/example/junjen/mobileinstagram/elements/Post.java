@@ -315,8 +315,9 @@ public class Post implements Serializable{
             int i;
             int likesSize = likes.size();
 
-            for (Iterator iter = likes.listIterator(); iter.hasNext();) {
-                User thisUser = (User) iter.next();
+            Iterator<User> iter;
+            for (iter = likes.listIterator(); iter.hasNext();) {
+                User thisUser = iter.next();
                 if (thisUser.getUsername().getUsername().equals(Parameters.loginUsername)) {
                     if (!like) {
                         iter.remove();
@@ -326,25 +327,12 @@ public class Post implements Serializable{
                     break;
                 }
             }
-
-
-//            for (i = 0; i < likesSize; i++) {
-//                if (likes.get(i).getUsername().getUsername().equals(Parameters.loginUsername)) {
-//                    if (!like) {
-//                        likes.remove(i);
-//                        liked = Parameters.unlike;
-//                        updateLikes();
-//                    }
-//                    break;
-//                }
-//            }
             if (like) {
                 likes.add(0, Parameters.loginUser);
                 liked = Parameters.like;
                 updateLikes();
             }
         }
-        Log.w("test", Integer.toString(likes.size()));
     }
 
     // update likes list and like button

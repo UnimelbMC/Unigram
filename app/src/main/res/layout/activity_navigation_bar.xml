@@ -16,7 +16,7 @@
     </RelativeLayout>
 
     <!-- Navigation Bar -->
-    <co.example.junjen.mobileinstagram.customLayouts.NavigationBar
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/view2"
@@ -67,6 +67,6 @@
                 android:layout_marginLeft="@dimen/nav_button_margin"
                 />
         </RadioGroup>
-    </co.example.junjen.mobileinstagram.customLayouts.NavigationBar>
+    </RelativeLayout>
 
 </RelativeLayout>

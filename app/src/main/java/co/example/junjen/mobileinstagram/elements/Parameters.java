@@ -18,6 +18,7 @@ public class Parameters {
     public static boolean dummyData = false;
     public static String loginUsername = null;
     public static User loginUser = null;
+    public static Profile loginProfile = null;
 
     // Titles
     public static final String mainTitle = "UniGram";

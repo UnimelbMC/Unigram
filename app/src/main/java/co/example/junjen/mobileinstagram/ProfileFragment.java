@@ -100,17 +100,13 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         // initialise ProfileFragment if not created yet
         if(profileFragment == null){
 
-            if(!username.startsWith(Parameters.default_username)){
-                // get Profile based on Data Object and pass into fragment constructor
+            if(username.startsWith(Parameters.default_username)){
+                profile = new Profile(username);
+            } else if (!username.equals(Parameters.loginUsername)){
                 profile = NetParams.NETWORK.getUserProfileFeed(username);
             } else {
-                profile = new Profile(username);
+                profile = Parameters.loginProfile;
             }
-
-            // save login username and profile
-            Parameters.loginUsername = profile.getUsername().getUsername();
-            Parameters.loginUser = new User(profile.getUsername().getUsername(),
-                    profile.getUserImage().getImageString(), profile.getProfName());
 
             setTitle();
 
@@ -120,7 +116,6 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
             // add layout listener to add content if default screen is not filled
             ViewTreeObserver vto = profileFragment.getViewTreeObserver();
             final int screenHeight = Parameters.NavigationViewHeight;
-
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {

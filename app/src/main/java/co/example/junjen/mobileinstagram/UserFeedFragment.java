@@ -99,7 +99,6 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener{
             // add layout listener to add content if default screen is not filled
             ViewTreeObserver vto = userFeedFragment.getViewTreeObserver();
             final int screenHeight = Parameters.NavigationViewHeight;
-
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
