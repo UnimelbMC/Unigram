@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
@@ -84,8 +85,12 @@ public class NavigationBar extends AppCompatActivity {
         // get username and password
         if (savedInstanceState == null) {
             // save current user profile
-            Parameters.loginProfile = NetParams.NETWORK.getUserProfileFeed(
-                    Parameters.login_key);
+            if(Parameters.dummyData){
+                Parameters.loginProfile = new Profile(Parameters.default_username);
+            } else {
+                Parameters.loginProfile = NetParams.NETWORK.getUserProfileFeed(
+                        Parameters.login_key);
+            }
             Parameters.loginUserId = Parameters.loginProfile.getUsername().getUserId();
             Parameters.loginUsername = Parameters.loginProfile.getUsername().getUsername();
             Parameters.loginUser = new User(Parameters.loginUserId, Parameters.loginUsername,

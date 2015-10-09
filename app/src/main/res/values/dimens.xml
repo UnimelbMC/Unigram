@@ -10,7 +10,6 @@
     <dimen name="nav_bar_height">58dp</dimen>
     <dimen name="nav_button_margin">5dp</dimen>
     <dimen name="publish_photo_thumbnail_size">96dp</dimen>
-
     <dimen name="nav_button_text_size">10sp</dimen>
 
     <!-- Post -->
@@ -38,5 +37,9 @@
 
     <!-- Likes -->
     <dimen name="like_bar_height">50dp</dimen>
+
+    <!-- Additional -->
+    <dimen name="pull_down_refresh_height">150dp</dimen>
+    <dimen name="refresh_icon_height">50dp</dimen>
 
 </resources>

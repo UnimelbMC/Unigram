@@ -62,11 +62,6 @@ public class TimeSince implements Serializable{
         return formattedTime;
     }
 
-    public void setTimeSince(String timeSince){
-        this.timeSince = timeSince;
-        this.timeSinceDisplay = formatTime(timeSince);
-    }
-
     public String getTimeSince() {
         return timeSince;
     }

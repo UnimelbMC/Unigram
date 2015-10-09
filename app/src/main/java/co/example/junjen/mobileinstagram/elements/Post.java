@@ -181,7 +181,9 @@ public class Post implements Serializable{
         }
 
         // Likes
-        updateLikes();
+        if(likes != null){
+            updateLikes();
+        }
 
         // Caption
         TextView caption = (TextView) postView.findViewById(R.id.post_caption);
@@ -259,6 +261,8 @@ public class Post implements Serializable{
                 commentsView.addView(commentPreview, 0);
                 commentCount++;
             }
+        } else {
+            commentCountText.setVisibility(View.GONE);
         }
     }
 
@@ -315,8 +319,6 @@ public class Post implements Serializable{
     // updates list of Likes based or like button clicks or post image double taps
     public void likePost(boolean like){
         if(like && liked.equals(Parameters.unlike) || !like && liked.equals(Parameters.like)) {
-            int i;
-            int likesSize = likes.size();
 
             Iterator<User> iter;
             for (iter = likes.listIterator(); iter.hasNext();) {
@@ -352,8 +354,8 @@ public class Post implements Serializable{
         }
 
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
-
         RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
+
         if (this.likes != null){
             TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
             int likeCount = this.likes.size();
@@ -433,10 +435,6 @@ public class Post implements Serializable{
         };
 
         return commentButtonOnClickListener;
-    }
-
-    public void setLiked(String checker){
-        this.liked = checker;
     }
 
     public String getPostId() {
