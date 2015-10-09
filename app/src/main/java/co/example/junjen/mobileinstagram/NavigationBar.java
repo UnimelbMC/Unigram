@@ -87,8 +87,9 @@ public class NavigationBar extends AppCompatActivity {
 
             // save current user profile
             Parameters.loginProfile = NetParams.NETWORK.getUserProfileFeed(
-                    Parameters.selfLogin_key);
-            Parameters.loginUser = new User(Parameters.loginProfile.getUsername().getUsername(),
+                    Parameters.default_userId);
+            Parameters.loginUser = new User(Parameters.loginProfile.getUsername().getUserId(),
+                    Parameters.loginProfile.getUsername().getUsername(),
                     Parameters.loginProfile.getUserImage().getImageString(),
                     Parameters.loginProfile.getProfName());
             Parameters.loginUsername = Parameters.loginProfile.getUsername().getUsername();
@@ -227,7 +228,7 @@ public class NavigationBar extends AppCompatActivity {
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance(Parameters.selfLogin_key, false));
+        profileHistory.add(ProfileFragment.newInstance(Parameters.default_userId, false));
     }
 
     // returns the navigation bar object to the camera fragment's back button
@@ -354,7 +355,7 @@ public class NavigationBar extends AppCompatActivity {
 
         @Override
         public void onLoadResource(WebView view, String url) {
-            Log.w("test", url);
+            Log.w("test", "logout webView url: "+url);
 
             if (url.startsWith(NetParams.LOGOUT_URL_HEADER)) {
                 logoutBrowserCount++;

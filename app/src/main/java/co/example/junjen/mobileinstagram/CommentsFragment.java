@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Comment;
@@ -217,37 +218,59 @@ public class CommentsFragment extends Fragment {
                 loadMoreCommentsBar.setVisibility(View.GONE);
                 break;
             }
-
-            // load view components
-            View commentElement = inflater.inflate(R.layout.comments_element, commentsContent, false);
-            ImageView userImage = (ImageView) commentElement.findViewById(R.id.comment_user_image);
-            TextView username = (TextView) commentElement.findViewById(R.id.comment_username);
-            TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
-            TextView commentText = (TextView) commentElement.findViewById(R.id.comment_text);
-
+            // load a comment
             Comment comment = comments.get(index);
-
-            if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
-
-                username.setText("");   // remove default text
-                stringComponents.add(comment.getUsername().getUsernameLink());
-                StringFactory.stringBuilder(username, stringComponents);
-                stringComponents.clear();
-
-                timeSince.setText(Integer.toString(Math.abs(index - commentsSize + 1)) + "s");
-                commentText.setText(comment.getComment());
-            } else {
-                // TODO: get Data Object
-            }
+            View commentElement = fillComment(comment, index);
             commentsContent.addView(commentElement, 0);
             commentCount++;
         }
     }
 
+    // fill a comment element view with comment details
+    private View fillComment(Comment comment, int index){
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+
+        // load comment element view components
+        View commentElement = inflater.inflate(R.layout.comments_element, commentsContent, false);
+        ImageView userImage = (ImageView) commentElement.findViewById(R.id.comment_user_image);
+        TextView username = (TextView) commentElement.findViewById(R.id.comment_username);
+        TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
+        TextView commentText = (TextView) commentElement.findViewById(R.id.comment_text);
+
+        username.setText("");   // remove default text
+        stringComponents.add(comment.getUsername().getUsernameLink());
+        StringFactory.stringBuilder(username, stringComponents);
+        stringComponents.clear();
+        commentText.setText(comment.getComment());
+
+        if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
+            timeSince.setText(Integer.toString(Math.abs(index - commentsSize + 1)) + "s");
+        } else {
+            Image.setImage(userImage, comment.getUserImage());
+            timeSince.setText(comment.getTimeSince().getTimeSinceDisplay());
+        }
+        return commentElement;
+    }
+
     // send the comment in the input field when send button is clicked
     public void sendComment(){
 
-        // TODO: send comment by posting using Data Object
+        String commentText = commentToSend.getText().toString();
+
+        Comment comment = new Comment(Parameters.loginUserId, Parameters.loginUsername,
+                Parameters.loginUser.getUserImage().getImageString(), commentText,
+                new TimeSince());
+
+        View commentElement = fillComment(comment, 0);
+        commentsContent.addView(commentElement, commentsContent.getChildCount());
+
+        commentsScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                commentsScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
 
         // clear input field
         commentToSend.setText("");

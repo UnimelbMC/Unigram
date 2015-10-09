@@ -58,7 +58,7 @@ public class Post implements Serializable{
 
         this.postId = Parameters.default_postId;
         this.userImage = new Image(Parameters.default_image);
-        this.username = new Username(Parameters.default_username);
+        this.username = new Username(Parameters.default_userId, Parameters.default_username);
         this.location = new Location(Parameters.default_location);
         this.timeSince = new TimeSince(Parameters.default_timeSince);
         this.postImage = new Image(Parameters.default_image);
@@ -74,25 +74,25 @@ public class Post implements Serializable{
         // create empty likes
         for (i = 0; i < Parameters.default_likeCount; i++){
             username = Parameters.default_username + (i + 1);
-            this.likes.add(new User(username, Parameters.default_image,
+            this.likes.add(new User(Parameters.default_userId, username, Parameters.default_image,
                     Parameters.default_profName));
         }
         // create empty comments
         for (i = 0; i < Parameters.default_commentCount; i++){
             username = Parameters.default_username + (i + 1);
             comment = Parameters.default_comment + (i + 1);
-            this.comments.add(new Comment(username, Parameters.default_image, comment,
-                    new TimeSince(Parameters.default_timeSince)));
+            this.comments.add(new Comment(Parameters.default_userId, username,
+                    Parameters.default_image, comment, new TimeSince(Parameters.default_timeSince)));
         }
     }
 
-    public Post(String postId, String userImage, String username, Location location,
+    public Post(String postId, String userId, String userImage, String username, Location location,
                 String timeSince, String postImage, String caption, ArrayList<User> likes,
                 ArrayList<Comment> comments){
 
         this.postId = postId;
         this.userImage = new Image(userImage);
-        this.username = new Username(username);
+        this.username = new Username(userId, username);
         this.location = location;
         this.timeSince = new TimeSince(timeSince);
         this.postImage = new Image(postImage);

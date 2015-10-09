@@ -15,13 +15,28 @@ import co.example.junjen.mobileinstagram.R;
 public class TimeSince implements Serializable{
 
     private String timeSince;
+    private String timeSinceDisplay;
+
+    public TimeSince(){
+        this.timeSince = Long.toString(System.currentTimeMillis() / 1000L);
+        this.timeSinceDisplay = formatTime(this.timeSince);
+    }
 
     public TimeSince(String timeSince){
         this.timeSince = timeSince;
+        this.timeSinceDisplay = timeSince;
+    }
+
+    public String formatTime(String timeSince){
+        return "";
     }
 
     public String getTimeSince() {
         return timeSince;
+    }
+
+    public String getTimeSinceDisplay(){
+        return timeSinceDisplay;
     }
 
     // TODO: convert time since from Data Object to appropriate variables

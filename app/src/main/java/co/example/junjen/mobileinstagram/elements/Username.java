@@ -18,10 +18,12 @@ import co.example.junjen.mobileinstagram.ProfileFragment;
 
 public class Username implements Serializable{
 
+    private String userId;
     private String username;
     private SpannableString usernameLink;
 
-    public Username(String username) {
+    public Username(String userId, String username) {
+        this.userId = userId;
         this.username = username;
         String username_link = "<b>"+this.username+"</b>";
         this.usernameLink = StringFactory.createLink(Html.fromHtml(username_link), getOnClickListener());
@@ -36,7 +38,8 @@ public class Username implements Serializable{
                 Profile profile = null;
 
                 // display profile of username
-                Parameters.NavigationBarActivity.showFragment(ProfileFragment.newInstance(username, true));
+                Parameters.NavigationBarActivity.
+                        showFragment(ProfileFragment.newInstance(userId, true));
             }
         };
         return onClickListener;
@@ -44,6 +47,10 @@ public class Username implements Serializable{
 
     public String getUsername() {
         return username;
+    }
+
+    public String getUserId(){
+        return userId;
     }
 
     public SpannableString getUsernameLink() {

@@ -45,7 +45,7 @@ public class Profile implements Serializable{
     public Profile(String username){
         // test constructor to create 'empty' Profile objects
 
-        this.username = new Username(username);
+        this.username = new Username(Parameters.default_userId, username);
         this.userImage = new Image(Parameters.default_image);
         this.profName = Parameters.default_profName;
         this.profDescrp = Parameters.default_profDescrp;
@@ -105,7 +105,11 @@ public class Profile implements Serializable{
 
         // Profile description
         TextView profDescrp = (TextView) profileView.findViewById(R.id.profile_description);
-        profDescrp.setText(this.profDescrp);
+        if(this.profDescrp.equals("") || this.profDescrp == null){
+            profDescrp.setVisibility(View.GONE);
+        } else {
+            profDescrp.setText(this.profDescrp);
+        }
 
         // Post count
         TextView postCount = (TextView) profileView.findViewById(R.id.profile_post_count);
@@ -124,8 +128,8 @@ public class Profile implements Serializable{
                 int i;
                 for(i = 0; i < 50; i++){
                     String username = Parameters.default_username+i;
-                    followers.add(new User(username, Parameters.default_emptyUserImageLink,
-                            Parameters.default_profName));
+                    followers.add(new User(Parameters.default_userId, username,
+                            Parameters.default_emptyUserImageLink, Parameters.default_profName));
                 }
 
 
@@ -152,8 +156,8 @@ public class Profile implements Serializable{
                 int i;
                 for(i = 0; i < 50; i++){
                     String username = Parameters.default_username+i;
-                    following.add(new User(username, Parameters.default_emptyUserImageLink,
-                            Parameters.default_profName));
+                    following.add(new User(Parameters.default_userId, username,
+                            Parameters.default_emptyUserImageLink, Parameters.default_profName));
                 }
 
 
@@ -203,10 +207,6 @@ public class Profile implements Serializable{
 
             postIconCount += i;
         }
-    }
-
-    public void setUsername(String username) {
-        this.username = new Username(username);
     }
 
     public Username getUsername() {

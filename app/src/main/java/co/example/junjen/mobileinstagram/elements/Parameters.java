@@ -14,8 +14,8 @@ import co.example.junjen.mobileinstagram.R;
 public class Parameters {
 
     // Login parameters
-    public static final String selfLogin_key = "";
     public static boolean dummyData = false;
+    public static String loginUserId = "";
     public static String loginUsername = null;
     public static User loginUser = null;
     public static Profile loginProfile = null;
@@ -35,6 +35,7 @@ public class Parameters {
 
     // Post parameters
     public static final String default_postId = "";
+    public static final String default_userId = "";
     public static final String default_username = "#username";
     public static final String default_location = "Location";
     public static final String default_timeSince = "TimeSince";

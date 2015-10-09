@@ -37,9 +37,7 @@ public class Image implements Serializable {
                 imageView.setImageResource(R.drawable.empty_user_image);
 
             } else {
-                String testUrl = "http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg";
-
-                // TODO: Determine set image type
+                // load image into ImageView with Picasso image library
                 Picasso.with(context).load(image.getImageString()).into(imageView);
             }
         }
