@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,11 +25,11 @@ import co.example.junjen.mobileinstagram.CommentsFragment;
 import co.example.junjen.mobileinstagram.PostFragment;
 import co.example.junjen.mobileinstagram.UsersFragment;
 import co.example.junjen.mobileinstagram.R;
-import co.example.junjen.mobileinstagram.customLayouts.LikeButton;
+import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
 import co.example.junjen.mobileinstagram.customLayouts.LikeListener;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
-import weka.classifiers.bayes.net.ParentSet;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 public class Post implements Serializable{
 
@@ -46,12 +45,14 @@ public class Post implements Serializable{
     // post content
     private Image postImage;
     private String caption;
+    private int likeCount;
+    private int commentCount;
     private ArrayList<User> likes;
     private ArrayList<Comment> comments;
 
     // post view
     private RelativeLayout postView;
-    private LikeButton likeButton;
+    private ToggleButton likeButton;
 
     private String liked = Parameters.checkLike;
 
@@ -74,6 +75,9 @@ public class Post implements Serializable{
         String username;
         String comment;
 
+        this.likeCount = Parameters.default_likeCount;
+        this.commentCount = Parameters.default_commentCount;
+
         // create empty likes
         for (i = 0; i < Parameters.default_likeCount; i++){
             userId = Parameters.default_userId + (i + 1);
@@ -92,8 +96,8 @@ public class Post implements Serializable{
     }
 
     public Post(String postId, String userId, String userImage, String username, Location location,
-                String timeSince, String postImage, String caption, ArrayList<User> likes,
-                ArrayList<Comment> comments){
+                String timeSince, String postImage, String caption, int likeCount, int commentCount,
+                ArrayList<User> likes, ArrayList<Comment> comments){
 
         this.postId = postId;
         this.userImage = new Image(userImage);
@@ -102,7 +106,8 @@ public class Post implements Serializable{
         this.timeSince = new TimeSince(timeSince);
         this.postImage = new Image(postImage);
         this.caption = caption;
-
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
         this.likes = likes;
         this.comments = comments;
     }
@@ -138,10 +143,9 @@ public class Post implements Serializable{
             ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
             if (!this.postImage.getImageString().equals(Parameters.default_image)) {
                 Image.setImage(postImage, this.postImage);
-
-                // set listener to handle double tap likes on post image
-                new LikeListener(postImage, this);
             }
+            // set listener to handle double tap likes on post image
+            new LikeListener(postImage, this);
 
             // Like Feedback
             ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
@@ -150,7 +154,7 @@ public class Post implements Serializable{
             likeFeedback.setVisibility(View.INVISIBLE);
 
             // Like Button
-            likeButton = (LikeButton) postView.findViewById(R.id.like_button);
+            likeButton = (ToggleButton) postView.findViewById(R.id.like_button);
             likeButton.setOnClickListener(new View.OnClickListener() {
 
                 // Handle clicks for like button
@@ -202,6 +206,7 @@ public class Post implements Serializable{
 
             // Comments
             buildCommentView(inflater);
+
         } catch (InflateException e) {
             Log.w("test", "InflateException at getPostView()");
         }
@@ -216,16 +221,18 @@ public class Post implements Serializable{
         if (this.comments != null){
 
             // add link to show all comments if more than 3 comments
-            int commentsSize = this.comments.size();
-            int commentThreshold = Parameters.commentThreshold;
-            if (commentsSize > commentThreshold){
+            int commentThreshold = Parameters.commentPreviewThreshold;
+            if (commentCount > commentThreshold){
                 commentCountText.setVisibility(View.VISIBLE);
 
-                String text = "View all " + commentsSize + " comments";
+                String text = "View all " + commentCount + " comments";
 
                 SpannableString commentsLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        comments = NetParams.NETWORK.getCommentsByPostId(postId, false);
+
                         // display post's comments
                         Parameters.NavigationBarActivity.showFragment(CommentsFragment.
                                 newInstance(post));
@@ -245,10 +252,11 @@ public class Post implements Serializable{
 
             int i;
             int index;
-            int commentCount = 0;
+            int counter = 0;
+            int commentsSize = comments.size();
 
             for (i = 0; i < commentThreshold; i++){
-                index = commentsSize - 1 - commentCount;
+                index = commentsSize - 1 - counter;
 
                 if (index > commentsSize - 1 || index < 0) break;
 
@@ -256,19 +264,14 @@ public class Post implements Serializable{
                 TextView commentText = (TextView) commentPreview.findViewById(R.id.post_comment);
                 Comment comment = comments.get(index);
 
-                if (comment.getUsername().getUsername().startsWith(Parameters.default_username)){
+                commentText.setText("");    // remove default text
+                stringComponents.add(comment.getUsername().getUsernameLink());
+                stringComponents.add(" " + comment.getComment());
+                StringFactory.stringBuilder(commentText, stringComponents);
+                stringComponents.clear();
 
-                    commentText.setText("");    // remove default text
-                    stringComponents.add(comment.getUsername().getUsernameLink());
-                    stringComponents.add(" " + comment.getComment());
-                    StringFactory.stringBuilder(commentText, stringComponents);
-                    stringComponents.clear();
-
-                } else {
-                    // TODO: get Data Object
-                }
                 commentsView.addView(commentPreview, 0);
-                commentCount++;
+                counter++;
             }
         } else {
             commentCountText.setVisibility(View.GONE);
@@ -276,8 +279,8 @@ public class Post implements Serializable{
     }
 
     // get layout of post icons to be added to the bottom of a profile fragment
-    public static void getPostIcons(LayoutInflater inflater, ViewGroup postIconList,
-                                    ArrayList<Post> posts){
+    public static void buildPostIcons(LayoutInflater inflater, ViewGroup postIconList,
+                                      ArrayList<Post> posts){
 
         int postsSize = posts.size();
         int postIconsPerRow = Parameters.postIconsPerRow;
@@ -367,7 +370,7 @@ public class Post implements Serializable{
 
         if (this.likes != null){
             TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
-            int likeCount = this.likes.size();
+            int likeCount = this.likeCount;
             int likeThreshold = Parameters.likeThreshold;
 
             // add link to all likes if more than threshold
@@ -378,6 +381,9 @@ public class Post implements Serializable{
                 SpannableString likeLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        likes = NetParams.NETWORK.getLikesByPostId(postId);
+
                         // display post's likes
                         Parameters.NavigationBarActivity.showFragment
                                 (UsersFragment.newInstance(likes, Parameters.likesTitle));

@@ -23,70 +23,97 @@
             android:contentDescription="Profile User Image"/>
 
         <!-- Profile stats -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/profile_user_image"
             android:layout_toEndOf="@id/profile_user_image"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_centerVertical="true"
             android:baselineAligned="false">
 
-            <!-- Number of posts -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:id="@+id/profile_count_group"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:baselineAligned="false"
+                android:layout_margin="@dimen/user_follow_button_margin">
 
-                <TextView
-                    android:id="@+id/profile_post_count"
-                    android:text="0"
-                    style="@style/profile_stat_number"/>
+                <!-- Number of posts -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:text="@string/profile_post_count_label"
-                    style="@style/profile_stat_tag"/>
+                    <TextView
+                        android:id="@+id/profile_post_count"
+                        android:text="0"
+                        style="@style/profile_stat_number"/>
 
+                    <TextView
+                        android:text="@string/profile_post_count_label"
+                        style="@style/profile_stat_tag"/>
+
+                </LinearLayout>
+
+                <!-- Number of followers -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/profile_follower_count"
+                        android:text="0"
+                        style="@style/profile_stat_number"/>
+
+                    <TextView
+                        android:text="@string/profile_follower_count_label"
+                        style="@style/profile_stat_tag"/>
+
+                </LinearLayout>
+
+                <!-- Numbers following -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/profile_following_count"
+                        android:text="0"
+                        style="@style/profile_stat_number"/>
+
+                    <TextView
+                        android:text="@string/profile_following_count_label"
+                        style="@style/profile_stat_tag"/>
+
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Number of followers -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
+            <!-- Follow button -->
+            <RadioGroup
+                android:id="@+id/profile_follow_button_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_count_group"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true">
+                <co.example.junjen.mobileinstagram.customLayouts.ToggleButton
+                    android:id="@+id/profile_follow_button"
+                    android:layout_width="@dimen/profile_follow_button_width"
+                    android:layout_height="@dimen/profile_follow_button_height"
+                    android:button="@null"
+                    android:background="@drawable/profile_follow_selector"/>
+            </RadioGroup>
 
-                <TextView
-                    android:id="@+id/profile_follower_count"
-                    android:text="0"
-                    style="@style/profile_stat_number"/>
-
-                <TextView
-                    android:text="@string/profile_follower_count_label"
-                    style="@style/profile_stat_tag"/>
-
-            </LinearLayout>
-
-            <!-- Numbers following -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/profile_following_count"
-                    android:text="0"
-                    style="@style/profile_stat_number"/>
-
-                <TextView
-                    android:text="@string/profile_following_count_label"
-                    style="@style/profile_stat_tag"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
 

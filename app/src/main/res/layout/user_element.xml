@@ -2,7 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/comment_margin">
+    android:layout_marginLeft="@dimen/comment_margin"
+    android:layout_marginStart="@dimen/comment_margin">
 
     <!-- User image -->
     <co.example.junjen.mobileinstagram.customLayouts.UserImageView
@@ -19,7 +20,30 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/like_bar_height"
         android:layout_toRightOf="@id/user_user_image"
-        android:layout_toEndOf="@id/user_user_image">
+        android:layout_toEndOf="@id/user_user_image"
+        android:layout_marginLeft="@dimen/comment_margin">
+
+        <!-- Follow button -->
+        <RadioGroup
+            android:id="@+id/user_follow_button_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/user_follow_button_margin"
+            android:layout_marginEnd="@dimen/user_follow_button_margin"
+            android:layout_marginLeft="@dimen/comment_margin"
+            android:layout_marginStart="@dimen/comment_margin"
+            android:layout_marginTop="@dimen/comment_margin"
+            android:layout_marginBottom="@dimen/comment_margin">
+            <co.example.junjen.mobileinstagram.customLayouts.ToggleButton
+                android:id="@+id/user_follow_button"
+                android:layout_width="@dimen/user_follow_button_width"
+                android:layout_height="@dimen/user_follow_button_height"
+                android:button="@null"
+                android:background="@drawable/user_follow_selector"/>
+        </RadioGroup>
 
         <!-- Profile name -->
         <TextView
@@ -28,6 +52,8 @@
             android:text="@string/default_prof_name"
             android:id="@+id/user_prof_name"
             android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/user_follow_button_group"
+            android:layout_toStartOf="@id/user_follow_button_group"
             android:layout_marginRight="@dimen/comment_margin"
             android:layout_marginEnd="@dimen/comment_margin"
             android:singleLine="true"
@@ -42,6 +68,8 @@
             android:gravity="center_vertical"
             android:singleLine="true"
             android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/user_follow_button_group"
+            android:layout_toStartOf="@id/user_follow_button_group"
             android:layout_above="@id/user_prof_name"
             android:layout_alignWithParentIfMissing="true"
             android:layout_marginTop="@dimen/post_margin"

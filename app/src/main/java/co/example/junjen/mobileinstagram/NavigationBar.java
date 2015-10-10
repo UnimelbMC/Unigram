@@ -39,7 +39,6 @@ public class NavigationBar extends AppCompatActivity {
     private CameraFragment cameraFragment;
     private ArrayList<Fragment> activityFeedHistory = new ArrayList<>();
     private ArrayList<Fragment> profileHistory = new ArrayList<>();
-    private String token;
     private RadioGroup navBar;
     private int prevNavButtonId;
     private int navigationViewId = R.id.view1;
@@ -127,20 +126,19 @@ public class NavigationBar extends AppCompatActivity {
         navBar = (RadioGroup) findViewById(R.id.nav_bar);
         navBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // remove loading animation
-                Parameters.NavigationBarActivity.
-                        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case userFeedButtonId:
                         ft.replace(navigationViewId,
                                 userFeedHistory.get(userFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        backButton(userFeedHistory);
                         break;
                     case discoverButtonId:
                         ft.replace(navigationViewId,
                                 discoverHistory.get(discoverHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        backButton(discoverHistory);
                         break;
                     case cameraButtonId:
                         ft.replace(navigationViewId, cameraFragment);
@@ -150,11 +148,13 @@ public class NavigationBar extends AppCompatActivity {
                         ft.replace(navigationViewId,
                                 activityFeedHistory.get(activityFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        backButton(activityFeedHistory);
                         break;
                     case profileButtonId:
                         ft.replace(navigationViewId,
                                 profileHistory.get(profileHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        backButton(profileHistory);
                         break;
                 }
                 ft.commit();
@@ -162,7 +162,7 @@ public class NavigationBar extends AppCompatActivity {
         });
     }
 
-    // displays a fragment and adds it to a history
+    // adds a fragment to be displayed in a history
     public void showFragment(Fragment fragment){
         replaceView(fragment);
 
@@ -187,6 +187,18 @@ public class NavigationBar extends AppCompatActivity {
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(navigationViewId, fragment);
         ft.commit();
+    }
+
+    // shows or hides back button on history count
+    public void backButton(ArrayList<Fragment> history){
+
+        // if history size is more than one then show back button, else hide it
+        if(history.size() > 1){
+            showBackButton();
+        } else {
+            hideBackButton();
+        }
+
     }
 
     // go back to the previous fragment using the back button
@@ -302,9 +314,6 @@ public class NavigationBar extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "nav bar saved");
 
-        // Save the user's current game state
-        savedInstanceState.putString("token", token);
-
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -341,7 +350,7 @@ public class NavigationBar extends AppCompatActivity {
             myWebView.clearFormData();
             setContentView(myWebView);
             myWebView.setWebViewClient(new LogoutWebViewClient());
-            myWebView.loadUrl("https://instagram.com/accounts/logout");
+            myWebView.loadUrl(NetParams.LOGOUT_URL);
             return true;
         }
         return super.onOptionsItemSelected(item);

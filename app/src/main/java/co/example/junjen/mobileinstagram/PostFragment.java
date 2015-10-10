@@ -6,14 +6,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
+import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 
@@ -81,7 +85,10 @@ public class PostFragment extends Fragment {
         }
 
         ViewGroup postFragment = (ViewGroup) inflater.inflate(R.layout.fragment_post, container, false);
-        postFragment.addView(post.getPostView(inflater));
+        View postView = post.getPostView(inflater);
+        if(postView != null){
+            postFragment.addView(postView);
+        }
 
         // Inflate the layout for this fragment
         return postFragment;

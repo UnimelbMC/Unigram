@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
+import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.StringFactory;
@@ -33,11 +33,11 @@ import co.example.junjen.mobileinstagram.elements.StringFactory;
 public class UsersFragment extends Fragment implements ScrollViewListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String usernames_key = "usernames";
+    private static final String users_key = "users";
     private static final String title_key = "title";
 
     // TODO: Rename and change types of parameters
-    private ArrayList<User> usernames;
+    private ArrayList<User> users;
     private String title;
 
     private ExpandableScrollView userFragment;
@@ -45,7 +45,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     private int userCount = 0;
     private int usersSize = 0;
 
-    // flag to check if usernames are being loaded before loading new ones
+    // flag to check if users are being loaded before loading new ones
     private boolean loadPosts = true;
 
     private OnFragmentInteractionListener mListener;
@@ -62,7 +62,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     public static UsersFragment newInstance(ArrayList<User> user, String title) {
         UsersFragment fragment = new UsersFragment();
         Bundle args = new Bundle();
-        args.putSerializable(usernames_key, user);
+        args.putSerializable(users_key, user);
         args.putString(title_key, title);
         fragment.setArguments(args);
         return fragment;
@@ -76,7 +76,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            usernames = (ArrayList<User>) getArguments().getSerializable(usernames_key);
+            users = (ArrayList<User>) getArguments().getSerializable(users_key);
             title = getArguments().getString(title_key);
 
             // display back button
@@ -93,13 +93,14 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
 
         if(userFragment == null) {
 
-            if (usernames != null) {
-                userFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
+            if (users != null) {
+                userFragment = (ExpandableScrollView) inflater.inflate(
+                        R.layout.fragment_expandable_scroll_view, container, false);
                 userFragment.setScrollViewListener(this);
                 usersView = (ViewGroup) userFragment.findViewById(R.id.expandable_scroll_view);
-                usersSize = usernames.size();
+                usersSize = users.size();
 
-                loadLikes();
+                loadUser();
 
                 // add layout listener to add content if default screen is not filled
                 ViewTreeObserver vto = userFragment.getViewTreeObserver();
@@ -114,7 +115,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
                         int height = userFragment.getHeight();
 
                         if (height < screenHeight) {
-                            loadLikes();
+                            loadUser();
                         }
                     }
                 });
@@ -131,13 +132,13 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
         // load new posts if no posts are currently being loaded
         if(loadPosts){
             loadPosts = false;
-            loadLikes();
+            loadUser();
             loadPosts = true;
         }
     }
 
     // loads a number of comments based on a threshold
-    private void loadLikes(){
+    private void loadUser(){
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
@@ -158,23 +159,15 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
             TextView username = (TextView) likeElement.findViewById(R.id.user_username);
             TextView profName = (TextView) likeElement.findViewById(R.id.user_prof_name);
 
-            User like = usernames.get(userCount);
+            User user = users.get(userCount);
 
-            if (like.getUsername().getUsername().startsWith(Parameters.default_username)){
+            username.setText("");   // remove default text
+            stringComponents.add(user.getUsername().getUsernameLink());
+            StringFactory.stringBuilder(username, stringComponents);
+            stringComponents.clear();
 
-                username.setText("");   // remove default text
-                stringComponents.add(like.getUsername().getUsernameLink());
-                StringFactory.stringBuilder(username, stringComponents);
-                stringComponents.clear();
-
-                profName.setText(like.getProfName());
-            } else {
-
-
-                // TODO: get Data Object
-
-
-            }
+            Image.setImage(userImage, user.getUserImage());
+            profName.setText(user.getProfName());
             usersView.addView(likeElement, userCount);
             userCount++;
         }

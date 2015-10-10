@@ -5,18 +5,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import co.example.junjen.mobileinstagram.CommentsFragment;
-import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.UsersFragment;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
+import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 /**
@@ -40,6 +40,8 @@ public class Profile implements Serializable{
 
     // Profile view
     private ExpandableScrollView profileView;
+    private ToggleButton followButton;
+    private TextView followingCountText;
     private int postIconCount = 0;
 
 
@@ -120,64 +122,68 @@ public class Profile implements Serializable{
         }
 
         // Post count
-        TextView postCount = (TextView) profileView.findViewById(R.id.profile_post_count);
-        postCount.setText(formatCount(this.postCount));
+        TextView postCountText = (TextView) profileView.findViewById(R.id.profile_post_count);
+        postCountText.setText(formatCount(this.postCount));
 
         // Follower count
-        TextView followerCount = (TextView) profileView.findViewById(R.id.profile_follower_count);
+        TextView followerCountText = (TextView) profileView.findViewById(R.id.profile_follower_count);
         text = formatCount(this.followerCount);
         SpannableString followerLink = StringFactory.createLink(text, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-                // TODO: get followers from Network
                 ArrayList<User> followers = new ArrayList<>();
-                int i;
-                for(i = 0; i < 50; i++){
-                    String username = Parameters.default_username+i;
-                    followers.add(new User(Parameters.default_userId, username,
-                            Parameters.default_emptyUserImageLink, Parameters.default_profName));
+                if(Parameters.dummyData) {
+                    int i;
+                    for (i = 0; i < 50; i++) {
+                        String username = Parameters.default_username + i;
+                        followers.add(new User(Parameters.default_userId, username,
+                                Parameters.default_emptyUserImageLink, Parameters.default_profName));
+                    }
+                } else {
+
+                    // TODO: get followers from Network
+
                 }
-
-
                 // display followers
                 Parameters.NavigationBarActivity.showFragment(UsersFragment.
                         newInstance(followers, Parameters.followersTitle));
             }
         });
-        followerCount.setText("");    // remove default text
+        followerCountText.setText("");    // remove default text
         stringComponents.add(followerLink);
-        StringFactory.stringBuilder(followerCount, stringComponents);
+        StringFactory.stringBuilder(followerCountText, stringComponents);
         stringComponents.clear();
 
         // Following count
-        TextView followingCount = (TextView) profileView.findViewById(R.id.profile_following_count);
-        text = formatCount(this.followingCount);
-        SpannableString followingLink = StringFactory.createLink(text, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        buildFollowingCountView();
 
+        // Follow button
+        RadioGroup followButtonGroup = (RadioGroup)
+                profileView.findViewById(R.id.profile_follow_button_group);
+        if(username.getUsername().equals(Parameters.loginUsername)){
+            followButtonGroup.setVisibility(View.GONE);
+        } else {
+            followButtonGroup.setVisibility(View.VISIBLE);
+            followButton = (ToggleButton)
+                    profileView.findViewById(R.id.profile_follow_button);
 
-                // TODO: get followers from Network
-                ArrayList<User> following = new ArrayList<>();
-                int i;
-                for(i = 0; i < 50; i++){
-                    String username = Parameters.default_username+i;
-                    following.add(new User(Parameters.default_userId, username,
-                            Parameters.default_emptyUserImageLink, Parameters.default_profName));
+            checkIfFollowing();
+
+            // TODO: set listener to followButton
+            followButton.setOnClickListener(new View.OnClickListener() {
+
+                // Handle clicks for like button
+                @Override
+                public void onClick(View v) {
+                    if (followButton.isChecked()) {
+                        updateFollowingCount(true);
+                    } else {
+                        updateFollowingCount(false);
+                    }
                 }
-
-
-                // display followers
-                Parameters.NavigationBarActivity.showFragment(UsersFragment.
-                        newInstance(following, Parameters.followingTitle));
-            }
-        });
-        followingCount.setText("");    // remove default text
-        stringComponents.add(followingLink);
-        StringFactory.stringBuilder(followingCount, stringComponents);
-        stringComponents.clear();
+            });
+        }
 
         // Add post icons
         if(this.posts.size() == 0 && this.postCount == 0){
@@ -188,6 +194,39 @@ public class Profile implements Serializable{
         return profileView;
     }
 
+    private void buildFollowingCountView(){
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+        followingCountText = (TextView) profileView.findViewById(R.id.profile_following_count);
+        String text = formatCount(this.followingCount);
+        SpannableString followingLink = StringFactory.createLink(text, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ArrayList<User> following = new ArrayList<>();
+                if(Parameters.dummyData) {
+                    int i;
+                    for (i = 0; i < 50; i++) {
+                        String username = Parameters.default_username + i;
+                        following.add(new User(Parameters.default_userId, username,
+                                Parameters.default_emptyUserImageLink, Parameters.default_profName));
+                    }
+                } else {
+
+                    // TODO: get following from Network
+
+                }
+                // display followers
+                Parameters.NavigationBarActivity.showFragment(UsersFragment.
+                        newInstance(following, Parameters.followingTitle));
+            }
+        });
+        followingCountText.setText("");    // remove default text
+        stringComponents.add(followingLink);
+        StringFactory.stringBuilder(followingCountText, stringComponents);
+        stringComponents.clear();
+    }
+
+    // gets
     public void getPostIcons(LayoutInflater inflater){
 
         Log.w("test", Integer.toString(this.postCount)+","+Integer.toString(this.posts.size()));
@@ -209,11 +248,48 @@ public class Profile implements Serializable{
                     break;
                 }
             }
-            Post.getPostIcons(inflater,
+            Post.buildPostIcons(inflater,
                     (LinearLayout) profileView.findViewById(R.id.profile_post_icons),
                     posts);
 
             postIconCount += i;
+        }
+    }
+
+    // get relationship of this user to current user and set toggle accordingly
+    private void checkIfFollowing(){
+
+        Log.w("test", "checkFollowing: " + username.getUserId() + " " + username.getUsername());
+
+        // TODO: get relationship of this user to current user and set toggle accordingly
+        String following = NetParams.NETWORK.checkIfFollowing(username.getUserId()).getOutgoingStatus();
+
+        if (following.equals("follows")){
+            checkFollowButton(true);
+        } else {
+            checkFollowButton(false);
+        }
+    }
+
+    // update following counts as seen on current user profile if following or unfollowing a user
+    private void updateFollowingCount(boolean follow){
+
+        int count = Parameters.loginProfile.getFollowingCount();
+
+        if(follow){
+            Parameters.loginProfile.setFollowingCount(count + 1);
+        } else {
+            Parameters.loginProfile.setFollowingCount(count - 1);
+        }
+        Parameters.loginProfile.buildFollowingCountView();
+    }
+
+    // updates like button
+    public void checkFollowButton(boolean follow){
+        if(follow){
+            followButton.setChecked(true);
+        } else {
+            followButton.setChecked(false);
         }
     }
 
@@ -245,8 +321,28 @@ public class Profile implements Serializable{
         return formattedCount;
     }
 
+    public void setFollowingCount(int count){
+        this.followingCount = count;
+    }
+
     public Username getUsername() {
         return username;
+    }
+
+    public int getPostCount() {
+        return postCount;
+    }
+
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public int getPostIconCount() {
+        return postIconCount;
     }
 
     public Image getUserImage() {

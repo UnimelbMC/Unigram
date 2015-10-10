@@ -22,6 +22,7 @@ public class NetParams {
     public static Token ACCESS_TOKEN = null;
 
     public static final String LOGIN_URL_HEADER = "https://instagram.com/accounts/login/?force_classic_login";
+    public static final String LOGOUT_URL = "https://instagram.com/accounts/logout";
     public static final String LOGOUT_URL_HEADER =  "https://instagram";
 
     public static String ACCESS_TOKEN_FILENAME = "/unigram_access_token";
