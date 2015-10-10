@@ -8,6 +8,7 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.text.SpannableString;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import weka.classifiers.bayes.net.ParentSet;
 public class Post implements Serializable{
 
     private String postId;
+    private Post post = this;
 
     // post header
     private Image userImage;
@@ -105,105 +107,109 @@ public class Post implements Serializable{
         this.comments = comments;
     }
 
-    public View getPostView(LayoutInflater inflater){
+    public View getPostView(LayoutInflater inflater) {
 
-        postView = (RelativeLayout)
-                inflater.inflate(R.layout.post, null, false);
-        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+        try {
 
-        /** Fixed parameters **/
+            postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
+            ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
-        // User image
-        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
-            UserImageView userImage = (UserImageView)
-                    postView.findViewById(R.id.post_header_user_image);
-            Image.setImage(userImage, this.userImage);
-        }
+            /** Fixed parameters **/
 
-        // Username
-        TextView username = (TextView) postView.findViewById(R.id.post_header_username);
-        username.setText("");   // remove default text
-        stringComponents.add(this.username.getUsernameLink());
-        StringFactory.stringBuilder(username, stringComponents);
-        stringComponents.clear();
-
-        // Time since posted
-        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
-        timeSince.setText(this.timeSince.getTimeSinceDisplay());
-
-        // Post image
-        ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-        if(!this.postImage.getImageString().equals(Parameters.default_image)) {
-            Image.setImage(postImage, this.postImage);
-
-            // set listener to handle double tap likes on post image
-            new LikeListener(postImage, this);
-        }
-
-        // Like Feedback
-        ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
-        ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
-        likeFeedback.setLayoutParams(layoutParams);
-        likeFeedback.setVisibility(View.INVISIBLE);
-
-        // Like Button
-        likeButton = (LikeButton) postView.findViewById(R.id.like_button);
-        likeButton.setOnClickListener(new View.OnClickListener() {
-
-            // Handle clicks for like button
-            @Override
-            public void onClick(View v) {
-                if(likeButton.isChecked()){
-                    likePost(true);
-                } else {
-                    likePost(false);
-                }
+            // User image
+            if (!this.userImage.getImageString().equals(Parameters.default_image)) {
+                UserImageView userImage = (UserImageView)
+                        postView.findViewById(R.id.post_header_user_image);
+                Image.setImage(userImage, this.userImage);
             }
-        });
 
-        // Comment Button
-        ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
-        commentButton.setOnClickListener(this.commentButtonOnClickListener());
-
-        /** Optional parameters **/
-
-        // TODO: Confirm for 'null' return type if optional params do not exist
-
-        // Location
-        TextView location = (TextView) postView.findViewById(R.id.post_header_location);
-        if (this.location != null){
-            location.setText("");    // remove default text
-            stringComponents.add(this.location.getLocation());
-            StringFactory.stringBuilder(location, stringComponents);
-            stringComponents.clear();
-        } else {
-            location.setVisibility(View.GONE);
-        }
-
-        // Likes
-        if(likes != null){
-            updateLikes();
-        }
-
-        // Caption
-        TextView caption = (TextView) postView.findViewById(R.id.post_caption);
-        if (this.caption != null){
-            caption.setText("");    // remove default text
+            // Username
+            TextView username = (TextView) postView.findViewById(R.id.post_header_username);
+            username.setText("");   // remove default text
             stringComponents.add(this.username.getUsernameLink());
-            stringComponents.add(" " + this.caption);
-            StringFactory.stringBuilder(caption, stringComponents);
+            StringFactory.stringBuilder(username, stringComponents);
             stringComponents.clear();
-        } else {
-            caption.setVisibility(View.GONE);
-        }
 
-        // Comments
-        buildCommentView(inflater);
+            // Time since posted
+            TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+            timeSince.setText(this.timeSince.getTimeSinceDisplay());
+
+            // Post image
+            ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
+            if (!this.postImage.getImageString().equals(Parameters.default_image)) {
+                Image.setImage(postImage, this.postImage);
+
+                // set listener to handle double tap likes on post image
+                new LikeListener(postImage, this);
+            }
+
+            // Like Feedback
+            ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
+            ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
+            likeFeedback.setLayoutParams(layoutParams);
+            likeFeedback.setVisibility(View.INVISIBLE);
+
+            // Like Button
+            likeButton = (LikeButton) postView.findViewById(R.id.like_button);
+            likeButton.setOnClickListener(new View.OnClickListener() {
+
+                // Handle clicks for like button
+                @Override
+                public void onClick(View v) {
+                    if (likeButton.isChecked()) {
+                        likePost(true);
+                    } else {
+                        likePost(false);
+                    }
+                }
+            });
+
+            // Comment Button
+            ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
+            commentButton.setOnClickListener(this.commentButtonOnClickListener());
+
+            /** Optional parameters **/
+
+            // TODO: Confirm for 'null' return type if optional params do not exist
+
+            // Location
+            TextView location = (TextView) postView.findViewById(R.id.post_header_location);
+            if (this.location != null) {
+                location.setText("");    // remove default text
+                stringComponents.add(this.location.getLocation());
+                StringFactory.stringBuilder(location, stringComponents);
+                stringComponents.clear();
+            } else {
+                location.setVisibility(View.GONE);
+            }
+
+            // Likes
+            if (likes != null) {
+                updateLikes();
+            }
+
+            // Caption
+            TextView caption = (TextView) postView.findViewById(R.id.post_caption);
+            if (this.caption != null) {
+                caption.setText("");    // remove default text
+                stringComponents.add(this.username.getUsernameLink());
+                stringComponents.add(" " + this.caption);
+                StringFactory.stringBuilder(caption, stringComponents);
+                stringComponents.clear();
+            } else {
+                caption.setVisibility(View.GONE);
+            }
+
+            // Comments
+            buildCommentView(inflater);
+        } catch (InflateException e) {
+            Log.w("test", "InflateException at getPostView()");
+        }
         return postView;
     }
 
     // builds the view for the comments portion in a post
-    private void buildCommentView(LayoutInflater inflater){
+    public void buildCommentView(LayoutInflater inflater){
 
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
         TextView commentCountText = (TextView) postView.findViewById(R.id.post_comment_count);
@@ -213,18 +219,20 @@ public class Post implements Serializable{
             int commentsSize = this.comments.size();
             int commentThreshold = Parameters.commentThreshold;
             if (commentsSize > commentThreshold){
+                commentCountText.setVisibility(View.VISIBLE);
+
                 String text = "View all " + commentsSize + " comments";
 
-                SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
+                SpannableString commentsLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // display post's comments
                         Parameters.NavigationBarActivity.showFragment(CommentsFragment.
-                                newInstance(comments, username, userImage, caption, timeSince));
+                                newInstance(post));
                     }
                 });
                 commentCountText.setText("");    // remove default text
-                stringComponents.add(commentLink);
+                stringComponents.add(commentsLink);
                 StringFactory.stringBuilder(commentCountText, stringComponents);
                 stringComponents.clear();
             } else {
@@ -233,6 +241,7 @@ public class Post implements Serializable{
 
             // dynamically add preview of maximum 3 comments below commentCountText
             ViewGroup commentsView = (ViewGroup) postView.findViewById(R.id.post_comments);
+            commentsView.removeAllViews();  // clear previous comments when rebuilding
 
             int i;
             int index;
@@ -430,7 +439,7 @@ public class Post implements Serializable{
             public void onClick(View v) {
                 // display post's comments
                 Parameters.NavigationBarActivity.showFragment(CommentsFragment.
-                        newInstance(comments, username, userImage, caption, timeSince));
+                        newInstance(post));
             }
         };
 
@@ -463,5 +472,9 @@ public class Post implements Serializable{
 
     public ArrayList<User> getLikes() {
         return likes;
+    }
+
+    public ArrayList<Comment> getComments () {
+        return comments;
     }
 }
