@@ -91,31 +91,34 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
         // remove loading animation
         Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
-        if (usernames != null){
-            userFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
-            userFragment.setScrollViewListener(this);
-            usersView = (ViewGroup) userFragment.findViewById(R.id.expandable_scroll_view);
-            usersSize = usernames.size();
+        if(userFragment == null) {
 
-            loadLikes();
+            if (usernames != null) {
+                userFragment = (ExpandableScrollView) inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
+                userFragment.setScrollViewListener(this);
+                usersView = (ViewGroup) userFragment.findViewById(R.id.expandable_scroll_view);
+                usersSize = usernames.size();
 
-            // add layout listener to add content if default screen is not filled
-            ViewTreeObserver vto = userFragment.getViewTreeObserver();
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            final int screenHeight = displaymetrics.heightPixels;
+                loadLikes();
 
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    userFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    int height = userFragment.getHeight();
+                // add layout listener to add content if default screen is not filled
+                ViewTreeObserver vto = userFragment.getViewTreeObserver();
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                final int screenHeight = displaymetrics.heightPixels;
 
-                    if (height < screenHeight) {
-                        loadLikes();
+                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        userFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        int height = userFragment.getHeight();
+
+                        if (height < screenHeight) {
+                            loadLikes();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         // Inflate the layout for this fragment
         return userFragment;

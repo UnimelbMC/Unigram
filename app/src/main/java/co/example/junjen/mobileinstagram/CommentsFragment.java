@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import co.example.junjen.mobileinstagram.elements.Comment;
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.StringFactory;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.elements.Username;
@@ -38,6 +39,7 @@ import co.example.junjen.mobileinstagram.elements.Username;
 public class CommentsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String post_key = "post";
     private static final String comments_key = "comments";
     private static final String username_key = "username";
     private static final String userImage_key = "userImage";
@@ -46,12 +48,14 @@ public class CommentsFragment extends Fragment {
 
 
     // TODO: Rename and change types of parameters
+    private Post post;
     private ArrayList<Comment> comments;
     private Username username;
     private Image userImage;
     private String caption;
     private TimeSince timeSince;
 
+    private View commentsFragment;
     private EditText commentToSend;
     private ScrollView commentsScrollView;
     private View loadMoreCommentsBar;
@@ -65,21 +69,15 @@ public class CommentsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param comments Parameter 1.
+     * @param post Parameter 1.
      * @return A new instance of fragment CommentsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CommentsFragment newInstance(ArrayList<Comment> comments, Username username,
-                                               Image userImage, String caption,
-                                               TimeSince timeSince) {
+    public static CommentsFragment newInstance(Post post) {
 
         CommentsFragment fragment = new CommentsFragment();
         Bundle args = new Bundle();
-        args.putSerializable(comments_key, comments);
-        args.putSerializable(username_key, username);
-        args.putSerializable(userImage_key, userImage);
-        args.putString(caption_key, caption);
-        args.putSerializable(timeSince_key, timeSince);
+        args.putSerializable(post_key, post);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,11 +91,15 @@ public class CommentsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 
-            comments = (ArrayList<Comment>) getArguments().getSerializable(comments_key);
-            username = (Username) getArguments().getSerializable(username_key);
-            userImage = (Image) getArguments().getSerializable(userImage_key);
-            caption = getArguments().getString(caption_key);
-            timeSince = (TimeSince) getArguments().getSerializable(timeSince_key);
+            Log.w("test", "CommentsFragment onCreate");
+
+            post = (Post) getArguments().getSerializable(post_key);
+
+            comments = post.getComments();
+            username = post.getUsername();
+            userImage = post.getUserImage();
+            caption = post.getCaption();
+            timeSince = post.getTimeSince();
 
             // display back button
             Parameters.NavigationBarActivity.showBackButton();
@@ -111,94 +113,98 @@ public class CommentsFragment extends Fragment {
         // remove loading animation
         Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
-        // change action bar title
-        setTitle();
+        if(commentsFragment == null) {
 
-        View commentsFragment = inflater.inflate(R.layout.fragment_comments, container, false);
+            Log.w("test", "CommentsFragment onCreateView");
 
-        // bind method to send comment button
-        Button sendButton = (Button) commentsFragment.findViewById(R.id.comment_send_button);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendComment();
-            }
-        });
+            // change action bar title
+            setTitle();
 
-        // load field for adding a comment
-        commentToSend = (EditText) commentsFragment.findViewById(R.id.comment_send_text);
+            commentsFragment = inflater.inflate(R.layout.fragment_comments, container, false);
 
-
-        commentsScrollView = (ScrollView) commentsFragment.findViewById(R.id.comments_scroll_view);
-        ArrayList<CharSequence> stringComponents = new ArrayList<>();
-
-        if (comments != null){
-            commentsContent = (ViewGroup) commentsFragment.findViewById(R.id.comments_content);
-            View commentsCaption = commentsFragment.findViewById(R.id.comments_caption);
-            loadMoreCommentsBar = commentsFragment.findViewById(R.id.load_more_comments_bar);
-
-            // Comments caption
-            if (caption != null){
-                ImageView userImage = (ImageView) commentsCaption.findViewById(R.id.comment_user_image);
-                TextView username = (TextView) commentsCaption.findViewById(R.id.comment_username);
-                View commentElement = commentsCaption.findViewById(R.id.comments_caption);
-                TextView caption = (TextView) commentElement.findViewById(R.id.comment_text);
-                TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
-
-                if (this.username.getUsername().equals(Parameters.default_username)){
-                    username.setText("");   // remove default text
-                    stringComponents.add(this.username.getUsernameLink());
-                    StringFactory.stringBuilder(username, stringComponents);
-                    stringComponents.clear();
-                    timeSince.setText(this.timeSince.getTimeSince());
-                } else {
-
-
-                    // TODO: get Data Object
-
-
+            // bind method to send comment button
+            Button sendButton = (Button) commentsFragment.findViewById(R.id.comment_send_button);
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendComment();
                 }
-            } else {
-                commentsCaption.setVisibility(View.GONE);
-            }
+            });
 
-            commentsSize = comments.size();
+            // load field for adding a comment
+            commentToSend = (EditText) commentsFragment.findViewById(R.id.comment_send_text);
 
-            // "Load more comments" link
-            TextView loadMoreComments = (TextView) loadMoreCommentsBar.findViewById(R.id.load_more_comments);
 
-            if (commentsSize <= Parameters.loadCommentThreshold){
-                loadMoreCommentsBar.setVisibility(View.GONE);
-            } else {
-                // TODO: set onclick listener to load more comments
+            commentsScrollView = (ScrollView) commentsFragment.findViewById(R.id.comments_scroll_view);
+            ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
-                String text = this.getActivity().getResources().getString(R.string.default_load_more_comments);
+            if (comments != null) {
+                commentsContent = (ViewGroup) commentsFragment.findViewById(R.id.comments_content);
+                View commentsCaption = commentsFragment.findViewById(R.id.comments_caption);
+                loadMoreCommentsBar = commentsFragment.findViewById(R.id.load_more_comments_bar);
 
-                SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // TODO: load more comments
-                        loadMoreComments();
+                // Comments caption
+                if (caption != null) {
+                    ImageView userImage = (ImageView) commentsCaption.findViewById(R.id.comment_user_image);
+                    TextView username = (TextView) commentsCaption.findViewById(R.id.comment_username);
+                    View commentElement = commentsCaption.findViewById(R.id.comments_caption);
+                    TextView caption = (TextView) commentElement.findViewById(R.id.comment_text);
+                    TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
+
+                    if (this.username.getUsername().equals(Parameters.default_username)) {
+                        username.setText("");   // remove default text
+                        stringComponents.add(this.username.getUsernameLink());
+                        StringFactory.stringBuilder(username, stringComponents);
+                        stringComponents.clear();
+                        timeSince.setText(this.timeSince.getTimeSinceDisplay());
+                    } else {
+
+
+                        // TODO: get Data Object
+
+
                     }
-                });
-                loadMoreComments.setText("");    // remove default text
-                stringComponents.add(commentLink);
-                StringFactory.stringBuilder(loadMoreComments, stringComponents);
-                stringComponents.clear();
+                } else {
+                    commentsCaption.setVisibility(View.GONE);
+                }
+
+                commentsSize = comments.size();
+
+                // "Load more comments" link
+                TextView loadMoreComments = (TextView) loadMoreCommentsBar.findViewById(R.id.load_more_comments);
+
+                if (commentsSize <= Parameters.loadCommentThreshold) {
+                    loadMoreCommentsBar.setVisibility(View.GONE);
+                } else {
+                    // TODO: set onclick listener to load more comments
+
+                    String text = this.getActivity().getResources().getString(R.string.default_load_more_comments);
+
+                    SpannableString commentLink = StringFactory.createLink(text, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // TODO: load more comments
+                            loadMoreComments();
+                        }
+                    });
+                    loadMoreComments.setText("");    // remove default text
+                    stringComponents.add(commentLink);
+                    StringFactory.stringBuilder(loadMoreComments, stringComponents);
+                    stringComponents.clear();
+                }
+
+                // Comments content
+                loadMoreComments();
             }
 
-            // Comments content
-            loadMoreComments();
+            // focus to most recent comment at the bottom
+            commentsScrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    commentsScrollView.fullScroll(View.FOCUS_DOWN);
+                }
+            });
         }
-
-        // focus to most recent comment at the bottom
-        commentsScrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                commentsScrollView.fullScroll(View.FOCUS_DOWN);
-            }
-        });
-
         // Inflate the layout for this fragment
         return commentsFragment;
     }
@@ -268,6 +274,10 @@ public class CommentsFragment extends Fragment {
         View commentElement = fillComment(comment, 0);
         commentsContent.addView(commentElement, commentsContent.getChildCount());
 
+        // update post
+        comments.add(comments.size(), comment);
+        post.buildCommentView(LayoutInflater.from(getContext()));
+
         commentsScrollView.post(new Runnable() {
             @Override
             public void run() {
@@ -283,13 +293,6 @@ public class CommentsFragment extends Fragment {
     public void setTitle(){
         Parameters.setTitle(Parameters.NavigationBarActivity, Parameters.commentsTitle,
                 Parameters.subTitleSize);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -201,12 +202,12 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
             public boolean onTouch(View v, MotionEvent event) {
                 int scrollY = v.getScrollY();
 
-                if (event.getAction() == MotionEvent.ACTION_UP){
-                    if (scrollY <= refreshPoint){
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (scrollY <= refreshPoint) {
                         // if new user feed loading, delay before returning to top of scroll view
                         returnToTop(0, 0);
-                        returnToTop(userFeedFragmentTop,Parameters.refreshReturnDelay);
-                    } else if (scrollY > refreshPoint && scrollY < userFeedFragmentTop){
+                        returnToTop(userFeedFragmentTop, Parameters.refreshReturnDelay);
+                    } else if (scrollY > refreshPoint && scrollY < userFeedFragmentTop) {
                         returnToTop(userFeedFragmentTop, 0);
                     }
                 }
@@ -241,43 +242,37 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
     // loads a chunk of posts on the user feed view
     private void loadUserFeedPosts() {
 
-        Handler h = new Handler();
-        h.post(new Runnable() {
-            @Override
-            public void run() {
-                LayoutInflater inflater = LayoutInflater.from(getContext());
-                int i;
-                View postView;
-                ArrayList<Post> userFeed;
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        int i;
+        View postView;
+        ArrayList<Post> userFeed;
 
-                if (!Parameters.dummyData) {
-                    userFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
-                    int uFSize = userFeed.size();
-                    Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
-                    //Posts earlier than last
-                    maxPostId = userFeed.get(uFSize - 1).getPostId();
-                    //Posts after first
-                    minPostId = userFeed.get(0).getPostId();
-                } else {
-                    userFeed = new ArrayList<>();
-                    for (i = 0; i < Parameters.postsToLoad; i++) {
-                        userFeed.add(new Post());
-                    }
-                }
-                for (Post post : userFeed) {
-                    postView = post.getPostView(inflater);
-
-                    // if post is from dummyData
-                    if (Parameters.dummyData) {
-                        TextView timeSinceText = (TextView) postView.findViewById(R.id.post_header_time_since);
-                        timeSinceText.setText(Integer.toString(postBottomCount) + "s");
-                    }
-                    userFeedView.addView(postView, postIndex + 1);
-                    postBottomCount++;
-                    postIndex++;
-                }
+        if (!Parameters.dummyData) {
+            userFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
+            int uFSize = userFeed.size();
+            Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
+            //Posts earlier than last
+            maxPostId = userFeed.get(uFSize - 1).getPostId();
+            //Posts after first
+            minPostId = userFeed.get(0).getPostId();
+        } else {
+            userFeed = new ArrayList<>();
+            for (i = 0; i < Parameters.postsToLoad; i++) {
+                userFeed.add(new Post());
             }
-        });
+        }
+        for (Post post : userFeed) {
+            postView = post.getPostView(inflater);
+
+            // if post is from dummyData
+            if (Parameters.dummyData) {
+                TextView timeSinceText = (TextView) postView.findViewById(R.id.post_header_time_since);
+                timeSinceText.setText(Integer.toString(postBottomCount) + "s");
+            }
+            userFeedView.addView(postView, postIndex + 1);
+            postBottomCount++;
+            postIndex++;
+        }
     }
 
     // get new userfeed posts

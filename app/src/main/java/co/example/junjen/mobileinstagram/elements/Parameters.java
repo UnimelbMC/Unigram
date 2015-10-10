@@ -14,7 +14,7 @@ import co.example.junjen.mobileinstagram.R;
 public class Parameters {
 
     // Login parameters
-    public static boolean dummyData = false;
+    public static boolean dummyData = true;
     public static final String login_key = "@thisIsMyLogin";
     public static String loginUserId = null;
     public static String loginUsername = null;
@@ -42,8 +42,8 @@ public class Parameters {
     public static final String default_caption = "Caption";
     public static final String default_comment = "Comment";
     public static final String default_image = "#Image";
-    public static final int default_likeCount = 2;
-    public static final int default_commentCount = 50;
+    public static final int default_likeCount = 20;
+    public static final int default_commentCount = 1;
     public static final int likeThreshold = 10;
     public static final int commentThreshold = 3;
     public static final int postsToLoad = 10;
@@ -95,5 +95,4 @@ public class Parameters {
             titleTextView.setTextSize(titleSize);
         }
     }
-
 }
