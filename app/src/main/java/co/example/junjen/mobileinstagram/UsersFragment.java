@@ -16,10 +16,13 @@ import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
+import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
 import co.example.junjen.mobileinstagram.elements.Image;
+import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.StringFactory;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 /**
@@ -143,21 +146,23 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
         int i;
-        int loadLikeThreshold = Parameters.loadLikeThreshold;
+        int loadUserThreshold = Parameters.loadUserThreshold;
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
         // load chunk of comments based on a threshold
-        for (i = 0; i < loadLikeThreshold; i++){
+        for (i = 0; i < loadUserThreshold; i++){
 
             if (userCount >= usersSize || userCount >= Parameters.maxLikes) {
                 break;
             }
 
             // load view components
-            View likeElement = inflater.inflate(R.layout.user_element, usersView, false);
-            ImageView userImage = (ImageView) likeElement.findViewById(R.id.user_user_image);
-            TextView username = (TextView) likeElement.findViewById(R.id.user_username);
-            TextView profName = (TextView) likeElement.findViewById(R.id.user_prof_name);
+            View userElement = inflater.inflate(R.layout.user_element, usersView, false);
+            ImageView userImage = (ImageView) userElement.findViewById(R.id.user_user_image);
+            TextView username = (TextView) userElement.findViewById(R.id.user_username);
+            TextView profName = (TextView) userElement.findViewById(R.id.user_prof_name);
+            final ToggleButton followButton = (ToggleButton)
+                    userElement.findViewById(R.id.user_follow_button);
 
             User user = users.get(userCount);
 
@@ -166,9 +171,34 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
             StringFactory.stringBuilder(username, stringComponents);
             stringComponents.clear();
 
+            Profile.checkIfFollowing(user.getUsername().getUserId(), followButton);
+
+            // set listener to followButton
+            followButton.setOnClickListener(new View.OnClickListener() {
+
+                // Handle clicks for like button
+                @Override
+                public void onClick(View v) {
+                    if (followButton.isChecked()) {
+                        Profile.updateFollowingCount(true);
+                    } else {
+                        Profile.updateFollowingCount(false);
+                    }
+                }
+            });
+
+            // set user image
             Image.setImage(userImage, user.getUserImage());
-            profName.setText(user.getProfName());
-            usersView.addView(likeElement, userCount);
+
+            // set user profile name
+            String text = user.getProfName();
+            if(text == null || text.equals("")){
+                profName.setVisibility(View.GONE);
+            } else {
+                profName.setText(text);
+            }
+
+            usersView.addView(userElement, userCount);
             userCount++;
         }
     }

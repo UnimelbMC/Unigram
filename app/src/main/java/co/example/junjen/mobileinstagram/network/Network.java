@@ -1,6 +1,7 @@
 package co.example.junjen.mobileinstagram.network;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.comments.CommentData;
@@ -9,9 +10,11 @@ import org.jinstagram.entity.likes.LikesFeed;
 import org.jinstagram.entity.relationships.RelationshipData;
 import org.jinstagram.entity.relationships.RelationshipFeed;
 import org.jinstagram.entity.users.basicinfo.Counts;
+import org.jinstagram.entity.users.basicinfo.UserInfo;
 import org.jinstagram.entity.users.basicinfo.UserInfoData;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
+import org.jinstagram.entity.users.feed.UserFeed;
 import org.jinstagram.exceptions.InstagramException;
 
 import java.util.ArrayList;
@@ -24,7 +27,6 @@ import co.example.junjen.mobileinstagram.elements.Location;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
-import co.example.junjen.mobileinstagram.suggestion.Classification;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -47,7 +49,7 @@ public class Network {
                 thisUserData = instagram.getCurrentUserInfo().getData();
                 Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-                Classification cls = new Classification("self");
+//                Classification cls = new Classification("self");
                 return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
@@ -127,10 +129,11 @@ public class Network {
                   profDesc, postsCount, followersCount, followingCount, thePosts);
         }catch(InstagramException e) {
             e.printStackTrace();
-            return new Profile(Parameters.default_username);
+            Log.w("test", e.getMessage());
+            return null;
         }
-
     }
+
     public ArrayList<Post> getUserFeed(){
         return getUserFeed(null, null);
     }
@@ -192,7 +195,7 @@ public class Network {
         // get likes
         int likeCount = postData.getLikes().getCount();
         ArrayList<User> likes = new ArrayList<>();
-        if (likeCount <= Parameters.likeThreshold){
+        if (likeCount <= Parameters.likePreviewThreshold){
             likes = getLikesByPostId(postData.getId());
         }
 
@@ -257,14 +260,68 @@ public class Network {
         return null;
     }
 
-    // check if current user is following a given user
-    public RelationshipData checkIfFollowing(String userId){
+    // get current user's followers
+    public ArrayList<User> getFollowers(){
+        //String username, Image userImage, String profName, TimeSince timeSince
         try {
-            RelationshipFeed feed = instagram.getUserRelationship(userId);
-            return feed.getData();
+            UserFeed feed = instagram.getUserFollowedByList(thisUserData.getId());
+            List<org.jinstagram.entity.users.feed.UserFeedData> users = feed.getUserList();
+            ArrayList<User> result = new ArrayList<>();
+            for (org.jinstagram.entity.users.feed.UserFeedData u : users){
+                User newFollower = new User(u.getId(), u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
+                result.add(newFollower);
+            }
+
+            return result;
         } catch (InstagramException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // get current user's following
+    public ArrayList<User> getFollowing(){
+        //String username, Image userImage, String profName, TimeSince timeSince
+        try {
+            UserFeed feed = instagram.getUserFollowList(thisUserData.getId());
+            List<org.jinstagram.entity.users.feed.UserFeedData> users = feed.getUserList();
+            ArrayList<User> result = new ArrayList<>();
+            for (org.jinstagram.entity.users.feed.UserFeedData u : users){
+                User newFollowing = new User(u.getId(), u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
+                result.add(newFollowing);
+            }
+
+            return result;
+        } catch (InstagramException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // check if current user is following a given user
+    public String checkIfFollowing(String userId){
+        try {
+            Log.w("like", "network checkIfFollowing: "+userId);
+            if (!userId.startsWith(Parameters.default_userId)){
+                RelationshipFeed feed = instagram.getUserRelationship(userId);
+                return feed.getData().getOutgoingStatus();
+            }
+        } catch (InstagramException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    // search for user info by user ID
+    public Profile searchUserById(String userId){
+        try {
+            UserInfo feed = instagram.getUserInfo(userId);
+            return new Profile(new User(userId, feed.getData().getUsername(),
+                    feed.getData().getProfilePicture(), feed.getData().getFullName()),
+                    feed.getData().getBio());
+        } catch (InstagramException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

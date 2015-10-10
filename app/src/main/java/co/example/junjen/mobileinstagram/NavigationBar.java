@@ -61,6 +61,7 @@ public class NavigationBar extends AppCompatActivity {
 
         MainActivity.mainActivity.finish();
         Parameters.NavigationBarActivity = this;
+        Parameters.NavigationBarContext = this.getApplicationContext();
 
         // set custom action bar
         actionBar = getSupportActionBar();
@@ -90,6 +91,8 @@ public class NavigationBar extends AppCompatActivity {
                 Parameters.loginProfile = NetParams.NETWORK.getUserProfileFeed(
                         Parameters.login_key);
             }
+            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+            Parameters.loginProfileView = Parameters.loginProfile.getProfileView(inflater);
             Parameters.loginUserId = Parameters.loginProfile.getUsername().getUserId();
             Parameters.loginUsername = Parameters.loginProfile.getUsername().getUsername();
             Parameters.loginUser = new User(Parameters.loginUserId, Parameters.loginUsername,

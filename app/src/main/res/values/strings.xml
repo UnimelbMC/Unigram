@@ -39,6 +39,8 @@
     <string name="profile_follower_count_label">followers</string>
     <string name="profile_following_count_label">following</string>
     <string name="profile_no_post_flag">No posts</string>
+    <string name="private_profile">This user is private.</string>
+    <string name="restricted_profile">Restricted access to profile.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

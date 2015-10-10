@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 
 /**
  * Created by junjen on 1/10/2015.
@@ -20,6 +21,7 @@ public class Parameters {
     public static String loginUsername = null;
     public static User loginUser = null;
     public static Profile loginProfile = null;
+    public static ExpandableScrollView loginProfileView = null;
 
     // Titles
     public static final String mainTitle = "UniGram";
@@ -44,11 +46,11 @@ public class Parameters {
     public static final String default_image = "#Image";
     public static final int default_likeCount = 20;
     public static final int default_commentCount = 50;
-    public static final int likeThreshold = 10;
+    public static final int likePreviewThreshold = 10;
     public static final int commentPreviewThreshold = 3;
     public static final int postsToLoad = 10;
     public static final int loadCommentThreshold = 20;
-    public static final int loadLikeThreshold = 100;
+    public static final int loadUserThreshold = 100;
     public static final int maxLikes = 300;
 
     // Like feedback animation parameters
@@ -80,6 +82,7 @@ public class Parameters {
     // Application helpers
     public static Context MainActivityContext = null;
     public static NavigationBar NavigationBarActivity = null;
+    public static Context NavigationBarContext = null;
     public static final int loginClickInBrowserCountMax = 2;
     public static final int urlCountMax = 2;
     public static final int logoutBrowserCountMax = 3;

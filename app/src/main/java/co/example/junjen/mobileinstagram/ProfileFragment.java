@@ -1,5 +1,6 @@
 package co.example.junjen.mobileinstagram;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,11 +12,15 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
+import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 
@@ -92,6 +97,8 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         // initialise ProfileFragment if not created yet
         if(profileFragment == null){
 
+            Log.w("like", "profileFragment: " + userId);
+
             if(userId.startsWith(Parameters.default_userId)){
                 String[] parts = userId.split(Parameters.default_userId);
                 if(parts.length > 0){
@@ -100,12 +107,27 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     profile = new Profile(Parameters.default_username);
                 }
             } else if (!userId.equals(Parameters.loginUserId)){
+                Log.w("like", "profile creation through NETWORK");
                 profile = NetParams.NETWORK.getUserProfileFeed(userId);
-            } else {
+
+                if (profile == null){
+                    // this might mean the profile is private, hence search for user info only
+                    profile = NetParams.NETWORK.searchUserById(userId);
+
+                    if (profile == null) {
+                        // at this point it means current user has restricted access to this profile
+                        profileFragment = (ExpandableScrollView)
+                                inflater.inflate(R.layout.restricted_profile, container, false);
+                        return profileFragment;
+                    }
+                }
+            } else if (userId.equals(Parameters.loginUserId)){
                 profile = Parameters.loginProfile;
             }
 
             setTitle();
+
+            Log.w("like", "profile: " + profile.getUsername().getUserId());
 
             profileFragment = profile.getProfileView(inflater);
             profileFragment.setScrollViewListener(this);
@@ -121,8 +143,6 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     int[] location = new int[2];
                     profileFragment.getLocationOnScreen(location);
                     int height = location[1] + profileFragment.getChildAt(0).getHeight();
-
-                    Log.w("test", "profile: " + Integer.toString(height) + " (" + Integer.toString(screenHeight) + ")");
 
                     if (height <= screenHeight) {
                         LayoutInflater inflater = LayoutInflater.from(getContext());

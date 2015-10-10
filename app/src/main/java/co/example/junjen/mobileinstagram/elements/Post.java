@@ -18,8 +18,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
 import co.example.junjen.mobileinstagram.CommentsFragment;
 import co.example.junjen.mobileinstagram.PostFragment;
@@ -225,7 +227,9 @@ public class Post implements Serializable{
             if (commentCount > commentThreshold){
                 commentCountText.setVisibility(View.VISIBLE);
 
-                String text = "View all " + commentCount + " comments";
+                String formatStr = NumberFormat.getNumberInstance(Locale.US).format(commentCount);
+
+                String text = "View all " + formatStr + " comments";
 
                 SpannableString commentsLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
@@ -368,15 +372,16 @@ public class Post implements Serializable{
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
         RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
 
-        if (this.likes != null){
+        if (this.likeCount != 0){
             TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
             int likeCount = this.likeCount;
-            int likeThreshold = Parameters.likeThreshold;
+            int likeThreshold = Parameters.likePreviewThreshold;
 
             // add link to all likes if more than threshold
-            if(likeCount > likeThreshold){
-                likeCountText.setText(likeCount + " likes");
-                String text = likeCount + " likes";
+            if (likeCount > likeThreshold) {
+//                    likeCountText.setText(likeCount + " likes");
+                String formatStr = NumberFormat.getNumberInstance(Locale.US).format(likeCount);
+                String text = formatStr + " likes";
 
                 SpannableString likeLink = StringFactory.createLink(text, new View.OnClickListener() {
                     @Override
@@ -393,15 +398,14 @@ public class Post implements Serializable{
                 stringComponents.add(likeLink);
                 StringFactory.stringBuilder(likeCountText, stringComponents);
                 stringComponents.clear();
-            }
-            else {
+            } else {
                 likeCountText.setText("");  // remove default text
                 int i;
-                for (i = 0; i < likeCount; i++){
+                for (i = 0; i < likeCount; i++) {
                     stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
                     stringComponents.add(", ");
                 }
-                if(likeCount > 0){
+                if (likeCount > 0) {
                     stringComponents.remove(stringComponents.size() - 1);   // remove trailing comma
                 }
                 StringFactory.stringBuilder(likeCountText, stringComponents);
@@ -482,5 +486,9 @@ public class Post implements Serializable{
 
     public ArrayList<Comment> getComments () {
         return comments;
+    }
+
+    public RelativeLayout getPostView() {
+        return postView;
     }
 }
