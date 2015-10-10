@@ -11,7 +11,7 @@ public class NetParams {
     public static final String CLIENT_ID = "c978ebb2c7544f28a0403cf0a0c90fc7";
     public static final String CLIENT_SECRET = "afba876a0eac4d79b6cc8520c2b5e330";
 
-////    my cliendId
+////    lito cliendId
 //    public static final String CLIENT_ID = "f5088d8ba771493d963355b6706d44a9";
 //    public static final String CLIENT_SECRET = "fb1f20c1aafe4b609b15339fa4c1a6b9";
 

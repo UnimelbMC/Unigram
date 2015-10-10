@@ -1,15 +1,7 @@
 package co.example.junjen.mobileinstagram.suggestion;
 
-
 import android.util.Log;
-
-import org.jinstagram.Instagram;
-import org.jinstagram.entity.users.feed.UserFeedData;
-import org.jinstagram.exceptions.InstagramException;
-
 import java.util.ArrayList;
-
-import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -21,89 +13,120 @@ import weka.core.Instances;
  */
 public class Classification {
 
+    //Suggestion class to retrieve needed info to build classifier
     private static Suggestion suggestion;
-    private static String selfUserId;
+
+    //Attributes of suggested users class
     private static ArrayList<Attribute> suggAttributeList;
+    //Attributes of not suggested users class
     private static ArrayList<Attribute> notSuggAttributeList;
-    private FastVector featureLabels;
-    private Attribute cls;
+    //Attributes names of suggested users class
     private static ArrayList<String> suggAttributeNames;
+    //Attributes names of not suggested users class
     private static ArrayList<String> notSuggAttributeNames;
-//    private ArrayList<String> userIdList;
+
+    //Dataset to be filled and used to build classifier
     private static Instances dataset;
-    private static NaiveBayes nb;
 
-
+    // Class attribute
+    private Attribute cls;
+    // Class attribute names
     private final String suggestedCls = "suggested";
     private final String notSuggestedCls = "notSuggested";
 
+    //Updateable Naive Bayes classifier
+    private static NaiveBayesUpdateable nb;
+    //Dataset to be predicted
+    private static Instances toPredDataset;
+
+    //Possible users to be classified
+    private static ArrayList<String> possibleUsers;
+
+    // Classification constructor for userId
+    // that builds an updateable Naive Bayes classifier
     public Classification(String userId){
-        this.selfUserId = userId;
+        suggestion = new Suggestion(userId);
         suggAttributeList = new ArrayList<Attribute>();
         notSuggAttributeList = new ArrayList<Attribute>();
-        featureLabels = new FastVector();
-        suggAttributeNames = new ArrayList<String>();
-        notSuggAttributeNames = new ArrayList<String>();
-        Log.d("classification", "this is classificati");
+        suggAttributeNames = suggestion.getSuggestedUsersIdList();
+        notSuggAttributeNames = suggestion.getNotSuggestedUsersIdList();
+        possibleUsers = suggestion.getPossibleUsersId();
 
-        createInstances();
-        loadData();
+      // Creating the NB classifier
+        createClsLabels();
+        loadDataset();
+        loadClassifiedData();
         buildNB();
-
-
+//        classifyPossibleUsers();
     }
 
+    /*Method
+    *   Create the attributes for the dataset
+    * @params
+    * @returns
+    * */
     public void createAttributes(){
-        String feature_name;
-        suggestion = new Suggestion(selfUserId);
+        FastVector featureLabels = new FastVector();
         featureLabels.addElement("0");
         featureLabels.addElement("1");
 
-        String attName;
         // Suggested users attributes
-        for(int i=0; i< suggestion.getSuggestedUsersIdList().size(); i++){
-            attName = suggestion.getSuggestedUsersIdList().get(i);
+        for(String attName: suggAttributeNames){
             suggAttributeList.add(new Attribute(attName, featureLabels));
-            suggAttributeNames.add(attName);
-//            featureLabels.addElement(suggestion.getSuggestedUsersIdList().get(i));
         }
 
         // Not suggested users attributes
-        for(int i=0; i< suggestion.getNotSuggestedUsersIdList().size(); i++){
-            attName = suggestion.getNotSuggestedUsersIdList().get(i);
+        for(String attName: notSuggAttributeNames){
             notSuggAttributeList.add(new Attribute(attName, featureLabels));
-            notSuggAttributeNames.add(attName);
-//            featureLabels.addElement(suggestion.getNotSuggestedUsersIdList().get(i));
         }
-        Log.d("attributeList", suggAttributeList.toString());
-        Log.d("attributeList", notSuggAttributeList.toString());
-//        Log.d("featureLabels", featureLabels.toString());
     }
 
+    /*Method
+    *   Create class labels attribute
+    * @params
+    * @returns
+    * */
     public void createClsLabels(){
         FastVector labels = new FastVector();
-        labels.addElement(suggestedCls);
         labels.addElement(notSuggestedCls);
+        labels.addElement(suggestedCls);
         cls = new Attribute("class", labels);
     }
 
-    public void createInstances(){
+    /*Method
+    *   Load the dataset with the attributes and classes to be used.
+    * @params
+    * @returns
+    * */
+    public void loadDataset() {
         createAttributes();
-        createClsLabels();
         FastVector attributes = new FastVector();
-        for(Attribute a : this.suggAttributeList){
+
+        // Add the sugg and not sugg attributes
+        for (Attribute a : this.suggAttributeList) {
             attributes.addElement(a);
         }
-        for(Attribute a : this.notSuggAttributeList){
+        for (Attribute a : this.notSuggAttributeList) {
             attributes.addElement(a);
         }
+        //Add the class attribute
         attributes.addElement(cls);
-        this.dataset = new Instances("user-dataset",attributes,20);
-//        Log.d("dataset",dataset.attribute(attributeNames.size()).toString());
+
+        this.dataset = new Instances("dataset", attributes, 20);
+        this.toPredDataset = new Instances("dataset", attributes, 20);
+        // Setting the class attribute for the datasets
+        dataset.setClassIndex(dataset.numAttributes() - 1);
+        toPredDataset.setClassIndex(dataset.numAttributes() - 1);
     }
 
-    public Instance createUnknownInstance(String userId){
-//        get suggested users and find their attributes same for not suggested
+    /*Method
+    *   Create an instance for an unclassified userId
+    * @params
+    *   userId: user ID on which an instance is going to be created
+    * @returns
+    *   Instance of the user with userId
+    * */
+    public Instance createUnclassifiedInstance(String userId){
         double[] values = new double[dataset.numAttributes()];
         ArrayList<String> list = new Suggestion(userId).getSuggestedUsersIdList();
 
@@ -112,9 +135,7 @@ public class Classification {
         int notSuggIndex;
 
         if(list.size()!=0){
-//      if feature is present then 1 else 0
             for(String usr : list) {
-
                 suggIndex= suggAttributeNames.indexOf(usr);
                 notSuggIndex= notSuggAttributeNames.indexOf(usr);
                 if(suggIndex != -1){
@@ -135,66 +156,65 @@ public class Classification {
             }
         }
         Instance inst = new Instance(1.0, values);
-        Log.d("list", list.toString());
-        Log.d("values",values.toString());
         return inst;
     }
-//Create an instance for a classified instance
+
+
+    /*Method
+    *   Create an instance for a classified instance
+    * @params
+    *   userId: user on which a classified instances is created
+    *   cls: label (class) the user is classified under either sugg or not sugg
+    * @returns
+    *   Labeled instance of user with userId
+    * */
     public Instance createClassifiedInstance(String userId, String cls){
-//        get suggested users and find their attributes same for not suggested
         double[] values = new double[dataset.numAttributes()];
         ArrayList<String> list = new Suggestion(userId).getSuggestedUsersIdList();
-
         int suggIndex;
         int suggAttNamesSize = suggAttributeNames.size();
         int notSuggIndex;
-
-        if(list.size()!=0){
-//      if feature is present then 1 else 0
-            for(String usr : list) {
-
-                suggIndex= suggAttributeNames.indexOf(usr);
-                notSuggIndex= notSuggAttributeNames.indexOf(usr);
-                if(suggIndex != -1){
+        if(list.size()!=0) {
+            for (String usr : list) {
+                suggIndex = suggAttributeNames.indexOf(usr);
+                notSuggIndex = notSuggAttributeNames.indexOf(usr);
+                if (suggIndex != -1) {
                     values[suggIndex] = dataset.attribute(suggIndex).indexOfValue("1");
-                }else if(notSuggIndex != -1){
-                    values[suggAttNamesSize+notSuggIndex] =
-                            dataset.attribute(suggAttNamesSize+notSuggIndex).indexOfValue("1");
+                } else if (notSuggIndex != -1) {
+                    values[suggAttNamesSize + notSuggIndex] =
+                            dataset.attribute(suggAttNamesSize + notSuggIndex).indexOfValue("1");
                 }
-            }
-            for(int i2=0; i2< values.length; i2++){
-                if(values[i2]==0){
-                    values[i2] = dataset.attribute(i2).indexOfValue("0");
-                }
-            }
-        }else{
-            for(int i2=0; i2< values.length; i2++){
-                values[i2] = dataset.attribute(i2).indexOfValue("0");
             }
         }
-        values[dataset.numAttributes()]= dataset.attribute(dataset.numAttributes()).indexOfValue(cls);
+        values[dataset.numAttributes()-1]= dataset.attribute(dataset.numAttributes()-1).indexOfValue(cls);
         Instance inst = new Instance(1.0, values);
-        Log.d("list",list.toString());
-        Log.d("values",values.toString());
         return inst;
     }
 
-    public void loadData(){
-        for (String usr : suggAttributeNames){
-            dataset.add(createClassifiedInstance(usr, suggestedCls));
-        }
-
+    /*Method
+    *   Load the classified(labeled) data
+    * @params
+    * @returns
+    * */
+    public void loadClassifiedData(){
+        // load not suggested class instances
         for (String usr : notSuggAttributeNames) {
             dataset.add(createClassifiedInstance(usr, notSuggestedCls));
         }
+        // load suggested class instances
+        for (String usr : suggAttributeNames){
+            dataset.add(createClassifiedInstance(usr, suggestedCls));
+        }
     }
 
-
+    /*Method
+    *   Build NB classifier
+    * @params
+    * @returns
+    * */
     public void buildNB(){
-        nb = new NaiveBayes();
+        nb = new NaiveBayesUpdateable();
         int i = dataset.numAttributes() -1;
-//        Instances trainSet = ;
-
         try {
             nb.buildClassifier(dataset);
         } catch (Exception e) {
@@ -202,16 +222,37 @@ public class Classification {
         }
     }
 
+    /*Method
+    *   Classify an unclassified(unlabeled) user with userId
+    * @params
+    *   userId: user with userId to be classified
+    * @returns
+    * */
     public void classify(String userId){
-        Instance unlabeled = createUnknownInstance(userId);
-//        dataset.numAttributes()-1;
-        double pred=-1;
+        Instance unlabeled = createUnclassifiedInstance(userId);
+        toPredDataset.add(unlabeled);
+        int lastInstanceIndex = toPredDataset.numInstances()-1;
+        double pred=0;
         try {
-            pred = nb.classifyInstance(unlabeled);
+            pred = nb.classifyInstance(toPredDataset.instance(lastInstanceIndex));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d("pred_forUserId", userId+ (Double.toString(pred)));
+        String cls = toPredDataset.classAttribute().value((int) pred);
+        Log.d("pred_forUserId", cls);
     }
+
+    /*Method
+    *   Classify possible unlabeled(unclassified) users
+    * @params
+    * @returns
+    * */
+    public void classifyPossibleUsers(){
+//        Log.d("clasPosUsr", "startClasPosUsr");
+        for(String usr : possibleUsers){
+            classify(usr);
+        }
+    }
+
 
 }
