@@ -1,13 +1,11 @@
 package co.example.junjen.mobileinstagram.network;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.comments.CommentData;
 import org.jinstagram.entity.comments.MediaCommentsFeed;
 import org.jinstagram.entity.likes.LikesFeed;
-import org.jinstagram.entity.relationships.RelationshipData;
 import org.jinstagram.entity.relationships.RelationshipFeed;
 import org.jinstagram.entity.users.basicinfo.Counts;
 import org.jinstagram.entity.users.basicinfo.UserInfo;
@@ -33,7 +31,8 @@ import co.example.junjen.mobileinstagram.elements.TimeSince;
  */
 public class Network {
     // Object used to retrieve data from Instagram API
-    private final int MAX_USER_FEED_POSTS = 9;
+    private final int MAX_USER_FEED_POSTS =
+            Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
     private Instagram instagram;
     private UserInfoData thisUserData;
     private ArrayList<Post> fakePost = new ArrayList<>();
@@ -81,11 +80,11 @@ public class Network {
     private ArrayList<Post> buildPostList(){
         return new ArrayList<Post>();
     }
-    public Profile getUserProfileFeed(String userId){
-        return getUserProfileFeed(userId, null, null);
+    public Profile getUserProfileInfo(String userId){
+        return getUserProfileInfo(userId, null, null);
     }
 
-    public Profile getUserProfileFeed(String userId, String minId, String maxId){
+    public Profile getUserProfileInfo(String userId, String minId, String maxId){
         String username;
         String uImage;
         String profName;
@@ -98,10 +97,7 @@ public class Network {
         String postsCount, String followersCount, String followingCount,ArrayList<Post> posts)*/
 
         try {
-            MediaFeed mediaFeed;
             if(userId.equals(Parameters.login_key)) {
-                mediaFeed = instagram.getRecentMediaFeed(
-                        "self", MAX_USER_FEED_POSTS,minId,maxId,null,null);
                 userId = thisUserData.getId();
                 username = thisUserData.getUsername();
                 uImage = thisUserData.getProfilePicture();
@@ -111,8 +107,6 @@ public class Network {
                 followersCount = thisUserData.getCounts().getFollowedBy();
                 followingCount = thisUserData.getCounts().getFollows();
             }else{
-                mediaFeed = instagram.getRecentMediaFeed(
-                        userId, MAX_USER_FEED_POSTS,minId,maxId,null,null);
                 UserInfoData otherUser = instagram.getUserInfo(userId).getData();
                 username = otherUser.getUsername();
                 uImage = otherUser.getProfilePicture();
@@ -122,11 +116,23 @@ public class Network {
                 followersCount = otherUser.getCounts().getFollowedBy();
                 followingCount = otherUser.getCounts().getFollows();
             }
-            List<MediaFeedData> mediaFeeds = mediaFeed.getData();
-            thePosts = getPostsList(mediaFeeds, false);
             Log.v("NETWORK","thePosts size() "+Integer.toString(thePosts.size()));
             return new Profile(new User(userId, username, uImage, profName),
-                  profDesc, postsCount, followersCount, followingCount, thePosts);
+                    profDesc, postsCount, followersCount, followingCount);
+        }catch(InstagramException e) {
+            e.printStackTrace();
+            Log.w("test", e.getMessage());
+            return null;
+        }
+    }
+
+    // get a profile's feed
+    public ArrayList<Post> getProfileFeed(String userId, String minId, String maxId){
+        try {
+            MediaFeed mediaFeed = instagram.getRecentMediaFeed(
+                    userId, MAX_USER_FEED_POSTS,minId,maxId,null,null);
+            List<MediaFeedData> mediaFeeds = mediaFeed.getData();
+            return getPostsList(mediaFeeds, true);
         }catch(InstagramException e) {
             e.printStackTrace();
             Log.w("test", e.getMessage());
@@ -145,7 +151,7 @@ public class Network {
             return getPostsList(userFeed,false);
         } catch (InstagramException e) {
             e.printStackTrace();
-           return fakePost;
+            return fakePost;
         }
     }
     //Get arrayList of Posts
@@ -161,7 +167,7 @@ public class Network {
 
     //Get a media from instagram and return Post object for layout
     public Post getPostById(String postId){
-      //  int postId, String userId, String userImage, String username, String location, String timeSince,
+        //  int postId, String userId, String userImage, String username, String location, String timeSince,
         //        String postImage, String caption, ArrayList< User > likes, ArrayList< Comment > comments
         try {
             MediaFeedData thisPost = instagram.getMediaInfo(postId).getData();

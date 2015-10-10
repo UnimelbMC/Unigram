@@ -109,7 +109,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
 
             setTitle();
 
-            // add layout listener to add content if default screen is not filled
+            // add layout listener to add user feed posts if default screen is not filled
             fillDefaultScreen();
 
             // add refresh bar at the top of user feed
@@ -269,7 +269,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
 
             // if post is from dummyData
             if (Parameters.dummyData) {
-                TextView timeSinceText = (TextView) postView.findViewById(R.id.post_header_time_since);
+                TextView timeSinceText = (TextView)
+                        postView.findViewById(R.id.post_header_time_since);
                 timeSinceText.setText(Integer.toString(postBottomCount) + "s");
             }
             if(postView != null){
@@ -318,7 +319,8 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
 
             // if post is from dummyData
             if (Parameters.dummyData) {
-                TextView timeSinceText = (TextView) postView.findViewById(R.id.post_header_time_since);
+                TextView timeSinceText = (TextView)
+                        postView.findViewById(R.id.post_header_time_since);
                 timeSinceText.setText(Integer.toString(-postTopCount + i) + "s");
             }
             if(postView != null){

@@ -379,7 +379,6 @@ public class Post implements Serializable{
 
             // add link to all likes if more than threshold
             if (likeCount > likeThreshold) {
-//                    likeCountText.setText(likeCount + " likes");
                 String formatStr = NumberFormat.getNumberInstance(Locale.US).format(likeCount);
                 String text = formatStr + " likes";
 

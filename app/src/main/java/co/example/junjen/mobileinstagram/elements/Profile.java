@@ -78,7 +78,7 @@ public class Profile implements Serializable{
     }
 
     public Profile(User user, String profDescrp, int postCount, int followerCount,
-                   int followingCount, ArrayList<Post> posts){
+                   int followingCount){
 
         this.username = user.getUsername();
         this.userImage = user.getUserImage();
@@ -88,8 +88,8 @@ public class Profile implements Serializable{
         this.postCount = postCount;
         this.followerCount = followerCount;
         this.followingCount = followingCount;
-        this.posts = posts;
 
+        this.posts = new ArrayList<>();
     }
 
     // Profile type for private profiles
@@ -105,6 +105,7 @@ public class Profile implements Serializable{
         this.posts = new ArrayList<>();
     }
 
+    // build the profile view
     public ExpandableScrollView getProfileView(LayoutInflater inflater){
 
         postIconCount = 0;
@@ -197,11 +198,10 @@ public class Profile implements Serializable{
             });
         }
 
-        // Add post icons
-        if(this.posts.size() == 0 && this.postCount == 0){
+        // No posts flag
+        if(this.posts.size() == 0 && this.postCount == 0) {
             TextView postFlag = (TextView) profileView.findViewById(R.id.profile_no_post_flag);
             postFlag.setVisibility(View.VISIBLE);
-//            getPostIcons(inflater);
         }
 
         // Private profile flag
@@ -251,26 +251,36 @@ public class Profile implements Serializable{
 
         int postsSize = this.posts.size();
 
-        if (postIconCount < postsSize) {
-
+        if (postIconCount < postCount) {
             ArrayList<Post> posts = new ArrayList<>();
 
-            int i;
-            int index;
-            int maxPostIcons = Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
-            for (i = 0; i < maxPostIcons; i++) {
-                index = i + postIconCount;
-                if (index < postsSize) {
-                    posts.add(this.posts.get(index));
+            if (!Parameters.dummyData){
+                if (postsSize == 0){
+                    posts = NetParams.NETWORK.getProfileFeed(username.getUserId(), null, null);
                 } else {
-                    break;
+                    String maxId = this.posts.get(postsSize - 1).getPostId();
+                    posts = NetParams.NETWORK.getProfileFeed(username.getUserId(), null, maxId);
+                }
+                this.posts.addAll(posts);
+            } else {
+                // if showing dummy data
+                int i;
+                int index;
+                int maxPostIcons = Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
+                for (i = 0; i < maxPostIcons; i++) {
+                    index = i + postIconCount;
+                    if (index < postsSize) {
+                        posts.add(this.posts.get(index));
+                    } else {
+                        break;
+                    }
                 }
             }
             Post.buildPostIcons(inflater,
                     (LinearLayout) profileView.findViewById(R.id.profile_post_icons),
                     posts);
 
-            postIconCount += i;
+            postIconCount += posts.size();
         }
     }
 

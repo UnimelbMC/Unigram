@@ -1,15 +1,12 @@
 package co.example.junjen.mobileinstagram;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -88,7 +85,7 @@ public class NavigationBar extends AppCompatActivity {
             if(Parameters.dummyData){
                 Parameters.loginProfile = new Profile(Parameters.default_username);
             } else {
-                Parameters.loginProfile = NetParams.NETWORK.getUserProfileFeed(
+                Parameters.loginProfile = NetParams.NETWORK.getUserProfileInfo(
                         Parameters.login_key);
             }
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
