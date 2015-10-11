@@ -1,5 +1,7 @@
 package co.example.junjen.mobileinstagram.suggestion;
 
+import android.util.Log;
+
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.users.feed.UserFeedData;
 import org.jinstagram.exceptions.InstagramException;
@@ -43,8 +45,9 @@ public class SuggHelper {
 
     // SuggHelper for a user with userId
     public SuggHelper(String userId){
+        Log.d("SuggHelper", "start");
         this.instagram = new Instagram(NetParams.ACCESS_TOKEN);
-        this.suggestedUsersIdList = new ArrayList<String>();
+        this.suggestedUsersIdList = fetchFollowsList(this.userId, MAX_SUGG_USR_TO_FETCH);;
         this.notSuggestedUsersIdList = new ArrayList<String>();
         this.classifiedPossibleUsers = new ArrayList<String>();
         this.possibleUsersId = new ArrayList<String>();
@@ -53,7 +56,7 @@ public class SuggHelper {
 
 
     public ArrayList<String> getSuggestedUsersIdList() {
-        suggestedUsersIdList = fetchFollowsList(this.userId, MAX_SUGG_USR_TO_FETCH);
+
         return suggestedUsersIdList;
     }
 
@@ -78,6 +81,7 @@ public class SuggHelper {
         ArrayList<String> followsUsersId = new ArrayList<String>();
         try {
             List<UserFeedData> list =  instagram.getUserFollowList(userId).getUserList();
+            Log.d("suggHelper fetchFoll",list.toString());
             int i2;
             if(numberOfUsers > list.size()){
                 i2  = list.size();
@@ -168,7 +172,7 @@ public class SuggHelper {
     * */
     public void fetchPossibleUsers(){
         ArrayList<String> list;
-        for(String user : getSuggestedUsersIdList()){
+        for(String user : suggestedUsersIdList){
             list = fetchFollowsList(user,NUM_POSS_USR_PER_SUGG_USR);
             if(list.size()!=0){
                 possibleUsersId.add(list.get(0));

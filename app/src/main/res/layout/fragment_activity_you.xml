@@ -1,10 +1,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="co.example.junjen.mobileinstagram.ActivityFeedFragment">
+    android:layout_marginTop="@dimen/activity_bar_height"
+    tools:context="co.example.junjen.mobileinstagram.ActivityYouFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_activity_feed_fragment" />
+        android:text="@string/hello_activity_you_fragment" />
 
 </FrameLayout>
