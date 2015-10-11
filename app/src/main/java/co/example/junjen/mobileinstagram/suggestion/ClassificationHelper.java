@@ -38,9 +38,9 @@ public class ClassificationHelper {
     private String userId;
 
     // Fetch a max amount of class suggested users
-    private static final int MAX_SUGG_USR_TO_FETCH = 12;
+    private static final int MAX_SUGG_USR_TO_FETCH = 14;
     // Fetch a max amount of class not sugg users
-    private static final int MAX_NOT_SUGG_USR_TO_FETCH = 11;
+    private static final int MAX_NOT_SUGG_USR_TO_FETCH = 9;
     // Number of possible users to be suggested per suggested user
     private static final int NUM_POSS_USR_PER_SUGG_USR = 2;
 

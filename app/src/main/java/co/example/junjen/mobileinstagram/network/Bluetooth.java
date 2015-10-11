@@ -20,31 +20,40 @@ public class Bluetooth {
     private OutputStream outputStream;
     private InputStream inStream;
 
-    private void init() throws IOException {
-        BluetoothAdapter blueAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (blueAdapter != null) {
-            if (blueAdapter.isEnabled()) {
-                Set<BluetoothDevice> bondedDevices = blueAdapter.getBondedDevices();
+    private void Bluetooth() {
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        try{
+            if (btAdapter != null) {
+                if (btAdapter.isEnabled()) {
+                    Set<BluetoothDevice> bondedDevices = btAdapter.getBondedDevices();
 
-                if(bondedDevices.size() > 0){
-                    BluetoothDevice[] devices = (BluetoothDevice[]) bondedDevices.toArray();
-                    BluetoothDevice device = devices[0];
-                    ParcelUuid[] uuids = device.getUuids();
-                    BluetoothSocket socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
-                    socket.connect();
-                    outputStream = socket.getOutputStream();
-                    inStream = socket.getInputStream();
+                    if(bondedDevices.size() > 0){
+                        BluetoothDevice[] devices = (BluetoothDevice[]) bondedDevices.toArray();
+                        BluetoothDevice device = devices[0];
+                        ParcelUuid[] uuids = device.getUuids();
+                        BluetoothSocket socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+                        socket.connect();
+                        outputStream = socket.getOutputStream();
+                        inStream = socket.getInputStream();
+                    }
+
+                    Log.e("error", "No appropriate paired devices.");
+                }else{
+                    Log.e("error", "Bluetooth is disabled.");
                 }
-
-                Log.e("error", "No appropriate paired devices.");
-            }else{
-                Log.e("error", "Bluetooth is disabled.");
             }
+
+        }catch (IOException e){
+            e.printStackTrace();
         }
+
+
+
     }
 
     public void write(String s) throws IOException {
         outputStream.write(s.getBytes());
+//        outputStream.write("hola mundo".getBytes());
     }
 
     public void run() {
@@ -56,6 +65,7 @@ public class Bluetooth {
         while (true) {
             try {
                 bytes = inStream.read(buffer, bytes, BUFFER_SIZE - bytes);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
