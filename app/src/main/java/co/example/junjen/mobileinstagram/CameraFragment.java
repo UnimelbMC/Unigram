@@ -11,12 +11,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -56,54 +53,45 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 
 
 public class CameraFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
+    //Camera parameters variables
     private Camera mCamera;
     private CameraPreview mPreview;
     private static final String TAG = "MyCamera";
     public static final int MEDIA_TYPE_IMAGE = 1;
 
-
+    //variables to move ViewSwitcher
     private static final int STATE_TAKE_PHOTO = 0;
     private static final int STATE_SETUP_PHOTO = 1;
-
     private int currentState;
     ViewSwitcher vLowerPanel,vUpperPanel;
 
-    static final int REQUEST_IMAGE_CAPTURE=1;
+    //Camera view in layout
     ImageView cameraView;
     FrameLayout preview;
 
-    //for filter
-    Drawable buckyFace;
+    //For filters
     Bitmap bitmapImage,originalbmp,originalbmpfiltered;
 
-    //Buttom
+    //Buttoms
     ImageButton flashButton;
     ImageButton backButton;
 
-    //Grid
+    //Grid and layer
     boolean grid,layer;
 
+    //Variable startActivityForResult
     private static final int SELECT_PHOTO = 100;
     private static final int PIC_CROP = 1;
     private String intent;
-
 
     //Layouts
     LinearLayout seekLayout;
@@ -119,16 +107,14 @@ public class CameraFragment extends Fragment {
     private File photoPath;
 
 
-
     // TODO: Rename and change types and number of parameters
     public static CameraFragment newInstance(String param1, String param2) {
         CameraFragment fragment = new CameraFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
+
 
     public CameraFragment() {
         // Required empty public constructor
@@ -137,17 +123,8 @@ public class CameraFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-             /*
-        //Save Photo
-        //MediaStore.Images.Media.insertImage(getContentResolver(),newPhoto,"title","description");*/
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
-
+    //OnCreateView with initialize variables
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -156,10 +133,6 @@ public class CameraFragment extends Fragment {
         Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
         View v = inflater.inflate(R.layout.fragment_camera, container, false);
-        // ((MainActivity) getActivity()).getSupportActionBar().hide();
-
-        //getActivity().getActionBar().hide();
-
 
         // Create an instance of Camera
         mCamera = getCameraInstance();
@@ -169,7 +142,7 @@ public class CameraFragment extends Fragment {
         preview = (FrameLayout) v.findViewById(R.id.camera_preview);
         preview.addView(mPreview);
 
-        //Button declaration
+        //Button and Listener declarations
         Button takePhotoButton = (Button) v.findViewById(R.id.takePhotoButton);
         takePhotoButton.setOnClickListener(takePhotoButtonListener);
 
@@ -206,7 +179,6 @@ public class CameraFragment extends Fragment {
         grid=false;
         layer=true;
 
-
         ImageButton cropButton=(ImageButton) v.findViewById(R.id.cropButton);
         cropButton.setOnClickListener(cropButtonListener);
 
@@ -215,28 +187,23 @@ public class CameraFragment extends Fragment {
         brightnessButton.setOnClickListener(brightnessButtonListener);
         ImageButton contrastButton=(ImageButton) v.findViewById(R.id.contrastButton);
         contrastButton.setOnClickListener(contrastButtonListener);
-
-
         seekLayout=(LinearLayout) v.findViewById(R.id.seekLayout);
-
         cbSeekbar= (SeekBar) v.findViewById(R.id.cbseekBar);
         cbSeekbar.setOnSeekBarChangeListener(cbSeekbarListener);
-
         numberSeekTextView=(TextView) v.findViewById(R.id.numberSeekTextView);
 
-
+        //Layout declaration
         filterLayout=(LinearLayout) v.findViewById(R.id.filterLayout);
         confirmationLayout=(LinearLayout) v.findViewById(R.id.confirmationLayout);
 
         optionCamera="";
         intent="";
 
+        //accept and close button
         ImageButton acceptButton=(ImageButton) v.findViewById(R.id.acceptButton);
         acceptButton.setOnClickListener(acceptButtonListener);
-
         ImageButton xButton=(ImageButton) v.findViewById(R.id.xButton);
         xButton.setOnClickListener(xButtonListener);
-
         ImageButton btnAccept= (ImageButton) v.findViewById(R.id.btnAccept);
         btnAccept.setOnClickListener(btnAcceptListener);
 
@@ -249,7 +216,7 @@ public class CameraFragment extends Fragment {
     }
 
 
-    /** A safe way to get an instance of the Camera object. */
+    // A safe way to get an instance of the Camera object.
     public static Camera getCameraInstance(){
         Camera c = null;
         try {
@@ -674,7 +641,6 @@ public class CameraFragment extends Fragment {
     private View.OnClickListener btnAcceptListener= new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //PublishActivity.openWithPhotoUri(getActivity(), Uri.fromFile(photoPath));
 
             try {
 
@@ -1305,11 +1271,13 @@ public class CameraFragment extends Fragment {
                 //List<Camera.Size> mSupportedPictureSizes = p.getSupportedPictureSizes();
                 final Camera.Size size = getOptimalSize();
 
+                //p.setPictureSize(size.height,size.width);
+
                 p.set("jpeg-quality", 100);
                 p.set("rotation", 90);
                 p.setPictureFormat(PixelFormat.JPEG);
-                p.setPreviewSize(size.width, size.height);
-                //p.setPreviewSize(preview.getHeight(), preview.getWidth());// here w h are reversed
+                //p.setPreviewSize(size.width, size.height);
+                p.setPreviewSize(preview.getHeight(), preview.getWidth());// here w h are reversed
                 mCamera1.setParameters(p);
 
                 mCamera1.setDisplayOrientation(90);
