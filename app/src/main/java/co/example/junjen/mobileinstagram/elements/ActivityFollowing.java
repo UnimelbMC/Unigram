@@ -5,8 +5,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import junit.framework.Test;
-
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.R;
@@ -36,7 +34,7 @@ public class ActivityFollowing {
         Post post;
 
         // create empty posts
-        for (i = 0; i < Parameters.activity_postIconsToShow; i++){
+        for (i = 0; i < Parameters.activityFollowingPostsToGet; i++){
             post = new Post();
             this.postIcons.add(post);
         }
@@ -72,7 +70,8 @@ public class ActivityFollowing {
         stringComponents.clear();
         timeSinceView.setText(postIcons.get(0).getTimeSince().getTimeSinceDisplay());
 
-        Post.buildPostIcons(inflater, postIconsList, postIcons);
+        Post.buildPostIcons(inflater, postIconsList, postIcons,
+                Parameters.activityFollowingIconsPerRow,Parameters.activityFollowingRowsToLoad);
     }
 
     public Username getUsername() {

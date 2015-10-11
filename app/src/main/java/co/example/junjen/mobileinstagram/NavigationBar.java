@@ -2,6 +2,7 @@ package co.example.junjen.mobileinstagram;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -128,9 +129,17 @@ public class NavigationBar extends AppCompatActivity {
             prevNavButtonId = userFeedButtonId;
 
             // set default activity
-            RadioButton activityButton = (RadioButton) findViewById(activityYouButtonId);
-            activityButton.setChecked(true);
-            currentActivityFeed = Parameters.activityYou_key;
+            currentActivityFeed = Parameters.initialActivityFeed;
+            int buttonId;
+            if(currentActivityFeed.equals(Parameters.activityYou_key)){
+                buttonId = activityYouButtonId;
+                RadioButton activityButton = (RadioButton) findViewById(buttonId);
+                activityButton.setChecked(true);
+            } else if (currentActivityFeed.equals(Parameters.activityFollowing_key)){
+                buttonId = activityFollowingButtonId;
+                RadioButton activityButton = (RadioButton) findViewById(buttonId);
+                activityButton.setChecked(true);
+            }
 
         } else {
             createFragments();
@@ -141,6 +150,7 @@ public class NavigationBar extends AppCompatActivity {
         // set listener for navigation bar
         navBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                loadingAnimation();
                 ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case userFeedButtonId:
@@ -185,17 +195,20 @@ public class NavigationBar extends AppCompatActivity {
         // set listener for activity bar
         activityBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                loadingAnimation();
                 ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case activityFollowingButtonId:
                         ft.replace(navigationViewId,
                                 activityFollowingHistory.get(activityFollowingHistory.size() - 1));
                         backButton(activityFollowingHistory);
+                        currentActivityFeed = Parameters.activityFollowing_key;
                         break;
                     case activityYouButtonId:
                         ft.replace(navigationViewId,
                                 activityYouHistory.get(activityYouHistory.size() - 1));
                         backButton(activityYouHistory);
+                        currentActivityFeed = Parameters.activityYou_key;
                         break;
                 }
                 ft.commit();
@@ -205,24 +218,40 @@ public class NavigationBar extends AppCompatActivity {
 
     // adds a fragment to be displayed in a history
     public void showFragment(Fragment fragment){
+        loadingAnimation();
         replaceView(fragment);
 
         switch (prevNavButtonId) {
             case userFeedButtonId:
                 userFeedHistory.add(fragment);
+                activityFeedBar(false);
                 break;
             case discoverButtonId:
                 discoverHistory.add(fragment);
+                activityFeedBar(false);
                 break;
             case activityFeedButtonId:
                 ArrayList<Fragment> activityHistory = getCurrentActivityFeed();
                 activityHistory.add(fragment);
+                activityFeedBar(false);
                 break;
             case profileButtonId:
                 profileHistory.add(fragment);
+                activityFeedBar(false);
                 break;
         }
     }
+
+    private void loadingAnimation(){
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+            }
+        }, Parameters.loadingAnimationDelay);
+    }
+
 
     // replaces the main view with a fragment
     public void replaceView(Fragment fragment){
@@ -248,6 +277,11 @@ public class NavigationBar extends AppCompatActivity {
             showBackButton();
         } else {
             hideBackButton();
+
+            // show activity feed bar if at base activity feed fragment
+            if(history == activityFollowingHistory || history == activityYouHistory){
+                activityFeedBar(true);
+            }
         }
     }
 
@@ -335,6 +369,7 @@ public class NavigationBar extends AppCompatActivity {
             Log.w("test", "token deleted");
         }
         NetParams.ACCESS_TOKEN = null;
+        NetParams.NETWORK = null;
     }
 
     // go back to login screen
@@ -343,10 +378,6 @@ public class NavigationBar extends AppCompatActivity {
         startActivity(mainIntent);
 
         finish();
-    }
-
-    public void setCurrentActivityFeed(String currentActivity){
-        currentActivityFeed = currentActivity;
     }
 
     // android back button goes back to previous fragment when in camera fragment
@@ -418,6 +449,7 @@ public class NavigationBar extends AppCompatActivity {
             setContentView(myWebView);
             myWebView.setWebViewClient(new LogoutWebViewClient());
             myWebView.loadUrl(NetParams.LOGOUT_URL);
+            NetParams.ACCESS_TOKEN = null;
             return true;
         }
         return super.onOptionsItemSelected(item);

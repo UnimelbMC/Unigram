@@ -284,11 +284,11 @@ public class Post implements Serializable{
 
     // get layout of post icons to be added to the bottom of a profile fragment
     public static void buildPostIcons(LayoutInflater inflater, ViewGroup postIconList,
-                                      ArrayList<Post> posts){
+                                      ArrayList<Post> posts, int iconsPerRow, int rowsToLoad){
 
         int postsSize = posts.size();
-        int postIconsPerRow = Parameters.postIconsPerRow;
-        int postIconRowsToLoad = Parameters.postIconRowsToLoad;
+        int postIconsPerRow = iconsPerRow;
+        int postIconRowsToLoad = rowsToLoad;
 
         int rows = (int) Math.ceil((double) postsSize / postIconsPerRow);
         if (rows < postIconRowsToLoad){
