@@ -46,12 +46,13 @@ public class SuggHelper {
     // SuggHelper for a user with userId
     public SuggHelper(String userId){
         Log.d("SuggHelper", "start");
+        this.userId = userId;
         this.instagram = new Instagram(NetParams.ACCESS_TOKEN);
         this.suggestedUsersIdList = fetchFollowsList(this.userId, MAX_SUGG_USR_TO_FETCH);;
         this.notSuggestedUsersIdList = new ArrayList<String>();
         this.classifiedPossibleUsers = new ArrayList<String>();
         this.possibleUsersId = new ArrayList<String>();
-        this.userId = userId;
+
     }
 
 
@@ -155,7 +156,7 @@ public class SuggHelper {
                     notSuggestedUsersIdList.add(userId2);
                 }
 
-                if(notSuggestedUsersIdList.size()>=10){
+                if(notSuggestedUsersIdList.size()>=MAX_NOT_SUGG_USR_TO_FETCH){
                     break;
                 }
             }
