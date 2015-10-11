@@ -39,6 +39,9 @@ public class Suggestion {
     // Number of possible users to be suggested per suggested user
     private static final int NUM_POSS_USR_PER_SUGG_USR = 2;
 
+    //Classification object to classify possible users
+    private Classification cls;
+
     // Suggestion for a user with userId
     public Suggestion(String userId){
         this.instagram = new Instagram(NetParams.ACCESS_TOKEN);
@@ -46,6 +49,7 @@ public class Suggestion {
         this.notSuggestedUsersIdList = new ArrayList<String>();
         this.possibleUsersId = new ArrayList<String>();
         this.userId = userId;
+
     }
 
 
@@ -184,6 +188,5 @@ public class Suggestion {
 //            classify(usr);
 //        }
 //    }
-
 
 }
