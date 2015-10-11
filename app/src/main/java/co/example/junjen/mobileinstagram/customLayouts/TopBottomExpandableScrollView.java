@@ -56,5 +56,4 @@ public class TopBottomExpandableScrollView extends ExpandableScrollView {
         }
         super.onScrollChanged(x, y, oldx, oldy);
     }
-
 }
