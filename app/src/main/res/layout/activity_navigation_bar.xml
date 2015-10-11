@@ -5,6 +5,35 @@
     android:layout_height="match_parent"
     tools:context="co.example.junjen.mobileinstagram.NavigationBar">
 
+    <!-- Activity Feed Bar -->
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_bar_group"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_bar_height"
+        android:layout_alignParentTop="true"
+        tools:context="co.example.junjen.mobileinstagram.NavigationBar">
+
+        <RadioGroup
+            android:id="@+id/activity_bar"
+            android:layout_alignParentTop="true"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="#000000"
+            >
+            <RadioButton
+                android:id="@+id/activity_following_button"
+                style="@style/navbar_button"
+                android:background="@drawable/activity_following_selector"/>
+            <RadioButton
+                android:id="@+id/activity_you_button"
+                style="@style/navbar_button"
+                android:background="@drawable/activity_you_selector"/>
+        </RadioGroup>
+    </RelativeLayout>
+
     <!-- Navigation View -->
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"

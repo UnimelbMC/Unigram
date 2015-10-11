@@ -6,6 +6,9 @@
     <!-- Login screen -->
     <dimen name="login_user_image_width">150dp</dimen>
 
+    <!-- Activity Bar -->
+    <dimen name="activity_bar_height">46dp</dimen>
+
     <!-- Nav bar -->
     <dimen name="nav_bar_height">51dp</dimen>
     <dimen name="nav_button_margin">5dp</dimen>

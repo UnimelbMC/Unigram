@@ -34,10 +34,10 @@ public class TimeSince implements Serializable{
 
         String formattedTime = Long.toString(time) + "s";  // default eg: 11s
         int convertedTime;
-        int minute = 60;
-        int hour = 60 * minute;
-        int day = 24 * hour;
-        int week = 7 * day;
+        int minute = Parameters.minute;
+        int hour = Parameters.hour;
+        int day = Parameters.day;
+        int week = Parameters.week;
 
         // eg: 11w
         if (time >= week){

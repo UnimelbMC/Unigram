@@ -1,0 +1,15 @@
+<co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/activity_bar_height"
+    tools:context="co.example.junjen.mobileinstagram.ActivityFollowingFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_following_scroll_view"
+        android:orientation="vertical">
+    </LinearLayout>
+
+</co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView>

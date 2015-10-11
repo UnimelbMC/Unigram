@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,9 +34,11 @@ public class NavigationBar extends AppCompatActivity {
     private ArrayList<Fragment> userFeedHistory = new ArrayList<>();
     private ArrayList<Fragment> discoverHistory = new ArrayList<>();
     private CameraFragment cameraFragment;
-    private ArrayList<Fragment> activityFeedHistory = new ArrayList<>();
+    private ArrayList<Fragment> activityFollowingHistory = new ArrayList<>();
+    private ArrayList<Fragment> activityYouHistory = new ArrayList<>();
     private ArrayList<Fragment> profileHistory = new ArrayList<>();
     private RadioGroup navBar;
+    private RadioGroup activityBar;
     private int prevNavButtonId;
     private int navigationViewId = R.id.view1;
     private ActionBar actionBar;
@@ -49,11 +49,13 @@ public class NavigationBar extends AppCompatActivity {
     private final int discoverButtonId = R.id.discover_button;
     private final int cameraButtonId = R.id.camera_button;
     private final int activityFeedButtonId = R.id.activityfeed_button;
+    private final int activityFollowingButtonId = R.id.activity_following_button;
+    private final int activityYouButtonId = R.id.activity_you_button;
     private final int profileButtonId = R.id.profile_button;
 
     private int logoutBrowserCount = 0;
     private boolean cameraOn = false;
-    private boolean navBarInitialised = false;
+    private String currentActivityFeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,12 +117,21 @@ public class NavigationBar extends AppCompatActivity {
                 }
             });
 
+            activityBar = (RadioGroup) findViewById(R.id.activity_bar);
+            activityFeedBar(false);
+
             // set default fragment to User Feed
             RadioButton userFeedButton = (RadioButton) findViewById(userFeedButtonId);
             userFeedButton.setChecked(true);
             getSupportFragmentManager().beginTransaction().
                     add(R.id.view1, userFeedHistory.get(0)).commit();
             prevNavButtonId = userFeedButtonId;
+
+            // set default activity
+            RadioButton activityButton = (RadioButton) findViewById(activityYouButtonId);
+            activityButton.setChecked(true);
+            currentActivityFeed = Parameters.activityYou_key;
+
         } else {
             createFragments();
         }
@@ -136,29 +147,55 @@ public class NavigationBar extends AppCompatActivity {
                         ft.replace(navigationViewId,
                                 userFeedHistory.get(userFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        activityFeedBar(false);
                         backButton(userFeedHistory);
                         break;
                     case discoverButtonId:
                         ft.replace(navigationViewId,
                                 discoverHistory.get(discoverHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        activityFeedBar(false);
                         backButton(discoverHistory);
                         break;
                     case cameraButtonId:
                         ft.replace(navigationViewId, cameraFragment);
                         cameraOn = true;
+                        activityFeedBar(false);
                         break;
                     case activityFeedButtonId:
+                        ArrayList<Fragment> activityHistory = getCurrentActivityFeed();
                         ft.replace(navigationViewId,
-                                activityFeedHistory.get(activityFeedHistory.size() - 1));
+                                activityHistory.get(activityHistory.size() - 1));
                         prevNavButtonId = checkedId;
-                        backButton(activityFeedHistory);
+                        activityFeedBar(true);
+                        backButton(activityHistory);
                         break;
                     case profileButtonId:
                         ft.replace(navigationViewId,
                                 profileHistory.get(profileHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        activityFeedBar(false);
                         backButton(profileHistory);
+                        break;
+                }
+                ft.commit();
+            }
+        });
+
+        // set listener for activity bar
+        activityBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                ft = getSupportFragmentManager().beginTransaction();
+                switch (checkedId) {
+                    case activityFollowingButtonId:
+                        ft.replace(navigationViewId,
+                                activityFollowingHistory.get(activityFollowingHistory.size() - 1));
+                        backButton(activityFollowingHistory);
+                        break;
+                    case activityYouButtonId:
+                        ft.replace(navigationViewId,
+                                activityYouHistory.get(activityYouHistory.size() - 1));
+                        backButton(activityYouHistory);
                         break;
                 }
                 ft.commit();
@@ -178,7 +215,8 @@ public class NavigationBar extends AppCompatActivity {
                 discoverHistory.add(fragment);
                 break;
             case activityFeedButtonId:
-                activityFeedHistory.add(fragment);
+                ArrayList<Fragment> activityHistory = getCurrentActivityFeed();
+                activityHistory.add(fragment);
                 break;
             case profileButtonId:
                 profileHistory.add(fragment);
@@ -193,6 +231,15 @@ public class NavigationBar extends AppCompatActivity {
         ft.commit();
     }
 
+    // shows or hides activity feed bar
+    public void activityFeedBar(boolean show){
+        if(show){
+            activityBar.setVisibility(View.VISIBLE);
+        } else {
+            activityBar.setVisibility(View.GONE);
+        }
+    }
+
     // shows or hides back button on history count
     public void backButton(ArrayList<Fragment> history){
 
@@ -202,7 +249,6 @@ public class NavigationBar extends AppCompatActivity {
         } else {
             hideBackButton();
         }
-
     }
 
     // go back to the previous fragment using the back button
@@ -216,7 +262,8 @@ public class NavigationBar extends AppCompatActivity {
                 updateHistory(discoverHistory);
                 break;
             case activityFeedButtonId:
-                updateHistory(activityFeedHistory);
+                ArrayList<Fragment> activityHistory = getCurrentActivityFeed();
+                updateHistory(activityHistory);
                 break;
             case profileButtonId:
                 updateHistory(profileHistory);
@@ -250,8 +297,20 @@ public class NavigationBar extends AppCompatActivity {
         userFeedHistory.add(new UserFeedFragment());
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
-        activityFeedHistory.add(new ActivityFeedFragment());
+        activityFollowingHistory.add(new ActivityFollowingFragment());
+        activityYouHistory.add(new ActivityYouFragment());
         profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
+    }
+
+    // gets the current activity feed
+    private ArrayList<Fragment> getCurrentActivityFeed(){
+        ArrayList<Fragment> activityHistory = new ArrayList<>();
+        if(currentActivityFeed.equals(Parameters.activityFollowing_key)){
+            activityHistory = activityFollowingHistory;
+        } else if (currentActivityFeed.equals(Parameters.activityYou_key)){
+            activityHistory = activityYouHistory;
+        }
+        return activityHistory;
     }
 
     // show the back button on the action bar
@@ -284,6 +343,10 @@ public class NavigationBar extends AppCompatActivity {
         startActivity(mainIntent);
 
         finish();
+    }
+
+    public void setCurrentActivityFeed(String currentActivity){
+        currentActivityFeed = currentActivity;
     }
 
     // android back button goes back to previous fragment when in camera fragment

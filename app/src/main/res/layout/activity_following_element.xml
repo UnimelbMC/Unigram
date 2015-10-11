@@ -9,7 +9,7 @@
     <co.example.junjen.mobileinstagram.customLayouts.UserImageView
         android:layout_width="@dimen/post_header_user_image_width"
         android:layout_height="@dimen/post_header_user_image_width"
-        android:id="@+id/comment_user_image"
+        android:id="@+id/activity_following_user_image"
         android:layout_centerVertical="true"
         android:src="@drawable/empty_user_image"
         android:adjustViewBounds="true"
@@ -19,15 +19,15 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/comment_user_image"
-        android:layout_toEndOf="@id/comment_user_image">
+        android:layout_toRightOf="@id/activity_following_user_image"
+        android:layout_toEndOf="@id/activity_following_user_image">
 
-        <!-- Time since commented -->
+        <!-- Time since activity following -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_timeSince"
-            android:id="@+id/comment_time_since"
+            android:id="@+id/activity_following_time_since"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
@@ -39,35 +39,32 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/default_username"
-            android:id="@+id/comment_username"
+            android:id="@+id/activity_following_username"
             android:layout_alignParentTop="true"
             android:gravity="center_vertical"
-            android:layout_toLeftOf="@id/comment_time_since"
-            android:layout_toStartOf="@id/comment_time_since"
+            android:layout_toLeftOf="@id/activity_following_time_since"
+            android:layout_toStartOf="@id/activity_following_time_since"
             android:singleLine="true"
             android:layout_marginTop="@dimen/post_margin"
             android:layout_marginBottom="@dimen/post_margin"/>
-
-
-
-        <!-- Comment -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_comment"
-            android:id="@+id/comment_text"
-            android:layout_below="@id/comment_username"
+        
+        <!-- Post icons -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/activity_following_post_icons"
+            style="@style/post_icon_list"
+            android:layout_below="@id/activity_following_username"
             android:layout_alignWithParentIfMissing="true"
             android:layout_marginRight="@dimen/comment_margin"
             android:layout_marginEnd="@dimen/comment_margin"
             android:layout_marginBottom="@dimen/comment_margin"/>
-
-        <!-- Comment divider -->
+        
+        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@android:color/darker_gray"
-            android:layout_below="@id/comment_text"/>
+            android:layout_below="@id/activity_following_post_icons"/>
 
     </RelativeLayout>
 

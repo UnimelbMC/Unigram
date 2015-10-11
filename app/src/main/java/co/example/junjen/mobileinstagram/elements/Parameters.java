@@ -15,7 +15,7 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 public class Parameters {
 
     // Login parameters
-    public static boolean dummyData = false;
+    public static boolean dummyData = true;
     public static final String login_key = "@thisIsMyLogin";
     public static String loginUserId = null;
     public static String loginUsername = null;
@@ -29,6 +29,8 @@ public class Parameters {
     public static final String likesTitle = "LIKERS";
     public static final String followersTitle = "FOLLOWERS";
     public static final String followingTitle = "FOLLOWING";
+    public static final String activityTitle = "ACTIVITY";
+    public static final String discoverTitle = "DISCOVER";
     public static final String postTitle = "PHOTO";
     public static final float mainTitleSize = 20;
     public static final float subTitleSize = 15;
@@ -53,7 +55,11 @@ public class Parameters {
     public static final int loadUserThreshold = 100;
     public static final int maxLikes = 300;
 
-    // ActivityFollowing parameters
+    // Activity Feed parameters
+    public static final String activityFollowing_key = "following";
+    public static final String activityYou_key = "you";
+
+    // ActivityFollowingFragment parameters
     public static final int default_recentPostCount = 10;
     public static final int activity_postIconsToShow = 3;
     public static final int activityFollowingToLoad = 10;
@@ -95,6 +101,13 @@ public class Parameters {
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
     public static int userFeedFragmentTop;
+    public static int activityFeedFragmentTop;
+
+    // Time constants
+    public static final int minute = 60;
+    public static final int hour = 60 * minute;
+    public static final int day = 24 * hour;
+    public static final int week = 7 * day;
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){
         View actionBar = activity.getSupportActionBar().getCustomView();
