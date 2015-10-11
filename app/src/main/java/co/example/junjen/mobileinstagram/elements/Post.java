@@ -195,6 +195,7 @@ public class Post implements Serializable{
             if (likes != null) {
                 updateLikes();
             }
+            checkLikeButton();
 
             // Caption
             TextView caption = (TextView) postView.findViewById(R.id.post_caption);
@@ -435,8 +436,16 @@ public class Post implements Serializable{
             public void onClick(View v) {
                 String postId = (String) v.getContentDescription();
 
+                boolean like;
+                if (liked.equals(Parameters.like)){
+                    like = true;
+                } else {
+                    like = false;
+                }
+
                 // display post
-                Parameters.NavigationBarActivity.showFragment(PostFragment.newInstance(postId));
+                Parameters.NavigationBarActivity.
+                        showFragment(PostFragment.newInstance(postId, like));
             }
         };
         return postIconOnClickListener;
@@ -504,6 +513,10 @@ public class Post implements Serializable{
                 ", likeButton=" + likeButton +
                 ", liked='" + liked + '\'' +
                 ']';
+    }
+
+    public void setLiked(String like){
+        this.liked = like;
     }
 
     public String getPostId() {

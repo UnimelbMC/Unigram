@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -19,10 +18,8 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.TopScrollViewListener;
-import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
-import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 /**
@@ -42,7 +39,7 @@ public class ActivityYouFragment extends Fragment
     private String mParam1;
     private String mParam2;
 
-    private ExpandableScrollView activityYouFragment;
+    private TopBottomExpandableScrollView activityYouFragment;
     private ViewGroup activityYouFragmentView;
     private ViewGroup activityYouView;
     private int activityYouFragmentTop;
@@ -53,8 +50,8 @@ public class ActivityYouFragment extends Fragment
     private ArrayList<Post> allActivityYou = new ArrayList<>();
 
     // keep track of max post Id to generate new set of activities
-    private String maxPostId;
-    private String minPostId;
+    private String maxPostId = "0";
+    private String minPostId = "0";
 
     // flag to check if activities are being loaded before loading new ones
     private boolean loadActivity = true;
@@ -101,13 +98,14 @@ public class ActivityYouFragment extends Fragment
 
         if(activityYouFragment == null) {
 
-            activityYouFragment = (ExpandableScrollView)
+            activityYouFragment = (TopBottomExpandableScrollView)
                     inflater.inflate(R.layout.fragment_activity_you, container, false);
             activityYouFragmentView = (ViewGroup)
                     activityYouFragment.findViewById(R.id.activity_you_scroll_view);
 
             // set scroll listener
             activityYouFragment.setScrollViewListener(this);
+            activityYouFragment.setTopScrollViewListener(this);
 
             activityYouView = (ViewGroup) activityYouFragment.
                     findViewById(R.id.activity_you_scroll_view);
@@ -125,7 +123,8 @@ public class ActivityYouFragment extends Fragment
             initialisePosition();
 
             ((ViewGroup)refresh.getParent()).removeView(refresh);
-            activityYouView.addView(refresh, 0);
+            ViewGroup view = (ViewGroup) activityYouFragment.findViewById(R.id.activity_you_view);
+            view.addView(refresh, 0);
 
             // move back to activity feed view if user scrolls into refresh bar
             // (after user's finger lifts off the screen)
@@ -133,7 +132,6 @@ public class ActivityYouFragment extends Fragment
 
             // load initial chunk of user feed posts
             loadActivityYou();
-
         }
         // Inflate the layout for this fragment
         return activityYouFragment;
@@ -247,17 +245,18 @@ public class ActivityYouFragment extends Fragment
         LayoutInflater inflater = LayoutInflater.from(getContext());
         int i;
         ArrayList<Post> activityFeed;
+        int count = Parameters.activityYouIconsPerRow * Parameters.activityYouRowsToLoad;
 
         if (!Parameters.dummyData) {
             // TODO: update method
-//            activityFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
-            activityFeed = NetParams.NETWORK.getMediaUserLikes();
-           // activityFeed = new ArrayList<>();
+            activityFeed = NetParams.NETWORK.getMediaUserLikes(Long.parseLong(maxPostId), count);
 
             int aFsize = activityFeed.size();
             if (activityFeed.size() > 0){
                 //Posts earlier than last
-                maxPostId = activityFeed.get(aFsize - 1).getPostId();
+                String temp = activityFeed.get(aFsize - 1).getPostId();
+                String[] stringArray = temp.split("_");
+                maxPostId = stringArray[0];
             }
         } else {
             activityFeed = new ArrayList<>();
@@ -266,6 +265,11 @@ public class ActivityYouFragment extends Fragment
                 activityFeed.add(new Post());
             }
         }
+
+        for (Post post : activityFeed){
+            post.setLiked(Parameters.like);
+        }
+
         Post.buildPostIcons(inflater, activityYouFragmentView, activityFeed,
                 Parameters.activityYouIconsPerRow, Parameters.activityYouRowsToLoad);
 
@@ -282,15 +286,17 @@ public class ActivityYouFragment extends Fragment
         LayoutInflater inflater = LayoutInflater.from(getContext());
         int i;
         ArrayList<Post> activityFeed;
+        int count = Parameters.activityYouIconsPerRow * Parameters.activityYouRowsToLoad;
 
         if (!Parameters.dummyData) {
             // TODO: update method
-//            activityFeed = NetParams.NETWORK.getMediaUserLikes(minPostId, null);
-            activityFeed = new ArrayList<>();
+            activityFeed = NetParams.NETWORK.getMediaUserLikes(Long.parseLong(minPostId), count);
 
             if (activityFeed.size() > 0){
                 //Posts earlier than last
-                minPostId = activityFeed.get(0).getPostId();
+                String temp = activityFeed.get(0).getPostId();
+                String[] stringArray = temp.split("_");
+                minPostId = stringArray[0];
             }
         } else {
             activityFeed = new ArrayList<>();
@@ -299,6 +305,11 @@ public class ActivityYouFragment extends Fragment
                 activityFeed.add(new Post());
             }
         }
+
+        for (Post post : activityFeed){
+            post.setLiked(Parameters.like);
+        }
+
         allActivityYou.addAll(0, activityFeed);
         activityYouFragmentView.removeAllViews();
         Post.buildPostIcons(inflater, activityYouFragmentView, allActivityYou,

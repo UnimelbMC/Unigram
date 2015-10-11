@@ -179,7 +179,7 @@ public class NavigationBar extends AppCompatActivity {
                         ft.replace(navigationViewId,
                                 activityHistory.get(activityHistory.size() - 1));
                         prevNavButtonId = checkedId;
-                        activityFeedBar(true);
+//                        activityFeedBar(true);
                         backButton(activityHistory);
                         break;
                     case profileButtonId:

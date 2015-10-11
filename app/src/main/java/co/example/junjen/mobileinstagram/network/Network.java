@@ -30,6 +30,7 @@ import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.elements.User;
+import co.example.junjen.mobileinstagram.suggestion.Suggestion;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -54,7 +55,7 @@ public class Network {
                 thisUserData = instagram.getCurrentUserInfo().getData();
                 Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-                Suggestion suggestion = new Suggestion("self");
+//                Suggestion suggestion = new Suggestion("self");
                 return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken failed " + e.getMessage());
@@ -136,7 +137,7 @@ public class Network {
         }
     }
     public ArrayList<Post> getProfileFeed(String userId, String minId, String maxId){
-        return getProfileFeed(userId,0, minId, maxId, null, null);
+        return getProfileFeed(userId, 0, minId, maxId, null, null);
     }
     public ArrayList<Post> getProfileForActivityFeed(String userId, long maxDate, long minDate){
 
@@ -454,7 +455,7 @@ public class Network {
     }
 
     public ArrayList<User> searchUser(String username){
-        return searchUser(username,0);
+        return searchUser(username, 0);
     }
     public ArrayList<User> searchUser(String username,int count){
         UserFeed userFeed = null;
