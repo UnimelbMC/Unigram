@@ -63,9 +63,9 @@ public class Classification {
         notSuggAttributeNames = classificationHelper.getNotSuggestedUsersIdList();
         possibleUsers = classificationHelper.getPossibleUsersId();
         classifiedPossUsers = new HashMap<String, String>();
-        Log.d("clsSugg", suggAttributeNames.toString());
-        Log.d("clsNotSugg", notSuggAttributeNames.toString());
-        Log.d("clsPossUsr", possibleUsers.toString());
+//        Log.d("clsSugg", suggAttributeNames.toString());
+//        Log.d("clsNotSugg", notSuggAttributeNames.toString());
+//        Log.d("clsPossUsr", possibleUsers.toString());
 
 
       // Creating the NB classifier
