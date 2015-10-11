@@ -29,6 +29,7 @@ import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.elements.User;
+import co.example.junjen.mobileinstagram.suggestion.Suggestion;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -53,7 +54,9 @@ public class Network {
                 thisUserData = instagram.getCurrentUserInfo().getData();
                 Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-              //  Suggestion suggestion = new Suggestion("self");
+
+//                Suggestion suggestion = new Suggestion("self");
+
                 return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
@@ -395,7 +398,8 @@ public class Network {
         });
         int rpSize = recentPosts.size();
         ArrayList<Post> tmpPost = new ArrayList<>();
-        for (int i = 0; i <MAX_ACTIVITY_FOLLOWING ; i++) {
+        int count = (rpSize< MAX_ACTIVITY_FOLLOWING)? rpSize : MAX_ACTIVITY_FOLLOWING;
+        for (int i = 0; i < count ; i++) {
             Post p1;
             String u1,u2;
             p1 = recentPosts.get(i);
@@ -424,6 +428,32 @@ public class Network {
         return actFollowing;
     }
 
+
+    //GET MEDIA A USER LIKED
+    public ArrayList<Post> getMediaUserLikes() {
+        return getMediaUserLikes(0,0);
+    }
+
+    public ArrayList<Post> getMediaUserLikes(long id,int count){
+
+        MediaFeed mediaFeed = null;
+        try {
+            if(id ==0){
+                mediaFeed = instagram.getUserLikedMediaFeed();
+            }else{
+                mediaFeed = instagram.getUserLikedMediaFeed(id,count);
+            }
+
+            List<MediaFeedData> mediaFeeds = mediaFeed.getData();
+            return getPostsList(mediaFeeds, true);
+        } catch (InstagramException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+
+    }
 }
 
 
