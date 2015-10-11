@@ -5,19 +5,24 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
+import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
+import co.example.junjen.mobileinstagram.customLayouts.TopScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
@@ -31,7 +36,7 @@ import co.example.junjen.mobileinstagram.network.NetParams;
  * Use the {@link UserFeedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserFeedFragment extends Fragment implements ScrollViewListener {
+public class UserFeedFragment extends Fragment implements ScrollViewListener, TopScrollViewListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -41,7 +46,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
     private String mParam1;
     private String mParam2;
 
-    private ExpandableScrollView userFeedFragment;
+    private TopBottomExpandableScrollView userFeedFragment;
     private ViewGroup userFeedView;
     private int postIndex = 0;
     private int postBottomCount = 0;
@@ -102,10 +107,14 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
 
         // initialise userFeedFragment if not created yet
         if(userFeedFragment == null){
-            userFeedFragment = (ExpandableScrollView)
-                    inflater.inflate(R.layout.fragment_expandable_scroll_view, container, false);
+            userFeedFragment = (TopBottomExpandableScrollView)
+                    inflater.inflate(R.layout.fragment_top_bottom_expandable_scroll_view, container, false);
+
+            // set scroll listeners
             userFeedFragment.setScrollViewListener(this);
-            userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.expandable_scroll_view);
+            userFeedFragment.setTopScrollViewListener(this);
+
+            userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.top_bottom_expandable_scroll_view);
 
             setTitle();
 
@@ -121,9 +130,6 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
 
             ((ViewGroup)refresh.getParent()).removeView(refresh);
             userFeedView.addView(refresh, 0);
-
-            // add scroll listener to update posts if scroll past top of user feed
-            setTopScrollListener();
 
             // move back to user feed view if user scrolls into refresh bar
             // (after user's finger lifts off the screen
@@ -173,23 +179,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
                 if (!initialised) {
                     returnToTop(userFeedFragmentTop, 0);
                     initialised = true;
-                }
-            }
-        });
-    }
-
-    // add scroll listener to update posts if scroll past top of user feed
-    private void setTopScrollListener(){
-        userFeedFragment.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (scrollY >= userFeedFragmentTop) {
-                    refreshPost = true;
-                } else if (scrollY < userFeedFragmentTop) {
-                    if (scrollY <= refreshPoint && refreshPost) {
-                        // if user scroll past a threshold level of the refresh bar, get newer posts
-                        refreshUserFeedPosts();
-                    }
+                    Parameters.userFeedFragmentTop = userFeedFragmentTop;
                 }
             }
         });
@@ -237,6 +227,19 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
             loadPosts = false;
             loadUserFeedPosts();
             loadPosts = true;
+        }
+    }
+
+    // add scroll listener to update posts if scroll past top of user feed
+    @Override
+    public void onScrollTop(TopBottomExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
+        if (y >= userFeedFragmentTop) {
+            refreshPost = true;
+        } else if (y < userFeedFragmentTop) {
+            if (y <= refreshPoint && refreshPost) {
+                // if user scroll past a threshold level of the refresh bar, get newer posts
+                refreshUserFeedPosts();
+            }
         }
     }
 
@@ -342,8 +345,10 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
             timeSince.formatTime(timeSince.getTimeSince());
 
             // display updated time since
-            ((TextView) post.getPostView().findViewById(R.id.post_header_time_since)).
-                    setText(timeSince.getTimeSinceDisplay());
+            if(post.getPostView() != null) {
+                ((TextView) post.getPostView().findViewById(R.id.post_header_time_since)).
+                        setText(timeSince.getTimeSinceDisplay());
+            }
         }
     }
 

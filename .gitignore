@@ -33,6 +33,9 @@ captures/
 #idea
 .idea/libraries/
 .idea/workspace.xml
+.idea/gradle.xml
+.idea/misc.xml
+
 
 # Mac specific
 *.DS_Store
