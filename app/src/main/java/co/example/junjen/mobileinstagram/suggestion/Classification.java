@@ -2,6 +2,7 @@ package co.example.junjen.mobileinstagram.suggestion;
 
 import android.util.Log;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import weka.classifiers.bayes.NaiveBayesUpdateable;
@@ -61,6 +62,11 @@ public class Classification {
         suggAttributeNames = classificationHelper.getSuggestedUsersIdList();
         notSuggAttributeNames = classificationHelper.getNotSuggestedUsersIdList();
         possibleUsers = classificationHelper.getPossibleUsersId();
+        classifiedPossUsers = new HashMap<String, String>();
+        Log.d("clsSugg", suggAttributeNames.toString());
+        Log.d("clsNotSugg", notSuggAttributeNames.toString());
+        Log.d("clsPossUsr", possibleUsers.toString());
+
 
       // Creating the NB classifier
         createClsLabels();
@@ -269,7 +275,6 @@ public class Classification {
     * */
     public void classifyPossibleUsers(){
         try{
-
             String cls;
             String usr;
             for(int i = 0; i < possibleUsers.size(); i++){

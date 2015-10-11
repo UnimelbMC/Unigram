@@ -158,13 +158,6 @@
                     android:scaleType="centerCrop"
                     android:visibility="invisible"/>
 
-                <co.example.junjen.mobileinstagram.TouchView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/touchView"
-                    android:layout_gravity="center"
-                    android:visibility="invisible" />
-
             </RelativeLayout>
 
             <ViewSwitcher
