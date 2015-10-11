@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLoadResource(WebView view, String url) {
 
+            Log.w("test", "login webView url: "+url);
+
             // if redirected, access code is in url
             if (url.startsWith(NetParams.REDIRECT_URI)) {
                 loginClickInBrowserCount = 0;

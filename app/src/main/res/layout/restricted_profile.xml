@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/restricted_profile_flag"
+            android:layout_below="@id/profile_no_post_flag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/space_between_posts"
+            android:layout_marginBottom="@dimen/space_between_posts">
+
+            <ImageView
+                android:layout_width="@dimen/post_header_user_image_width"
+                android:layout_height="@dimen/post_header_user_image_width"
+                android:layout_gravity="center"
+                android:src="@drawable/private_profile"
+                android:layout_margin="@dimen/post_margin"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/restricted_profile"
+                android:layout_gravity="center"
+                android:layout_below="@id/profile_divider"
+                android:layout_margin="@dimen/post_margin"/>
+        </LinearLayout>
+    </RelativeLayout>
+</co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView>

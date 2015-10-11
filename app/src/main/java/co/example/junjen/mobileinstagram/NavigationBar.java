@@ -1,17 +1,15 @@
 package co.example.junjen.mobileinstagram;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.Profile;
+import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 public class NavigationBar extends AppCompatActivity {
@@ -36,11 +36,11 @@ public class NavigationBar extends AppCompatActivity {
     private CameraFragment cameraFragment;
     private ArrayList<Fragment> activityFeedHistory = new ArrayList<>();
     private ArrayList<Fragment> profileHistory = new ArrayList<>();
-    private String token;
     private RadioGroup navBar;
     private int prevNavButtonId;
     private int navigationViewId = R.id.view1;
     private ActionBar actionBar;
+    private View navigationBar;
 
     // Button IDs
     private final int userFeedButtonId = R.id.userfeed_button;
@@ -58,6 +58,7 @@ public class NavigationBar extends AppCompatActivity {
 
         MainActivity.mainActivity.finish();
         Parameters.NavigationBarActivity = this;
+        Parameters.NavigationBarContext = this.getApplicationContext();
 
         // set custom action bar
         actionBar = getSupportActionBar();
@@ -80,7 +81,36 @@ public class NavigationBar extends AppCompatActivity {
 
         // get username and password
         if (savedInstanceState == null) {
+            // save current user profile
+            if(Parameters.dummyData){
+                Parameters.loginProfile = new Profile(Parameters.default_username);
+            } else {
+                Parameters.loginProfile = NetParams.NETWORK.getUserProfileInfo(
+                        Parameters.login_key);
+            }
+            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+            Parameters.loginProfileView = Parameters.loginProfile.getProfileView(inflater);
+            Parameters.loginUserId = Parameters.loginProfile.getUsername().getUserId();
+            Parameters.loginUsername = Parameters.loginProfile.getUsername().getUsername();
+            Parameters.loginUser = new User(Parameters.loginUserId, Parameters.loginUsername,
+                    Parameters.loginProfile.getUserImage().getImageString(),
+                    Parameters.loginProfile.getProfName());
+
             createFragments();
+
+            // get navigation view height when navBar layout changes
+            navigationBar = findViewById(R.id.nav_bar);
+            ViewTreeObserver vto = navigationBar.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    navigationBar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                    int[] location = new int[2];
+                    navigationBar.getLocationOnScreen(location);
+                    Parameters.NavigationViewHeight = location[1];
+                }
+            });
 
             // set default fragment to User Feed
             RadioButton userFeedButton = (RadioButton) findViewById(userFeedButtonId);
@@ -99,12 +129,16 @@ public class NavigationBar extends AppCompatActivity {
                 ft = getSupportFragmentManager().beginTransaction();
                 switch (checkedId) {
                     case userFeedButtonId:
-                        ft.replace(navigationViewId, userFeedHistory.get(userFeedHistory.size() - 1));
+                        ft.replace(navigationViewId,
+                                userFeedHistory.get(userFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        backButton(userFeedHistory);
                         break;
                     case discoverButtonId:
-                        ft.replace(navigationViewId, discoverHistory.get(discoverHistory.size() - 1));
+                        ft.replace(navigationViewId,
+                                discoverHistory.get(discoverHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        backButton(discoverHistory);
                         break;
                     case cameraButtonId:
                         ft.replace(navigationViewId, cameraFragment);
@@ -114,10 +148,13 @@ public class NavigationBar extends AppCompatActivity {
                         ft.replace(navigationViewId,
                                 activityFeedHistory.get(activityFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        backButton(activityFeedHistory);
                         break;
                     case profileButtonId:
-                        ft.replace(navigationViewId, profileHistory.get(profileHistory.size() - 1));
+                        ft.replace(navigationViewId,
+                                profileHistory.get(profileHistory.size() - 1));
                         prevNavButtonId = checkedId;
+                        backButton(profileHistory);
                         break;
                 }
                 ft.commit();
@@ -125,7 +162,7 @@ public class NavigationBar extends AppCompatActivity {
         });
     }
 
-    // displays a fragment and adds it to a history
+    // adds a fragment to be displayed in a history
     public void showFragment(Fragment fragment){
         replaceView(fragment);
 
@@ -152,6 +189,18 @@ public class NavigationBar extends AppCompatActivity {
         ft.commit();
     }
 
+    // shows or hides back button on history count
+    public void backButton(ArrayList<Fragment> history){
+
+        // if history size is more than one then show back button, else hide it
+        if(history.size() > 1){
+            showBackButton();
+        } else {
+            hideBackButton();
+        }
+
+    }
+
     // go back to the previous fragment using the back button
     public void goBack(){
 
@@ -169,7 +218,6 @@ public class NavigationBar extends AppCompatActivity {
                 updateHistory(profileHistory);
                 break;
         }
-
     }
 
     // update history when back button is clicked
@@ -193,19 +241,13 @@ public class NavigationBar extends AppCompatActivity {
         }
     }
 
-
-    // TODO: update argument to receive token
+    // create navigation fragments
     private void createFragments(){
         userFeedHistory.add(new UserFeedFragment());
         discoverHistory.add(new DiscoverFragment());
         cameraFragment = new CameraFragment();
         activityFeedHistory.add(new ActivityFeedFragment());
-        profileHistory.add(ProfileFragment.newInstance("", false));
-    }
-
-    // returns the navigation bar object to the camera fragment's back button
-    public RadioGroup getNavBar(){
-        return navBar;
+        profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
     }
 
     // show the back button on the action bar
@@ -272,9 +314,6 @@ public class NavigationBar extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "nav bar saved");
 
-        // Save the user's current game state
-        savedInstanceState.putString("token", token);
-
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -304,7 +343,6 @@ public class NavigationBar extends AppCompatActivity {
 
         // clear access token on logout
         if (id == R.id.action_logout) {
-
             clearToken();
 
             // logout of instagram account
@@ -312,11 +350,9 @@ public class NavigationBar extends AppCompatActivity {
             myWebView.clearFormData();
             setContentView(myWebView);
             myWebView.setWebViewClient(new LogoutWebViewClient());
-            myWebView.loadUrl("https://instagram.com/accounts/logout");
-
+            myWebView.loadUrl(NetParams.LOGOUT_URL);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -330,7 +366,7 @@ public class NavigationBar extends AppCompatActivity {
 
         @Override
         public void onLoadResource(WebView view, String url) {
-            Log.w("test", url);
+            Log.w("test", "logout webView url: "+url);
 
             if (url.startsWith(NetParams.LOGOUT_URL_HEADER)) {
                 logoutBrowserCount++;

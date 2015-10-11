@@ -1,12 +1,9 @@
 package co.example.junjen.mobileinstagram;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,18 +11,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
-import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 
@@ -39,10 +29,10 @@ import co.example.junjen.mobileinstagram.network.NetParams;
  */
 public class ProfileFragment extends Fragment implements ScrollViewListener{
     // the fragment initialization parameters
-    private static final String username_key = "username";
+    private static final String userId_key = "userId";
     private static final String backButton_key = "backButton";
 
-    private String username;
+    private String userId;
     private boolean backButton;
 
     private ExpandableScrollView profileFragment;
@@ -60,15 +50,15 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param username Parameter 1.
+     * @param userId Parameter 1.
      * @param backButton Parameter 2.
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String username, boolean backButton) {
+    public static ProfileFragment newInstance(String userId, boolean backButton) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putSerializable(username_key, username);
+        args.putSerializable(userId_key, userId);
         args.putBoolean(backButton_key, backButton);
         fragment.setArguments(args);
         return fragment;
@@ -82,10 +72,10 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            username = getArguments().getString(username_key);
+            userId = getArguments().getString(userId_key);
             backButton = getArguments().getBoolean(backButton_key);
 
-            // display back button if profile fragment created from username link
+            // display back button if profile fragment created from userId link
             if (backButton){
                 ((NavigationBar) this.getActivity()).showBackButton();
             }
@@ -96,25 +86,50 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // remove loading animation
+        Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
         // initialise ProfileFragment if not created yet
         if(profileFragment == null){
 
-            if(!username.startsWith(Parameters.default_username)){
-                // get Profile based on Data Object and pass into fragment constructor
-                profile = NetParams.NETWORK.getUserProfileFeed(username);
-            } else {
-                profile = new Profile(username);
+            Log.w("like", "profileFragment: " + userId);
+
+            if(userId.startsWith(Parameters.default_userId)){
+                String[] parts = userId.split(Parameters.default_userId);
+                if(parts.length > 0){
+                    profile = new Profile(parts[1]);
+                } else {
+                    profile = new Profile(Parameters.default_username);
+                }
+            } else if (!userId.equals(Parameters.loginUserId)){
+                Log.w("like", "profile creation through NETWORK");
+                profile = NetParams.NETWORK.getUserProfileInfo(userId);
+
+                if (profile == null){
+                    // this might mean the profile is private, hence search for user info only
+                    profile = NetParams.NETWORK.searchUserById(userId);
+
+                    if (profile == null) {
+                        // at this point it means current user has restricted access to this profile
+                        profileFragment = (ExpandableScrollView)
+                                inflater.inflate(R.layout.restricted_profile, container, false);
+                        return profileFragment;
+                    }
+                }
+            } else if (userId.equals(Parameters.loginUserId)){
+                profile = Parameters.loginProfile;
             }
 
             setTitle();
 
+            Log.w("like", "profile: " + profile.getUsername().getUserId());
+
             profileFragment = profile.getProfileView(inflater);
             profileFragment.setScrollViewListener(this);
 
-            // add layout listener to add content if default screen is not filled
+            // add layout listener to add post icons if default screen is not filled
             ViewTreeObserver vto = profileFragment.getViewTreeObserver();
             final int screenHeight = Parameters.NavigationViewHeight;
-
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
@@ -123,8 +138,6 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     int[] location = new int[2];
                     profileFragment.getLocationOnScreen(location);
                     int height = location[1] + profileFragment.getChildAt(0).getHeight();
-
-                    Log.w("test", "profile: " + Integer.toString(height) + " (" + Integer.toString(screenHeight) + ")");
 
                     if (height <= screenHeight) {
                         LayoutInflater inflater = LayoutInflater.from(getContext());

@@ -8,16 +8,33 @@
         layout="@layout/post_header"
         android:id="@+id/post_header"/>
 
-    <!-- Post image -->
-    <co.example.junjen.mobileinstagram.customLayouts.PostImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/post_image"
-        android:src="@drawable/post_image"
+    <RelativeLayout
+        android:id="@+id/post_image_section"
         android:layout_below="@+id/post_header"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:contentDescription="Post Image"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Post image -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_image"
+            android:src="@drawable/post_image"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="Post Image"/>
+
+        <!-- Like feedback image -->
+        <ImageView
+            android:id="@+id/like_feedback"
+            android:layout_width="@dimen/like_feedback_width"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/like_feedback"/>
+
+    </RelativeLayout>
 
     <!-- Post image options (User and Comment buttons) -->
     <include
@@ -25,7 +42,7 @@
         android:layout_height="wrap_content"
         layout="@layout/post_image_options"
         android:id="@+id/post_image_options"
-        android:layout_below="@id/post_image"/>
+        android:layout_below="@id/post_image_section"/>
 
     <!-- Post divider -->
     <View

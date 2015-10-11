@@ -11,17 +11,17 @@ import android.widget.RadioGroup;
  * Custom Like button that can be toggled off
  */
 
-public class LikeButton extends RadioButton {
+public class ToggleButton extends RadioButton {
 
-    public LikeButton(Context context) {
+    public ToggleButton(Context context) {
         super(context);
     }
 
-    public LikeButton(Context context, AttributeSet attrs) {
+    public ToggleButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LikeButton(Context context, AttributeSet attrs, int defStyle) {
+    public ToggleButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
     }

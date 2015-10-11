@@ -7,11 +7,21 @@ import android.widget.TextView;
 
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 
 /**
  * Created by junjen on 1/10/2015.
  */
 public class Parameters {
+
+    // Login parameters
+    public static boolean dummyData = false;
+    public static final String login_key = "@thisIsMyLogin";
+    public static String loginUserId = null;
+    public static String loginUsername = null;
+    public static User loginUser = null;
+    public static Profile loginProfile = null;
+    public static ExpandableScrollView loginProfileView = null;
 
     // Titles
     public static final String mainTitle = "UniGram";
@@ -24,27 +34,35 @@ public class Parameters {
     public static final float subTitleSize = 15;
 
     // Login screen parameters
-    public static final String usernameFieldHint = "Username";
-    public static final String passwordFieldHint = "Password";
-    public static final String loginUsername_key = "username";
-    public static final String loginPassword_key = "password";
-    public static final String loginUserImage_key = "loginUserImage";
     public static final int splashScreenDuration = 2500;    // in milliseconds
 
     // Post parameters
-    public static final String default_postId = "";
+    public static final String default_postId = "#";
+    public static final String default_userId = "#";
     public static final String default_username = "#username";
     public static final String default_location = "Location";
-    public static final String default_timeSince = "TimeSince";
     public static final String default_caption = "Caption";
     public static final String default_comment = "Comment";
     public static final String default_image = "#Image";
-    public static final int likeThreshold = 10;
-    public static final int commentThreshold = 3;
+    public static final int default_likeCount = 20;
+    public static final int default_commentCount = 50;
+    public static final int likePreviewThreshold = 10;
+    public static final int commentPreviewThreshold = 3;
     public static final int postsToLoad = 10;
     public static final int loadCommentThreshold = 20;
-    public static final int loadLikeThreshold = 100;
+    public static final int loadUserThreshold = 100;
     public static final int maxLikes = 300;
+
+    // Like feedback animation parameters
+    public static final int likeAppearDuration = 100;
+    public static final int likeStayDuration = 800;
+    public static final int likeDisappearDuration = 100;
+    public static final float animationStartEndScale = 0;
+
+    // Like flags
+    public static final String checkLike = "check";
+    public static final String like = "like";
+    public static final String unlike = "unlike";
 
     // Post icon parameters
     public static final int postIconsPerRow = 3;
@@ -53,6 +71,9 @@ public class Parameters {
     // Profile parameters
     public static final String default_profName = "Username";
     public static final String default_profDescrp = "My Profile";
+    public static final int default_postCount = 50;
+    public static final int default_followerCount = 100;
+    public static final int default_followingCount = 75;
 
     // Image Links
     public static final String default_loginUserImageLink = "0";
@@ -61,13 +82,13 @@ public class Parameters {
     // Application helpers
     public static Context MainActivityContext = null;
     public static NavigationBar NavigationBarActivity = null;
+    public static Context NavigationBarContext = null;
     public static final int loginClickInBrowserCountMax = 2;
     public static final int urlCountMax = 2;
     public static final int logoutBrowserCountMax = 3;
     public static int NavigationViewHeight = 0;
-
-    public static boolean skeleton = false;
-
+    public static int refreshReturnDelay = 2000;
+    public static float refreshThreshold = 10;
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){
         View actionBar = activity.getSupportActionBar().getCustomView();
@@ -77,5 +98,4 @@ public class Parameters {
             titleTextView.setTextSize(titleSize);
         }
     }
-
 }

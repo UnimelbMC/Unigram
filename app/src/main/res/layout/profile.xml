@@ -25,8 +25,35 @@
         android:text="@string/profile_no_post_flag"
         android:gravity="center"
         android:layout_below="@id/profile_divider"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/space_between_posts"
         android:layout_marginBottom="@dimen/space_between_posts"/>
+
+    <LinearLayout
+        android:id="@+id/private_profile_flag"
+        android:layout_below="@id/profile_no_post_flag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/space_between_posts"
+        android:layout_marginBottom="@dimen/space_between_posts">
+
+        <ImageView
+            android:layout_width="@dimen/post_header_user_image_width"
+            android:layout_height="@dimen/post_header_user_image_width"
+            android:layout_gravity="center"
+            android:src="@drawable/private_profile"
+            android:layout_margin="@dimen/post_margin"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/private_profile"
+            android:layout_gravity="center"
+            android:layout_below="@id/profile_divider"
+            android:layout_margin="@dimen/post_margin"/>
+    </LinearLayout>
 
     <!-- Profile posts -->
     <LinearLayout
