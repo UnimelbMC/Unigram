@@ -22,6 +22,7 @@ import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 /**
  * Created by junjen on 11/10/2015.
@@ -164,7 +165,8 @@ public class ActivityYouFragment extends Fragment implements ScrollViewListener 
         if (!Parameters.dummyData) {
             // TODO: update method
 //            activityFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
-            activityFeed = new ArrayList<>();
+            activityFeed = NetParams.NETWORK.getMediaUserLikes();
+           // activityFeed = new ArrayList<>();
 
             int aFsize = activityFeed.size();
             if (activityFeed.size() > 0){
