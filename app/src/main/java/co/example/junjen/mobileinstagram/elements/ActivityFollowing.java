@@ -17,8 +17,10 @@ import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
  */
 public class ActivityFollowing {
 
+
     private Username username;
     private Image userImage;
+
     private int recentPostCount;
     private ArrayList<Post> postIcons;
 
@@ -42,6 +44,7 @@ public class ActivityFollowing {
     }
 
     public ActivityFollowing(int recentPostCount, ArrayList<Post> postIcons){
+
         this.recentPostCount = recentPostCount;
         this.postIcons = postIcons;
         this.username = postIcons.get(0).getUsername();
@@ -78,7 +81,6 @@ public class ActivityFollowing {
     public Image getUserImage() {
         return userImage;
     }
-
     public int getRecentPostCount() {
         return recentPostCount;
     }
