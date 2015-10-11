@@ -278,7 +278,7 @@ public class Profile implements Serializable{
             }
             Post.buildPostIcons(inflater,
                     (LinearLayout) profileView.findViewById(R.id.profile_post_icons),
-                    posts);
+                    posts, Parameters.postIconsPerRow, Parameters.postIconRowsToLoad);
 
             postIconCount += posts.size();
         }
