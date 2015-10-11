@@ -70,7 +70,10 @@ public class Network {
         thisUserData.setCounts(new Counts());
         thisUserData.setProfilePicture(Parameters.default_image);
     }
-
+    //GEt instagram object
+    public Instagram getInstagram(){
+        return this.instagram;
+    }
 
     public String getProfilePic(){
         if (thisUserData.getProfilePicture()!= null) {
