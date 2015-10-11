@@ -37,6 +37,8 @@ public class PostFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String postId;
 
+    private ViewGroup postFragment;
+
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -77,21 +79,24 @@ public class PostFragment extends Fragment {
         // remove loading animation
         Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
-        Log.w("test", "PostFragment onCreateView: " + postId);
+        if(postFragment == null) {
 
-        Post post;
-        if(!postId.equals(Parameters.default_postId)){
-            post = NetParams.NETWORK.getPostById(postId);
-        } else {
-            post = new Post();
+            Log.w("test", "PostFragment onCreateView: " + postId);
+
+            Post post;
+            if (!postId.equals(Parameters.default_postId)) {
+                post = NetParams.NETWORK.getPostById(postId);
+            } else {
+                post = new Post();
+            }
+
+            postFragment = (ViewGroup) inflater.inflate(R.layout.fragment_post, container, false);
+            View postView = post.getPostView(inflater);
+            if (postView != null) {
+                postFragment.addView(postView);
+            }
+
         }
-
-        ViewGroup postFragment = (ViewGroup) inflater.inflate(R.layout.fragment_post, container, false);
-        View postView = post.getPostView(inflater);
-        if(postView != null){
-            postFragment.addView(postView);
-        }
-
         // Inflate the layout for this fragment
         return postFragment;
     }

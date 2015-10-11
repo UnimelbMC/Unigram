@@ -79,6 +79,10 @@ public class Parameters {
     public static final String default_loginUserImageLink = "0";
     public static final String default_emptyUserImageLink = "1";
 
+    // Navigation Bar parameters
+    public static final int navButtonHeight = 90;
+    public static final int navButtonWidth = 128;
+
     // Application helpers
     public static Context MainActivityContext = null;
     public static NavigationBar NavigationBarActivity = null;
@@ -89,6 +93,7 @@ public class Parameters {
     public static int NavigationViewHeight = 0;
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
+    public static int userFeedFragmentTop;
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){
         View actionBar = activity.getSupportActionBar().getCustomView();
