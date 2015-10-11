@@ -13,6 +13,7 @@ import org.jinstagram.entity.users.basicinfo.UserInfoData;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.entity.users.feed.UserFeed;
+import org.jinstagram.entity.users.feed.UserFeedData;
 import org.jinstagram.exceptions.InstagramException;
 
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.elements.User;
-import co.example.junjen.mobileinstagram.suggestion.Suggestion;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -69,7 +69,10 @@ public class Network {
         thisUserData.setCounts(new Counts());
         thisUserData.setProfilePicture(Parameters.default_image);
     }
-
+    //GEt instagram object
+    public Instagram getInstagram(){
+        return this.instagram;
+    }
 
     public String getProfilePic(){
         if (thisUserData.getProfilePicture()!= null) {
@@ -298,7 +301,7 @@ public class Network {
             UserFeed feed = instagram.getUserFollowedByList(thisUserData.getId());
             List<org.jinstagram.entity.users.feed.UserFeedData> users = feed.getUserList();
             ArrayList<User> result = new ArrayList<>();
-            for (org.jinstagram.entity.users.feed.UserFeedData u : users){
+            for (UserFeedData u : users){
                 User newFollower = new User(u.getId(), u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
                 result.add(newFollower);
             }
@@ -315,9 +318,9 @@ public class Network {
         //String username, Image userImage, String profName, TimeSince timeSince
         try {
             UserFeed feed = instagram.getUserFollowList(thisUserData.getId());
-            List<org.jinstagram.entity.users.feed.UserFeedData> users = feed.getUserList();
+            List<UserFeedData> users = feed.getUserList();
             ArrayList<User> result = new ArrayList<>();
-            for (org.jinstagram.entity.users.feed.UserFeedData u : users){
+            for (UserFeedData u : users){
                 User newFollowing = new User(u.getId(), u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
                 result.add(newFollowing);
             }
@@ -392,7 +395,6 @@ public class Network {
                 //   return t1-t2; // Ascending
                 return t2 - t1; // Descending
             }
-
         });
         int rpSize = recentPosts.size();
         ArrayList<Post> tmpPost = new ArrayList<>();
@@ -443,14 +445,36 @@ public class Network {
             }
 
             List<MediaFeedData> mediaFeeds = mediaFeed.getData();
+            Log.v("NET LIKES",Integer.toString(mediaFeeds.size()));
             return getPostsList(mediaFeeds, true);
         } catch (InstagramException e) {
             e.printStackTrace();
             return null;
         }
+    }
 
-
-
+    public ArrayList<User> searchUser(String username){
+        return searchUser(username,0);
+    }
+    public ArrayList<User> searchUser(String username,int count){
+        UserFeed userFeed = null;
+        try {
+            if(count ==0){
+                userFeed = instagram.searchUser(username);
+            }else{
+                userFeed = instagram.searchUser(username, count);
+            }
+            List<UserFeedData> users = userFeed.getUserList();
+            ArrayList<User> result = new ArrayList<>();
+            for (UserFeedData u : users){
+                User newFollower = new User(u.getId(), u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
+                result.add(newFollower);
+            }
+            return result;
+        } catch (InstagramException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
 

@@ -22,6 +22,7 @@ import co.example.junjen.mobileinstagram.customLayouts.TopScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
+import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 /**
@@ -249,8 +250,9 @@ public class ActivityYouFragment extends Fragment
 
         if (!Parameters.dummyData) {
             // TODO: update method
-//            activityFeed = NetParams.NETWORK.getMediaUserLikes(null, maxPostId);
-            activityFeed = new ArrayList<>();
+//            activityFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
+            activityFeed = NetParams.NETWORK.getMediaUserLikes();
+           // activityFeed = new ArrayList<>();
 
             int aFsize = activityFeed.size();
             if (activityFeed.size() > 0){

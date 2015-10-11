@@ -20,6 +20,8 @@ import android.widget.TextView;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -454,6 +456,55 @@ public class Post implements Serializable{
 
         return commentButtonOnClickListener;
     }
+    //Sort post list by location
+    public void sortPostByLocation(ArrayList<Post> list){
+        Collections.sort(list, new Comparator<Post>() {
+            @Override
+            public int compare(Post p1, Post p2) {
+                String t1 = p1.getLocation().getLocation();
+                String t2 = p2.getLocation().getLocation();
+                return t1.compareTo(t2);
+                //   return t1-t2; // Ascending
+                //return t2 - t1; // Descending
+            }
+        });
+    }
+    //Sort post list by time
+    public void sortPostByTime(ArrayList<Post> list){
+        Collections.sort(list, new Comparator<Post>() {
+            @Override
+            public int compare(Post p1, Post p2) {
+                String t1 = p1.getTimeSince().getTimeSince();
+                String t2 = p2.getTimeSince().getTimeSince();
+                return t1.compareTo(t2);
+                //   return t1-t2; // Ascending
+                //return t2 - t1; // Descending
+            }
+        });
+    }
+
+    //toString to converto to JSON
+
+    @Override
+    public String toString() {
+        return "Post [" +
+                "caption='" + caption + '\'' +
+                ", postId='" + postId + '\'' +
+                ", post=" + post +
+                ", userImage=" + userImage +
+                ", username=" + username +
+                ", location=" + location +
+                ", timeSince=" + timeSince +
+                ", postImage=" + postImage +
+                ", likeCount=" + likeCount +
+                ", commentCount=" + commentCount +
+                ", likes=" + likes +
+                ", comments=" + comments +
+                ", postView=" + postView +
+                ", likeButton=" + likeButton +
+                ", liked='" + liked + '\'' +
+                ']';
+    }
 
     public String getPostId() {
         return postId;
@@ -489,5 +540,9 @@ public class Post implements Serializable{
 
     public RelativeLayout getPostView() {
         return postView;
+    }
+
+    public Location getLocation(){
+        return this.location;
     }
 }

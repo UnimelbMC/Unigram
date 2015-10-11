@@ -9,6 +9,15 @@ import java.io.Serializable;
  */
 
 public class Location implements Serializable{
+    @Override
+    public String toString() {
+        return "Location{" +
+                "latitude=" + latitude +
+                ", locationId='" + locationId + '\'' +
+                ", location='" + location + '\'' +
+                ", longitude=" + longitude +
+                '}';
+    }
 
     private String locationId;
     private String location;
