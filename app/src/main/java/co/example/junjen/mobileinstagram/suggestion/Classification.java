@@ -55,7 +55,9 @@ public class Classification {
         notSuggAttributeList = new ArrayList<Attribute>();
         suggAttributeNames = suggHelper.getSuggestedUsersIdList();
         notSuggAttributeNames = suggHelper.getNotSuggestedUsersIdList();
+
         possibleUsers = suggHelper.getPossibleUsersId();
+        Log.d("cls_PossUsers",possibleUsers.toString());
         classifiedPossUsers = new HashMap();
 
       // Creating the NB classifier
@@ -262,21 +264,28 @@ public class Classification {
     *   possibleUsers: possible users to classify
     * @returns
     * */
-    public void classifyPossibleUsers() throws Exception{
+    public void classifyPossibleUsers(){
 //        Log.d("clasPosUsr", "startClasPosUsr");
-        String cls;
-        String usr;
-        for(int i = 0; i < possibleUsers.size(); i++){
+        try{
+
+            String cls;
+            String usr;
+            for(int i = 0; i < possibleUsers.size(); i++){
 //        for(String usr : possibleUsers){
-            double pred = nb.classifyInstance(toPredDataset.instance(i));
-            cls = dataset.classAttribute().value((int) pred);
-            usr = possibleUsers.get(i);
-            classifiedPossUsers.put(usr,cls);
+                double pred = nb.classifyInstance(toPredDataset.instance(i));
+                cls = dataset.classAttribute().value((int) pred);
+                usr = possibleUsers.get(i);
+                Log.d("cls_classPosUsr", usr+" "+cls);
+                classifiedPossUsers.put(usr, cls);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 //        Log.d("classPosUser",classifiedPossUsers.toString());
     }
 
     public HashMap getClassifiedPossUsers(){
+        classifyPossibleUsers();
         return this.classifiedPossUsers;
     }
 
