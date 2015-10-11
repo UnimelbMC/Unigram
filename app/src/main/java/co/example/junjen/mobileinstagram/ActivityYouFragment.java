@@ -1,5 +1,7 @@
 package co.example.junjen.mobileinstagram;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,18 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import co.example.junjen.mobileinstagram.elements.Parameters;
-
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ActivityFeedFragment.OnFragmentInteractionListener} interface
+ * {@link ActivityYouFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ActivityFeedFragment#newInstance} factory method to
+ * Use the {@link ActivityYouFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ActivityFeedFragment extends Fragment {
+public class ActivityYouFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -36,11 +36,11 @@ public class ActivityFeedFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ActivityFeedFragment.
+     * @return A new instance of fragment ActivityYouFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ActivityFeedFragment newInstance(String param1, String param2) {
-        ActivityFeedFragment fragment = new ActivityFeedFragment();
+    public static ActivityYouFragment newInstance(String param1, String param2) {
+        ActivityYouFragment fragment = new ActivityYouFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -48,7 +48,7 @@ public class ActivityFeedFragment extends Fragment {
         return fragment;
     }
 
-    public ActivityFeedFragment() {
+    public ActivityYouFragment() {
         // Required empty public constructor
     }
 
@@ -64,12 +64,8 @@ public class ActivityFeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // remove loading animation
-        Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_activity_feed, container, false);
+        return inflater.inflate(R.layout.fragment_activity_you, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -77,6 +73,17 @@ public class ActivityFeedFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     /**
