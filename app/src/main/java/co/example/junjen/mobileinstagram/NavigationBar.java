@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class NavigationBar extends AppCompatActivity {
 
     private int logoutBrowserCount = 0;
     private boolean cameraOn = false;
+    private boolean navBarInitialised = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +125,9 @@ public class NavigationBar extends AppCompatActivity {
             createFragments();
         }
 
-        // set listener for navigation bar
         navBar = (RadioGroup) findViewById(R.id.nav_bar);
+
+        // set listener for navigation bar
         navBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 ft = getSupportFragmentManager().beginTransaction();

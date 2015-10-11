@@ -208,5 +208,4 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-
 }
