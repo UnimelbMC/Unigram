@@ -29,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -54,6 +55,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 
@@ -1285,11 +1287,15 @@ public class CameraFragment extends Fragment {
             // The Surface has been created, now tell the camera where to draw the preview.
             try {
 
-                Camera.Parameters p = mCamera1.getParameters();
+                final Camera.Parameters p = mCamera1.getParameters();
+                //List<Camera.Size> mSupportedPictureSizes = p.getSupportedPictureSizes();
+                final Camera.Size size = getOptimalSize();
+
                 p.set("jpeg-quality", 100);
                 p.set("rotation", 90);
                 p.setPictureFormat(PixelFormat.JPEG);
-                p.setPreviewSize(preview.getHeight(), preview.getWidth());// here w h are reversed
+                p.setPreviewSize(size.width,size.height);
+                //p.setPreviewSize(preview.getHeight(), preview.getWidth());// here w h are reversed
                 mCamera1.setParameters(p);
 
                 mCamera1.setDisplayOrientation(90);
@@ -1301,6 +1307,31 @@ public class CameraFragment extends Fragment {
             } catch (IOException e) {
                 Log.d(TAG, "Error setting camera preview: " + e.getMessage());
             }
+        }
+
+        private Camera.Size getOptimalSize() {
+            final double PREVIEW_SIZE_FACTOR = 1.30;
+            Camera.Size result = null;
+            final Camera.Parameters parameters = mCamera1.getParameters();
+
+            for (final Camera.Size size : parameters.getSupportedPreviewSizes()) {
+                if (size.width <= getWidth() * PREVIEW_SIZE_FACTOR && size.height <= getHeight() * PREVIEW_SIZE_FACTOR) {
+                    if (result == null) {
+                        result = size;
+                    } else {
+                        final int resultArea = result.width * result.height;
+                        final int newArea = size.width * size.height;
+
+                        if (newArea > resultArea) {
+                            result = size;
+                        }
+                    }
+                }
+            }
+            if (result == null) {
+                result = parameters.getSupportedPreviewSizes().get(0);
+            }
+            return result;
         }
 
         public void surfaceDestroyed(SurfaceHolder holder) {
