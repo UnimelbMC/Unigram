@@ -22,6 +22,7 @@ import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
+import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 /**
@@ -32,7 +33,8 @@ import co.example.junjen.mobileinstagram.elements.TimeSince;
  * Use the {@link ActivityFollowingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ActivityFollowingFragment extends Fragment implements ScrollViewListener, TopScrollViewListener {
+public class ActivityFollowingFragment extends Fragment
+        implements ScrollViewListener, TopScrollViewListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -115,10 +117,10 @@ public class ActivityFollowingFragment extends Fragment implements ScrollViewLis
 
             setTitle();
 
-            // add layout listener to add user feed posts if default screen is not filled
+            // add layout listener to activity feed if default screen is not filled
             fillDefaultScreen();
 
-            // add refresh bar at the top of user feed
+            // add refresh bar at the top of activity feed
             View layout = inflater.inflate(R.layout.pull_down_refresh, null, false);
             refresh = layout.findViewById(R.id.refreshPanel);
 
@@ -128,11 +130,11 @@ public class ActivityFollowingFragment extends Fragment implements ScrollViewLis
             ((ViewGroup)refresh.getParent()).removeView(refresh);
             activityFollowingView.addView(refresh, 0);
 
-            // move back to user feed view if user scrolls into refresh bar
-            // (after user's finger lifts off the screen
+            // move back to activity feed view if user scrolls into refresh bar
+            // (after user's finger lifts off the screen)
             setReturnToTopListener();
 
-            // load initial chunk of user feed posts
+            // load initial chunk of activity feed
             loadActivityFollowing();
 
         }
@@ -175,7 +177,7 @@ public class ActivityFollowingFragment extends Fragment implements ScrollViewLis
 
                 // set scroll to initial position if user feed is being initialised
                 if (!initialised) {
-                    returnToTop(activityFollowingFragmentTop, 0);
+                    returnToTop(activityFollowingFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
                     Parameters.activityFeedFragmentTop = activityFollowingFragmentTop;
                 }
@@ -251,8 +253,10 @@ public class ActivityFollowingFragment extends Fragment implements ScrollViewLis
 
         if (!Parameters.dummyData) {
             // TODO: update method
-//            activityFeed = NetParams.NETWORK.getUserFeed(null, maxTimeSince);
-            activityFeed = new ArrayList<>();
+            //Pass the date as strings min/max
+            activityFeed = NetParams.NETWORK. getActivityFeedFollowing(null,null);
+           // activityFeed = new ArrayList<>();
+
 
             int aFsize = activityFeed.size();
             if (activityFeed.size() > 0){
@@ -368,13 +372,7 @@ public class ActivityFollowingFragment extends Fragment implements ScrollViewLis
 
         if(activityFollowingFragment != null){
             setTitle();
-        }
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            Parameters.NavigationBarActivity.activityFeedBar(true);
         }
     }
 

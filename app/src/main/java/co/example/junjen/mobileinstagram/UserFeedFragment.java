@@ -5,16 +5,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -36,7 +32,8 @@ import co.example.junjen.mobileinstagram.network.NetParams;
  * Use the {@link UserFeedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserFeedFragment extends Fragment implements ScrollViewListener, TopScrollViewListener {
+public class UserFeedFragment extends Fragment
+        implements ScrollViewListener, TopScrollViewListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -51,9 +48,10 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
     private int postIndex = 0;
     private int postBottomCount = 0;
     private int postTopCount = 0;
-    private int userFeedFragmentTop;
+    private int userFeedFragmentTop = 0;
     private View refresh;
     private int refreshPoint;
+    private int currentHeight;
     private boolean refreshPost = false;
     private boolean initialised = false;
     private ArrayList<Post> allPosts = new ArrayList<>();
@@ -128,11 +126,14 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
             // initialise scroll view position using a global layout listener
             initialisePosition();
 
+            // listener to go to initial position when views are loaded
+            goToInitialPosition();
+
             ((ViewGroup)refresh.getParent()).removeView(refresh);
             userFeedView.addView(refresh, 0);
 
             // move back to user feed view if user scrolls into refresh bar
-            // (after user's finger lifts off the screen
+            // (after user's finger lifts off the screen)
             setReturnToTopListener();
 
             // load initial chunk of user feed posts
@@ -140,7 +141,6 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
         }
         return userFeedFragment;
     }
-
 
     // add layout listener to add content if default screen is not filled
     private void fillDefaultScreen(){
@@ -153,9 +153,29 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
 
                 int[] location = new int[2];
                 userFeedFragment.getLocationOnScreen(location);
-                int height = location[1] + userFeedFragment.getChildAt(0).getHeight();
+                currentHeight = location[1] + userFeedFragment.getChildAt(0).getHeight();
 
-                if (height <= screenHeight) {
+                if (currentHeight <= screenHeight) {
+                    loadUserFeedPosts();
+                }
+            }
+        });
+    }
+
+    // add layout listener to add content if default screen is not filled
+    private void goToInitialPosition(){
+        ViewTreeObserver vto = userFeedView.getViewTreeObserver();
+        final int screenHeight = Parameters.NavigationViewHeight;
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                userFeedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                int[] location = new int[2];
+                userFeedView.getLocationOnScreen(location);
+                currentHeight = location[1] + userFeedView.getHeight();
+
+                if (currentHeight <= screenHeight) {
                     loadUserFeedPosts();
                 }
             }
@@ -177,7 +197,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
 
                 // set scroll to initial position if user feed is being initialised
                 if (!initialised) {
-                    returnToTop(userFeedFragmentTop, 0);
+                    returnToTop(userFeedFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
                     Parameters.userFeedFragmentTop = userFeedFragmentTop;
                 }
