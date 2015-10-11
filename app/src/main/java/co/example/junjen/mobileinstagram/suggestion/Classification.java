@@ -2,6 +2,8 @@ package co.example.junjen.mobileinstagram.suggestion;
 
 import android.util.Log;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -13,8 +15,8 @@ import weka.core.Instances;
  */
 public class Classification {
 
-    //Suggestion class to retrieve needed info to build classifier
-    private static Suggestion suggestion;
+    //suggHelper class to retrieve needed info to build classifier
+    private static SuggHelper suggHelper;
 
     //Attributes of suggested users class
     private static ArrayList<Attribute> suggAttributeList;
@@ -39,24 +41,30 @@ public class Classification {
     //Dataset to be predicted
     private static Instances toPredDataset;
 
-    //Possible users to be classified
+//    //Possible users to be classified
     private static ArrayList<String> possibleUsers;
+    private static HashMap classifiedPossUsers;
+
 
     // Classification constructor for userId
     // that builds an updateable Naive Bayes classifier
     public Classification(String userId){
-        suggestion = new Suggestion(userId);
+        Log.d("Classification", "here starts");
+        suggHelper = new SuggHelper(userId);
         suggAttributeList = new ArrayList<Attribute>();
         notSuggAttributeList = new ArrayList<Attribute>();
-        suggAttributeNames = suggestion.getSuggestedUsersIdList();
-        notSuggAttributeNames = suggestion.getNotSuggestedUsersIdList();
-        possibleUsers = suggestion.getPossibleUsersId();
+        suggAttributeNames = suggHelper.getSuggestedUsersIdList();
+        notSuggAttributeNames = suggHelper.getNotSuggestedUsersIdList();
+        possibleUsers = suggHelper.getPossibleUsersId();
+        classifiedPossUsers = new HashMap();
 
       // Creating the NB classifier
         createClsLabels();
-        loadDataset();
+        loadDatasetAttributes();
         loadClassifiedData();
+        loadUnclassifiedData();
         buildNB();
+
 //        classifyPossibleUsers();
     }
 
@@ -98,7 +106,7 @@ public class Classification {
     * @params
     * @returns
     * */
-    public void loadDataset() {
+    public void loadDatasetAttributes() {
         createAttributes();
         FastVector attributes = new FastVector();
 
@@ -128,7 +136,7 @@ public class Classification {
     * */
     public Instance createUnclassifiedInstance(String userId){
         double[] values = new double[dataset.numAttributes()];
-        ArrayList<String> list = new Suggestion(userId).getSuggestedUsersIdList();
+        ArrayList<String> list = new SuggHelper(userId).getSuggestedUsersIdList();
 
         int suggIndex;
         int suggAttNamesSize = suggAttributeNames.size();
@@ -170,7 +178,7 @@ public class Classification {
     * */
     public Instance createClassifiedInstance(String userId, String cls){
         double[] values = new double[dataset.numAttributes()];
-        ArrayList<String> list = new Suggestion(userId).getSuggestedUsersIdList();
+        ArrayList<String> list = new SuggHelper(userId).getSuggestedUsersIdList();
         int suggIndex;
         int suggAttNamesSize = suggAttributeNames.size();
         int notSuggIndex;
@@ -204,6 +212,12 @@ public class Classification {
         // load suggested class instances
         for (String usr : suggAttributeNames){
             dataset.add(createClassifiedInstance(usr, suggestedCls));
+        }
+    }
+
+    public void loadUnclassifiedData(){
+        for (String usr : possibleUsers){
+            toPredDataset.add(createUnclassifiedInstance(usr));
         }
     }
 
@@ -245,13 +259,25 @@ public class Classification {
     /*Method
     *   Classify possible unlabeled(unclassified) users
     * @params
+    *   possibleUsers: possible users to classify
     * @returns
     * */
-    public void classifyPossibleUsers(){
+    public void classifyPossibleUsers() throws Exception{
 //        Log.d("clasPosUsr", "startClasPosUsr");
-        for(String usr : possibleUsers){
-            classify(usr);
+        String cls;
+        String usr;
+        for(int i = 0; i < possibleUsers.size(); i++){
+//        for(String usr : possibleUsers){
+            double pred = nb.classifyInstance(toPredDataset.instance(i));
+            cls = dataset.classAttribute().value((int) pred);
+            usr = possibleUsers.get(i);
+            classifiedPossUsers.put(usr,cls);
         }
+//        Log.d("classPosUser",classifiedPossUsers.toString());
+    }
+
+    public HashMap getClassifiedPossUsers(){
+        return this.classifiedPossUsers;
     }
 
 
