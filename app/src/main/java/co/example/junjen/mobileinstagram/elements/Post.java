@@ -62,7 +62,7 @@ public class Post implements Serializable{
         // test constructor to create 'empty' Post objects
 
         this.postId = Parameters.default_postId;
-        this.userImage = new Image(Parameters.default_image);
+        this.userImage = new Image(Parameters.default_emptyUserImageLink);
         this.username = new Username(Parameters.default_userId, Parameters.default_username);
         this.location = new Location(Parameters.default_location);
         this.timeSince = new TimeSince();

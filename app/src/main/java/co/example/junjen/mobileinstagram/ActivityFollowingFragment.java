@@ -5,16 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,20 +18,22 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.TopScrollViewListener;
+import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link UserFeedFragment.OnFragmentInteractionListener} interface
+ * {@link ActivityFollowingFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link UserFeedFragment#newInstance} factory method to
+ * Use the {@link ActivityFollowingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserFeedFragment extends Fragment implements ScrollViewListener, TopScrollViewListener {
+public class ActivityFollowingFragment extends Fragment implements ScrollViewListener, TopScrollViewListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -46,24 +43,24 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
     private String mParam1;
     private String mParam2;
 
-    private TopBottomExpandableScrollView userFeedFragment;
-    private ViewGroup userFeedView;
-    private int postIndex = 0;
-    private int postBottomCount = 0;
-    private int postTopCount = 0;
-    private int userFeedFragmentTop;
+    private TopBottomExpandableScrollView activityFollowingFragment;
+    private ViewGroup activityFollowingView;
+    private int activityFollowingIndex = 0;
+    private int activityBottomCount = 0;
+    private int activityTopCount = 0;
+    private int activityFollowingFragmentTop;
     private View refresh;
     private int refreshPoint;
-    private boolean refreshPost = false;
+    private boolean refreshActivity = false;
     private boolean initialised = false;
-    private ArrayList<Post> allPosts = new ArrayList<>();
+    private ArrayList<ActivityFollowing> allActivityFollowing = new ArrayList<>();
 
-    // keep track of max and min id of last post generated to generate new set of posts
-    private String maxPostId;
-    private String minPostId;
+    // keep track of max and min timeSince to generate new set of activities
+    private String maxTimeSince;
+    private String minTimeSince;
 
-    // flag to check if posts are being loaded before loading new ones
-    private boolean loadPosts = true;
+    // flag to check if activities are being loaded before loading new ones
+    private boolean loadActivity = true;
 
     private OnFragmentInteractionListener mListener;
 
@@ -73,11 +70,11 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment UserFeedFragment.
+     * @return A new instance of fragment ActivityFollowingFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserFeedFragment newInstance(String param1, String param2) {
-        UserFeedFragment fragment = new UserFeedFragment();
+    public static ActivityFollowingFragment newInstance(String param1, String param2) {
+        ActivityFollowingFragment fragment = new ActivityFollowingFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -85,7 +82,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
         return fragment;
     }
 
-    public UserFeedFragment() {
+    public ActivityFollowingFragment() {
         // Required empty public constructor
     }
 
@@ -105,16 +102,17 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
         // remove loading animation
         Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
-        // initialise userFeedFragment if not created yet
-        if(userFeedFragment == null){
-            userFeedFragment = (TopBottomExpandableScrollView)
-                    inflater.inflate(R.layout.fragment_top_bottom_expandable_scroll_view, container, false);
+        if(activityFollowingFragment == null) {
+
+            activityFollowingFragment = (TopBottomExpandableScrollView)
+                    inflater.inflate(R.layout.fragment_activity_following, container, false);
 
             // set scroll listeners
-            userFeedFragment.setScrollViewListener(this);
-            userFeedFragment.setTopScrollViewListener(this);
+            activityFollowingFragment.setScrollViewListener(this);
+            activityFollowingFragment.setTopScrollViewListener(this);
 
-            userFeedView = (ViewGroup) userFeedFragment.findViewById(R.id.top_bottom_expandable_scroll_view);
+            activityFollowingView = (ViewGroup) activityFollowingFragment.
+                    findViewById(R.id.activity_following_scroll_view);
 
             setTitle();
 
@@ -129,34 +127,35 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
             initialisePosition();
 
             ((ViewGroup)refresh.getParent()).removeView(refresh);
-            userFeedView.addView(refresh, 0);
+            activityFollowingView.addView(refresh, 0);
 
             // move back to user feed view if user scrolls into refresh bar
             // (after user's finger lifts off the screen
             setReturnToTopListener();
 
             // load initial chunk of user feed posts
-            loadUserFeedPosts();
-        }
-        return userFeedFragment;
-    }
+            loadActivityFollowing();
 
+        }
+        // Inflate the layout for this fragment
+        return activityFollowingFragment;
+    }
 
     // add layout listener to add content if default screen is not filled
     private void fillDefaultScreen(){
-        ViewTreeObserver vto = userFeedFragment.getViewTreeObserver();
+        ViewTreeObserver vto = activityFollowingFragment.getViewTreeObserver();
         final int screenHeight = Parameters.NavigationViewHeight;
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                userFeedFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                activityFollowingFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
                 int[] location = new int[2];
-                userFeedFragment.getLocationOnScreen(location);
-                int height = location[1] + userFeedFragment.getChildAt(0).getHeight();
+                activityFollowingFragment.getLocationOnScreen(location);
+                int height = location[1] + activityFollowingFragment.getChildAt(0).getHeight();
 
                 if (height <= screenHeight) {
-                    loadUserFeedPosts();
+                    loadActivityFollowing();
                 }
             }
         });
@@ -171,35 +170,35 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
                 refresh.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
                 // get starting position of user feed scroll view
-                userFeedFragmentTop = refresh.getBottom();
+                activityFollowingFragmentTop = refresh.getBottom();
 
-                refreshPoint = Math.round(userFeedFragmentTop / Parameters.refreshThreshold);
+                refreshPoint = Math.round(activityFollowingFragmentTop / Parameters.refreshThreshold);
 
                 // set scroll to initial position if user feed is being initialised
                 if (!initialised) {
-                    returnToTop(userFeedFragmentTop, 0);
+                    returnToTop(activityFollowingFragmentTop, 0);
                     initialised = true;
-                    Parameters.userFeedFragmentTop = userFeedFragmentTop;
+                    Parameters.activityFeedFragmentTop = activityFollowingFragmentTop;
                 }
             }
         });
     }
 
-    // move back to user feed view if user scrolls into refresh bar
+    // move back to activity feed view if user scrolls into refresh bar
     // (after user's finger lifts off the screen)
     private void setReturnToTopListener(){
-        userFeedFragment.setOnTouchListener(new View.OnTouchListener() {
+        activityFollowingFragment.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int scrollY = v.getScrollY();
 
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (scrollY <= refreshPoint) {
-                        // if new user feed loading, delay before returning to top of scroll view
+                        // if new activity loading, delay before returning to top of scroll view
                         returnToTop(0, 0);
-                        returnToTop(userFeedFragmentTop, Parameters.refreshReturnDelay);
-                    } else if (scrollY > refreshPoint && scrollY < userFeedFragmentTop) {
-                        returnToTop(userFeedFragmentTop, 0);
+                        returnToTop(activityFollowingFragmentTop, Parameters.refreshReturnDelay);
+                    } else if (scrollY > refreshPoint && scrollY < activityFollowingFragmentTop) {
+                        returnToTop(activityFollowingFragmentTop, 0);
                     }
                 }
                 return false;
@@ -207,163 +206,170 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener, To
         });
     }
 
-    // return scroll level to top of user feed view
+    // return scroll level to top of activity feed view
     private void returnToTop(final int scrollY, int delay){
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                userFeedFragment.smoothScrollTo(0, scrollY);
+                activityFollowingFragment.smoothScrollTo(0, scrollY);
             }
         }, delay);
     }
 
-    // loads another chunk of posts when at the bottom of the user feed ScrollView
+    // loads another chunk of activityFollowing when at the bottom of the activity feed ScrollView
     @Override
     public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
 
         // load new posts if no posts are currently being loaded
-        if(loadPosts){
-            loadPosts = false;
-            loadUserFeedPosts();
-            loadPosts = true;
+        if(loadActivity){
+            loadActivity = false;
+            loadActivityFollowing();
+            loadActivity = true;
         }
     }
 
-    // add scroll listener to update posts if scroll past top of user feed
+    // add scroll listener to update activityFollowing if scroll past top of activity view
     @Override
     public void onScrollTop(TopBottomExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
-        if (y >= userFeedFragmentTop) {
-            refreshPost = true;
-        } else if (y < userFeedFragmentTop) {
-            if (y <= refreshPoint && refreshPost) {
-                // if user scroll past a threshold level of the refresh bar, get newer posts
-                refreshUserFeedPosts();
+        if (y >= activityFollowingFragmentTop) {
+            refreshActivity = true;
+        } else if (y < activityFollowingFragmentTop) {
+            if (y <= refreshPoint && refreshActivity) {
+                // if user scroll past a threshold level of the refresh bar, get newer activity
+                refreshActivityFollowing();
             }
         }
     }
 
-    // loads a chunk of posts on the user feed view
-    private void loadUserFeedPosts() {
+    // loads a chunk of activityFollowing on the activity view
+    private void loadActivityFollowing() {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         int i;
-        View postView;
-        ArrayList<Post> userFeed;
+        View activityView;
+        ArrayList<ActivityFollowing> activityFeed;
 
         if (!Parameters.dummyData) {
-            userFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
-            int uFSize = userFeed.size();
-            Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
-            if (userFeed.size() > 0){
+            // TODO: update method
+            //Pass the date as strings min/max
+            activityFeed = NetParams.NETWORK. getActivityFeedFollowing(null,null);
+           // activityFeed = new ArrayList<>();
+
+
+            int aFsize = activityFeed.size();
+            if (activityFeed.size() > 0){
                 //Posts earlier than last
-                maxPostId = userFeed.get(uFSize - 1).getPostId();
-//                //Posts after first
-//                minPostId = userFeed.get(0).getPostId();
+                int size = activityFeed.get(aFsize - 1).getPostIcons().size();
+                maxTimeSince = activityFeed.get(aFsize - 1).getPostIcons().get(size - 1).
+                        getTimeSince().getTimeSince();
             }
         } else {
-            userFeed = new ArrayList<>();
-            for (i = 0; i < Parameters.postsToLoad; i++) {
-                userFeed.add(new Post());
+            activityFeed = new ArrayList<>();
+            for (i = 0; i < Parameters.activityFollowingToLoad; i++) {
+                activityFeed.add(new ActivityFollowing());
             }
         }
-        for (Post post : userFeed) {
-            postView = post.getPostView(inflater);
+        for (ActivityFollowing activity : activityFeed) {
+            activity.buildActivityView(inflater);
+            activityView = activity.getActivityView();
 
-            // if post is from dummyData
+            // if activity is from dummyData
             if (Parameters.dummyData) {
                 TextView timeSinceText = (TextView)
-                        postView.findViewById(R.id.post_header_time_since);
-                timeSinceText.setText(Integer.toString(postBottomCount) + "s");
+                        activityView.findViewById(R.id.activity_following_time_since);
+                timeSinceText.setText(Integer.toString(activityBottomCount) + "s");
             }
-            if(postView != null){
-                userFeedView.addView(postView, postIndex + 1);
+            if(activityView != null){
+                activityFollowingView.addView(activityView, activityFollowingIndex + 1);
             }
-            postBottomCount++;
-            postIndex++;
+            activityBottomCount++;
+            activityFollowingIndex++;
         }
-        allPosts.addAll(userFeed);
+        allActivityFollowing.addAll(activityFeed);
         updateTimeSince();
     }
 
-    // get new userfeed posts
-    private void refreshUserFeedPosts() {
+    // get new activity of following
+    private void refreshActivityFollowing() {
 
         // flag set so that posts are only refreshed once until view moves back
-        // to the user feed view
-        refreshPost = false;
+        // to the activity view
+        refreshActivity = false;
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         int i;
-        View postView;
-        ArrayList<Post> userFeed;
+        View activityView;
+        ArrayList<ActivityFollowing> activityFeed;
 
         if (!Parameters.dummyData) {
-            userFeed = NetParams.NETWORK.getUserFeed(minPostId, null);
-            int uFSize = userFeed.size();
-            Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
-            if (userFeed.size() > 0){
-//                //Posts earlier than last
-//                maxPostId = userFeed.get(uFSize - 1).getPostId();
-                //Posts after first
-                minPostId = userFeed.get(0).getPostId();
+            // TODO: update method
+//            activityFeed = NetParams.NETWORK.getUserFeed(minTimeSince, null);
+            activityFeed = new ArrayList<>();
+
+            int aFSize = activityFeed.size();
+            if (activityFeed.size() > 0){
+                //Activity after first
+                minTimeSince = activityFeed.get(0).getPostIcons().get(0).getTimeSince().
+                        getTimeSince();
             }
         } else {
-            userFeed = new ArrayList<>();
-            for (i = 0; i < Parameters.postsToLoad; i++) {
-                userFeed.add(new Post());
+            activityFeed = new ArrayList<>();
+            for (i = 0; i < Parameters.activityFollowingToLoad; i++) {
+                activityFeed.add(new ActivityFollowing());
             }
         }
         i = 0;
-        int size = userFeed.size();
-        postTopCount += size;
-        for (Post post : userFeed) {
-            postView = post.getPostView(inflater);
+        int size = activityFeed.size();
+        activityTopCount += size;
+        for (ActivityFollowing activity : activityFeed) {
+            activity.buildActivityView(inflater);
+            activityView = activity.getActivityView();
 
-            // if post is from dummyData
+            // if activity is from dummyData
             if (Parameters.dummyData) {
                 TextView timeSinceText = (TextView)
-                        postView.findViewById(R.id.post_header_time_since);
-                timeSinceText.setText(Integer.toString(-postTopCount + i) + "s");
+                        activityView.findViewById(R.id.activity_following_time_since);
+                timeSinceText.setText(Integer.toString(-activityTopCount + i) + "s");
             }
-            if(postView != null){
-                userFeedView.addView(postView, i + 1);
+            if(activityView != null){
+                activityFollowingView.addView(activityView, i + 1);
             }
             i++;
         }
-        postIndex += size;
-        allPosts.addAll(0, userFeed);
+        activityFollowingIndex += size;
+        allActivityFollowing.addAll(0, activityFeed);
         updateTimeSince();
     }
 
-    // update time since posted of all posts
+    // update time since posted of all activity
     private void updateTimeSince(){
-        for (Post post : allPosts){
-            TimeSince timeSince = post.getTimeSince();
+        for (ActivityFollowing activity : allActivityFollowing){
+            TimeSince timeSince = activity.getPostIcons().get(0).getTimeSince();
 
             // update post time since
             timeSince.formatTime(timeSince.getTimeSince());
 
             // display updated time since
-            if(post.getPostView() != null) {
-                ((TextView) post.getPostView().findViewById(R.id.post_header_time_since)).
+            if(activity.getActivityView() != null) {
+                ((TextView) activity.getActivityView().
+                        findViewById(R.id.activity_following_time_since)).
                         setText(timeSince.getTimeSinceDisplay());
             }
         }
     }
 
-    // set title of user feed fragment
+    // set title of activity fragment
     private void setTitle() {
         Parameters.setTitle(Parameters.NavigationBarActivity,
-                Parameters.mainTitle, Parameters.mainTitleSize);
+                Parameters.activityTitle, Parameters.subTitleSize);
     }
 
     @Override
-    // sets the action bar title when in a user feed fragment
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (userFeedFragment != null) {
+        if(activityFollowingFragment != null){
             setTitle();
         }
     }

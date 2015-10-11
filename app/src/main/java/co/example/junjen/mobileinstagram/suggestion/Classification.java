@@ -49,6 +49,7 @@ public class Classification {
     // Classification constructor for userId
     // that builds an updateable Naive Bayes classifier
     public Classification(String userId){
+        Log.d("Classification", "here starts");
         suggHelper = new SuggHelper(userId);
         suggAttributeList = new ArrayList<Attribute>();
         notSuggAttributeList = new ArrayList<Attribute>();
