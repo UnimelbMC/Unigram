@@ -96,7 +96,7 @@ public class CameraFragment extends Fragment {
     ImageButton backButton;
 
     //Grid
-    boolean grid;
+    boolean grid,layer;
 
     private static final int SELECT_PHOTO = 100;
 
@@ -203,6 +203,7 @@ public class CameraFragment extends Fragment {
 
         //Grid
         grid=false;
+        layer=true;
 
         //Crop
         mView = (TouchView) v.findViewById(R.id.touchView);
@@ -570,6 +571,7 @@ public class CameraFragment extends Fragment {
 
             // get an image from the camera
             mCamera.takePicture(null, null, mPicture);
+            layer=false;
 
         }
     };
@@ -642,43 +644,53 @@ public class CameraFragment extends Fragment {
             //PublishActivity.openWithPhotoUri(getActivity(), Uri.fromFile(photoPath));
 
             try {
-            File miDirs = new File(
-                    Environment.getExternalStorageDirectory() + "/myphotos");
-            if (!miDirs.exists())
-                miDirs.mkdirs();
-
-            final Calendar c = Calendar.getInstance();
-            String new_Date = c.get(Calendar.DAY_OF_MONTH) + "-"
-                    + ((c.get(Calendar.MONTH)) + 1) + "-"
-                    + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR)
-                    + "-" + c.get(Calendar.MINUTE) + "-"
-                    + c.get(Calendar.SECOND);
-
-            String imageFilePath = String.format(
-                    Environment.getExternalStorageDirectory() + "/myphotos"
-                            + "/%s.jpg", "te1t(" + new_Date + ")");
-
-            Uri selectedImage = Uri.parse(imageFilePath);
-
-            Bitmap bitmap=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
-            //create a file to write bitmap data
-            File f = new File(imageFilePath);
-                f.createNewFile();
-
-//Convert bitmap to byte array
-            //Bitmap bitmap = your bitmap;
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-            byte[] bitmapdata = bos.toByteArray();
-
-//write the bytes in file
-            FileOutputStream fos = new FileOutputStream(f);
-            fos.write(bitmapdata);
-            fos.flush();
-            fos.close();
 
 
                 if (verificaInstagram()) {
+
+                    File miDirs = new File(
+                            Environment.getExternalStorageDirectory() + "/myphotos");
+                    if (!miDirs.exists())
+                        miDirs.mkdirs();
+
+                    final Calendar c = Calendar.getInstance();
+                    String new_Date = c.get(Calendar.DAY_OF_MONTH) + "-"
+                            + ((c.get(Calendar.MONTH)) + 1) + "-"
+                            + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR)
+                            + "-" + c.get(Calendar.MINUTE) + "-"
+                            + c.get(Calendar.SECOND);
+
+                    String imageFilePath = String.format(
+                            Environment.getExternalStorageDirectory() + "/myphotos"
+                                    + "/%s.jpg", "te1t(" + new_Date + ")");
+
+                    Uri selectedImage = Uri.parse(imageFilePath);
+
+                    Bitmap bitmap = null;
+                    if(layer==true){
+                        bitmap =((BitmapDrawable)((LayerDrawable)cameraView.getDrawable()).getDrawable(0)).getBitmap();
+
+                    }else{
+                        bitmap=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
+
+                    }
+
+                    //create a file to write bitmap data
+                    File f = new File(imageFilePath);
+                    f.createNewFile();
+
+                    //Convert bitmap to byte array
+                    //Bitmap bitmap = your bitmap;
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                    byte[] bitmapdata = bos.toByteArray();
+
+                    //write the bytes in file
+                    FileOutputStream fos = new FileOutputStream(f);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+
 
                     Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
                     shareIntent.setType("image/*");
@@ -707,17 +719,9 @@ public class CameraFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-
-
-
-
-
-
-
         }
     };
+
 
     private boolean verificaInstagram(){
         boolean installed = false;
@@ -924,6 +928,7 @@ public class CameraFragment extends Fragment {
 
             //NoFilter
             cameraView.setImageBitmap(originalbmp);
+            layer=false;
         }
     };
 
@@ -933,12 +938,10 @@ public class CameraFragment extends Fragment {
         public void onClick(View v) {
 
             //Filter
-            //bitmapImage=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
             bitmapImage=originalbmp;
             Bitmap newPhoto=invertImage(bitmapImage);
             cameraView.setImageBitmap(newPhoto);
-
-
+            layer=false;
         }
     };
 
@@ -947,10 +950,10 @@ public class CameraFragment extends Fragment {
         public void onClick(View v) {
 
             //Second Filter
-            //bitmapImage=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
             bitmapImage=originalbmp;
             LayerDrawable newPhoto2=dirtyImage(bitmapImage);
             cameraView.setImageDrawable(newPhoto2);
+            layer=true;
         }
     };
 
@@ -958,11 +961,11 @@ public class CameraFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            //Filter
-            //bitmapImage=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
+            //Third Filter
             bitmapImage=originalbmp;
             Bitmap newPhoto=BlackWhiteImage(bitmapImage);
             cameraView.setImageBitmap(newPhoto);
+            layer=false;
         }
     };
 
@@ -1294,7 +1297,7 @@ public class CameraFragment extends Fragment {
                 p.set("jpeg-quality", 100);
                 p.set("rotation", 90);
                 p.setPictureFormat(PixelFormat.JPEG);
-                p.setPreviewSize(size.width,size.height);
+                p.setPreviewSize(size.width, size.height);
                 //p.setPreviewSize(preview.getHeight(), preview.getWidth());// here w h are reversed
                 mCamera1.setParameters(p);
 
