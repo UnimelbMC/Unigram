@@ -6,8 +6,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import java.io.IOException;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.network.Bluetooth;
 
 
 /**
@@ -27,6 +31,8 @@ public class DiscoverFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    Bluetooth bluetooth;
 
     private OnFragmentInteractionListener mListener;
 
@@ -68,9 +74,35 @@ public class DiscoverFragment extends Fragment {
         // remove loading animation
         Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
+        View v=inflater.inflate(R.layout.fragment_discover, container, false);
+        bluetooth = new Bluetooth();
+        bluetooth.run();
+
+
+
+        Button send= (Button) v.findViewById(R.id.sendBlutoothButton);
+        send.setOnClickListener(sendBluetoothListener);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_discover, container, false);
     }
+
+    private View.OnClickListener sendBluetoothListener= new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            try {
+
+                bluetooth.write("hola");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    };
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

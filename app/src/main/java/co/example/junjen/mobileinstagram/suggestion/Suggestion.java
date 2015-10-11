@@ -36,4 +36,6 @@ public class Suggestion {
     public Map<String,String> getClassifiedPossibleUserSuggestion() {
         return classifiedPossibleSuggestions;
     }
+
+
 }

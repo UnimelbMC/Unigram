@@ -54,7 +54,7 @@ public class Network {
                 thisUserData = instagram.getCurrentUserInfo().getData();
                 Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-//                Suggestion suggestion = new Suggestion("self");
+                Suggestion suggestion = new Suggestion("self");
                 return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken failed " + e.getMessage());
