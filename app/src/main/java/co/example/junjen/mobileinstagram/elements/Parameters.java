@@ -56,6 +56,7 @@ public class Parameters {
     // ActivityFollowing parameters
     public static final int default_recentPostCount = 10;
     public static final int activity_postIconsToShow = 3;
+    public static final int activityFollowingToLoad = 10;
 
     // Like feedback animation parameters
     public static final int likeAppearDuration = 100;

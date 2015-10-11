@@ -10,6 +10,8 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 
 /**
  * Created by junjen on 11/10/2015.
+ *
+ * Stores following activity data.
  */
 public class ActivityFollowing {
 
