@@ -1,5 +1,6 @@
 package co.example.junjen.mobileinstagram;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -80,6 +81,7 @@ public class CameraFragment extends Fragment {
 
     private static final int STATE_TAKE_PHOTO = 0;
     private static final int STATE_SETUP_PHOTO = 1;
+
     private int currentState;
     ViewSwitcher vLowerPanel,vUpperPanel;
 
@@ -99,10 +101,9 @@ public class CameraFragment extends Fragment {
     boolean grid,layer;
 
     private static final int SELECT_PHOTO = 100;
+    private static final int PIC_CROP = 1;
+    private String intent;
 
-    //Crop
-    private TouchView mView;
-    private Rect rec = new Rect();
 
     //Layouts
     LinearLayout seekLayout;
@@ -205,8 +206,6 @@ public class CameraFragment extends Fragment {
         grid=false;
         layer=true;
 
-        //Crop
-        mView = (TouchView) v.findViewById(R.id.touchView);
 
         ImageButton cropButton=(ImageButton) v.findViewById(R.id.cropButton);
         cropButton.setOnClickListener(cropButtonListener);
@@ -230,6 +229,7 @@ public class CameraFragment extends Fragment {
         confirmationLayout=(LinearLayout) v.findViewById(R.id.confirmationLayout);
 
         optionCamera="";
+        intent="";
 
         ImageButton acceptButton=(ImageButton) v.findViewById(R.id.acceptButton);
         acceptButton.setOnClickListener(acceptButtonListener);
@@ -591,20 +591,53 @@ public class CameraFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            mView.setVisibility(View.VISIBLE);
-            filterLayout.setVisibility(View.INVISIBLE);
 
+            Bitmap bitmap=null;
 
-            rec.set((int) ((double) cameraView.getWidth() * .85),
-                    (int) ((double) cameraView.getHeight() * .10),
-                    (int) ((double) cameraView.getWidth() * .85),// + mButtonDrawable.getMinimumWidth(),
-                    (int) ((double) cameraView.getHeight() * .70));// + mButtonDrawable.getMinimumHeight());
-            mView.setRec(rec);
-            optionCamera="crop";
-            confirmationLayout.setVisibility(View.VISIBLE);
+            if(layer==true){
+                bitmap =((BitmapDrawable)((LayerDrawable)cameraView.getDrawable()).getDrawable(0)).getBitmap();
+
+            }else{
+                bitmap=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
+
+            }
+
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
+            performCrop(Uri.parse(path));
 
         }
     };
+
+    private void performCrop(Uri picUri) {
+        try {
+
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            // indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+            // set crop properties
+            cropIntent.putExtra("crop", "true");
+            // indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            // indicate output X and Y
+            cropIntent.putExtra("outputX", 128);
+            cropIntent.putExtra("outputY", 128);
+            // retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            // start the activity - we handle returning in onActivityResult
+            intent = "cropPhoto";
+            startActivityForResult(cropIntent, PIC_CROP);
+        }
+        // respond to users whose devices do not support the crop action
+        catch (ActivityNotFoundException anfe) {
+            // display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
     private View.OnClickListener brightnessButtonListener= new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -819,37 +852,7 @@ public class CameraFragment extends Fragment {
             filterLayout.setVisibility(View.VISIBLE);
 
             switch (optionCamera){
-                case "crop":
-                    final int[] left = new int[1];
-                    final int[] top = new int[1];
-                    final int[] right = new int[1];
-                    final int[] bottom = new int[1];
 
-                    Thread tGetPic = new Thread( new Runnable() {
-                        public void run() {
-                            Double[] ratio = getRatio();
-                            left[0] = (int) (ratio[1]*(double)mView.getmLeftTopPosX());
-                            // 0 is height
-                            top[0] = (int) (ratio[0]*(double)mView.getmLeftTopPosY());
-
-                            right[0] = (int)(ratio[1]*(double)mView.getmRightBottomPosX());
-
-                            bottom[0] = (int)(ratio[0]*(double)mView.getmRightBottomPosY());
-                        }
-                    });
-                    tGetPic.start();
-
-                    try {
-                        tGetPic.join();
-                        cameraView.setImageBitmap(mPreview.getPic(left[0], top[0], right[0], bottom[0]));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    mView.setVisibility(View.INVISIBLE);
-
-
-                    break;
                 case "brightness":
 
                     originalbmp = ((BitmapDrawable)cameraView.getDrawable()).getBitmap();
@@ -887,11 +890,7 @@ public class CameraFragment extends Fragment {
             filterLayout.setVisibility(View.VISIBLE);
 
             switch (optionCamera){
-                case "crop":
 
-                    mView.setVisibility(View.INVISIBLE);
-
-                    break;
                 case "brightness":
 
                     cameraView.setImageBitmap(originalbmpfiltered);
@@ -977,6 +976,8 @@ public class CameraFragment extends Fragment {
 
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
+            layer=false;
+            intent="selectPhoto";
             startActivityForResult(photoPickerIntent, SELECT_PHOTO);
 
         }
@@ -986,7 +987,7 @@ public class CameraFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-        if (resultCode == getActivity().RESULT_OK && imageReturnedIntent != null) {
+        if (resultCode == getActivity().RESULT_OK && intent.equals("selectPhoto")) {
             // Let's read picked image data - its URI
             Uri pickedImage = imageReturnedIntent.getData();
             // Let's read picked image path using content resolver
@@ -1005,6 +1006,18 @@ public class CameraFragment extends Fragment {
             // At the end remember to close the cursor or you will end with the RuntimeException!
             cursor.close();
 
+        }
+
+        if (intent.equals("cropPhoto")) {
+
+            if (imageReturnedIntent != null) {
+                // get the returned data
+                Bundle extras = imageReturnedIntent.getExtras();
+                // get the cropped bitmap
+                Bitmap selectedBitmap = extras.getParcelable("data");
+                originalbmp=selectedBitmap;
+                cameraView.setImageBitmap(selectedBitmap);
+            }
         }
 
 
@@ -1264,7 +1277,6 @@ public class CameraFragment extends Fragment {
         private SurfaceHolder mHolder;
         private Camera mCamera1;
         private Camera.Parameters mParameters;
-        private byte[] mBuffer;
         private static final String TAG = "MyCamera";
         private Paint paint = new Paint();
 
@@ -1278,7 +1290,6 @@ public class CameraFragment extends Fragment {
             // underlying surface is created and destroyed.
             mHolder = getHolder();
             mHolder.addCallback(this);
-            updateBufferSize();
             // deprecated setting, but required on Android versions prior to 3.0
             mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
@@ -1303,7 +1314,7 @@ public class CameraFragment extends Fragment {
 
                 mCamera1.setDisplayOrientation(90);
                 mCamera1.setPreviewDisplay(holder);
-                //updateBufferSize();
+
                 mCamera1.startPreview();
 
 
@@ -1343,35 +1354,7 @@ public class CameraFragment extends Fragment {
         public Camera.Parameters getCameraParameters(){
             return mCamera1.getParameters();
         }
-        private void updateBufferSize() {
-            mBuffer = null;
-            System.gc();
-            // prepare a buffer for copying preview data to
-            int h = mCamera1.getParameters().getPreviewSize().height;
-            int w = mCamera1.getParameters().getPreviewSize().width;
-            int bitsPerPixel = ImageFormat.getBitsPerPixel(mCamera1.getParameters().getPreviewFormat());
-            mBuffer = new byte[w * h * bitsPerPixel / 8];
-            //Log.i("surfaceCreated", "buffer length is " + mBuffer.length + " bytes");
-        }
 
-        public Bitmap getPic(int x, int y, int width, int height) {
-            System.gc();
-            Bitmap b = null;
-            Camera.Size s = mParameters.getPreviewSize();
-            YuvImage yuvimage = new YuvImage(mBuffer, ImageFormat.NV21, s.width, s.height, null);
-            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-            yuvimage.compressToJpeg(new Rect(x, y, width, height), 100, outStream); // make JPG
-            b = BitmapFactory.decodeByteArray(outStream.toByteArray(), 0, outStream.size()); // decode JPG
-            if (b != null) {
-                //Log.i(TAG, "getPic() WxH:" + b.getWidth() + "x" + b.getHeight());
-            } else {
-                //Log.i(TAG, "getPic(): Bitmap is null..");
-            }
-            yuvimage = null;
-            outStream = null;
-            System.gc();
-            return b;
-        }
 
         @Override
         protected void onDraw(Canvas canvas) {
