@@ -53,6 +53,10 @@ public class Parameters {
     public static final int loadUserThreshold = 100;
     public static final int maxLikes = 300;
 
+    // ActivityFollowing parameters
+    public static final int default_recentPostCount = 10;
+    public static final int activity_postIconsToShow = 3;
+
     // Like feedback animation parameters
     public static final int likeAppearDuration = 100;
     public static final int likeStayDuration = 800;
@@ -78,10 +82,6 @@ public class Parameters {
     // Image Links
     public static final String default_loginUserImageLink = "0";
     public static final String default_emptyUserImageLink = "1";
-
-    // Navigation Bar parameters
-    public static final int navButtonHeight = 90;
-    public static final int navButtonWidth = 128;
 
     // Application helpers
     public static Context MainActivityContext = null;
