@@ -92,6 +92,8 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         // initialise ProfileFragment if not created yet
         if(profileFragment == null){
 
+            Log.w("like", "profileFragment: " + userId);
+
             if(userId.startsWith(Parameters.default_userId)){
                 String[] parts = userId.split(Parameters.default_userId);
                 if(parts.length > 0){
@@ -100,17 +102,32 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     profile = new Profile(Parameters.default_username);
                 }
             } else if (!userId.equals(Parameters.loginUserId)){
-                profile = NetParams.NETWORK.getUserProfileFeed(userId);
-            } else {
+                Log.w("like", "profile creation through NETWORK");
+                profile = NetParams.NETWORK.getUserProfileInfo(userId);
+
+                if (profile == null){
+                    // this might mean the profile is private, hence search for user info only
+                    profile = NetParams.NETWORK.searchUserById(userId);
+
+                    if (profile == null) {
+                        // at this point it means current user has restricted access to this profile
+                        profileFragment = (ExpandableScrollView)
+                                inflater.inflate(R.layout.restricted_profile, container, false);
+                        return profileFragment;
+                    }
+                }
+            } else if (userId.equals(Parameters.loginUserId)){
                 profile = Parameters.loginProfile;
             }
 
             setTitle();
 
+            Log.w("like", "profile: " + profile.getUsername().getUserId());
+
             profileFragment = profile.getProfileView(inflater);
             profileFragment.setScrollViewListener(this);
 
-            // add layout listener to add content if default screen is not filled
+            // add layout listener to add post icons if default screen is not filled
             ViewTreeObserver vto = profileFragment.getViewTreeObserver();
             final int screenHeight = Parameters.NavigationViewHeight;
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -121,8 +138,6 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     int[] location = new int[2];
                     profileFragment.getLocationOnScreen(location);
                     int height = location[1] + profileFragment.getChildAt(0).getHeight();
-
-                    Log.w("test", "profile: " + Integer.toString(height) + " (" + Integer.toString(screenHeight) + ")");
 
                     if (height <= screenHeight) {
                         LayoutInflater inflater = LayoutInflater.from(getContext());

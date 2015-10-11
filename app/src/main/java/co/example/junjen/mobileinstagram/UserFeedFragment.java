@@ -20,6 +20,7 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
+import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 /**
@@ -50,6 +51,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
     private int refreshPoint;
     private boolean refreshPost = false;
     private boolean initialised = false;
+    private ArrayList<Post> allPosts = new ArrayList<>();
 
     // keep track of timeSince last post generated to generate new set of posts
     private String maxPostId;
@@ -107,7 +109,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
 
             setTitle();
 
-            // add layout listener to add content if default screen is not filled
+            // add layout listener to add user feed posts if default screen is not filled
             fillDefaultScreen();
 
             // add refresh bar at the top of user feed
@@ -133,6 +135,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
         return userFeedFragment;
     }
 
+
     // add layout listener to add content if default screen is not filled
     private void fillDefaultScreen(){
         ViewTreeObserver vto = userFeedFragment.getViewTreeObserver();
@@ -145,8 +148,6 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
                 int[] location = new int[2];
                 userFeedFragment.getLocationOnScreen(location);
                 int height = location[1] + userFeedFragment.getChildAt(0).getHeight();
-
-                Log.w("test", "userfeed: " + Integer.toString(height) + " (" + Integer.toString(screenHeight) + ")");
 
                 if (height <= screenHeight) {
                     loadUserFeedPosts();
@@ -251,10 +252,12 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
             userFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
             int uFSize = userFeed.size();
             Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
-            //Posts earlier than last
-            maxPostId = userFeed.get(uFSize - 1).getPostId();
-            //Posts after first
-            minPostId = userFeed.get(0).getPostId();
+            if (userFeed.size() > 0){
+                //Posts earlier than last
+                maxPostId = userFeed.get(uFSize - 1).getPostId();
+                //Posts after first
+                minPostId = userFeed.get(0).getPostId();
+            }
         } else {
             userFeed = new ArrayList<>();
             for (i = 0; i < Parameters.postsToLoad; i++) {
@@ -266,13 +269,18 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
 
             // if post is from dummyData
             if (Parameters.dummyData) {
-                TextView timeSinceText = (TextView) postView.findViewById(R.id.post_header_time_since);
+                TextView timeSinceText = (TextView)
+                        postView.findViewById(R.id.post_header_time_since);
                 timeSinceText.setText(Integer.toString(postBottomCount) + "s");
             }
-            userFeedView.addView(postView, postIndex + 1);
+            if(postView != null){
+                userFeedView.addView(postView, postIndex + 1);
+            }
             postBottomCount++;
             postIndex++;
         }
+        allPosts.addAll(userFeed);
+        updateTimeSince();
     }
 
     // get new userfeed posts
@@ -288,13 +296,15 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
         ArrayList<Post> userFeed;
 
         if (!Parameters.dummyData) {
-            userFeed = NetParams.NETWORK.getUserFeed(null, maxPostId);
+            userFeed = NetParams.NETWORK.getUserFeed(minPostId, null);
             int uFSize = userFeed.size();
             Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
-            //Posts earlier than last
-            maxPostId = userFeed.get(uFSize - 1).getPostId();
-            //Posts after first
-            minPostId = userFeed.get(0).getPostId();
+            if (userFeed.size() > 0){
+                //Posts earlier than last
+                maxPostId = userFeed.get(uFSize - 1).getPostId();
+                //Posts after first
+                minPostId = userFeed.get(0).getPostId();
+            }
         } else {
             userFeed = new ArrayList<>();
             for (i = 0; i < Parameters.postsToLoad; i++) {
@@ -309,13 +319,32 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
 
             // if post is from dummyData
             if (Parameters.dummyData) {
-                TextView timeSinceText = (TextView) postView.findViewById(R.id.post_header_time_since);
+                TextView timeSinceText = (TextView)
+                        postView.findViewById(R.id.post_header_time_since);
                 timeSinceText.setText(Integer.toString(-postTopCount + i) + "s");
             }
-            userFeedView.addView(postView, i + 1);
+            if(postView != null){
+                userFeedView.addView(postView, i + 1);
+            }
             i++;
         }
         postIndex += size;
+        allPosts.addAll(0, userFeed);
+        updateTimeSince();
+    }
+
+    // update time since posted of all posts
+    private void updateTimeSince(){
+        for (Post post : allPosts){
+            TimeSince timeSince = post.getTimeSince();
+
+            // update post time since
+            timeSince.formatTime(timeSince.getTimeSince());
+
+            // display updated time since
+            ((TextView) post.getPostView().findViewById(R.id.post_header_time_since)).
+                    setText(timeSince.getTimeSinceDisplay());
+        }
     }
 
     // set title of user feed fragment

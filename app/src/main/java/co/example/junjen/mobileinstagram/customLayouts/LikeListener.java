@@ -17,6 +17,8 @@ import co.example.junjen.mobileinstagram.elements.Post;
 
 /**
  * Created by junjen on 9/10/2015.
+ *
+ * Listener for post images to detect double tap likes.
  */
 
 public class LikeListener extends GestureDetector.SimpleOnGestureListener {

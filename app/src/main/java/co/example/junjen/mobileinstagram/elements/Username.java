@@ -2,6 +2,7 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.text.Html;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.View;
 
 import java.io.Serializable;
@@ -41,11 +42,11 @@ public class Username implements Serializable{
                 Parameters.NavigationBarActivity.
                         findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
 
-                Profile profile = null;
-
                 // display profile of username
                 Parameters.NavigationBarActivity.
                         showFragment(ProfileFragment.newInstance(userId, true));
+
+                Log.w("like",userId);
             }
         };
         return onClickListener;

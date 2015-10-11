@@ -134,7 +134,6 @@ public class CommentsFragment extends Fragment {
             // load field for adding a comment
             commentToSend = (EditText) commentsFragment.findViewById(R.id.comment_send_text);
 
-
             commentsScrollView = (ScrollView) commentsFragment.findViewById(R.id.comments_scroll_view);
             ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
@@ -151,19 +150,15 @@ public class CommentsFragment extends Fragment {
                     TextView caption = (TextView) commentElement.findViewById(R.id.comment_text);
                     TextView timeSince = (TextView) commentElement.findViewById(R.id.comment_time_since);
 
-                    if (this.username.getUsername().equals(Parameters.default_username)) {
-                        username.setText("");   // remove default text
-                        stringComponents.add(this.username.getUsernameLink());
-                        StringFactory.stringBuilder(username, stringComponents);
-                        stringComponents.clear();
-                        timeSince.setText(this.timeSince.getTimeSinceDisplay());
-                    } else {
+                    Image.setImage(userImage, this.userImage);
+                    username.setText("");   // remove default text
+                    stringComponents.add(this.username.getUsernameLink());
+                    StringFactory.stringBuilder(username, stringComponents);
+                    stringComponents.clear();
+                    caption.setText(this.caption);
+                    timeSince.setText(this.timeSince.getTimeSinceDisplay());
 
 
-                        // TODO: get Data Object
-
-
-                    }
                 } else {
                     commentsCaption.setVisibility(View.GONE);
                 }
