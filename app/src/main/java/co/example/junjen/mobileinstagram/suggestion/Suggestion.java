@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Tou on 10/11/2015.
@@ -16,8 +17,8 @@ public class Suggestion {
     // Classification for a suggestion
     private Classification classification;
 
-    // Classified possible users with ID as the key and class as the value
-    private HashMap classifiedPossibleSuggestions;
+    // Classified possible users with ID and class (Suggested or Not Suggested)
+    private Map<String,String> classifiedPossibleSuggestions;
 
     // Constructor
     public Suggestion(String userId){
@@ -32,7 +33,7 @@ public class Suggestion {
     * @params
     * @returns
     * */
-    public HashMap getClassifiedPossibleUserSuggestion() {
+    public Map<String,String> getClassifiedPossibleUserSuggestion() {
         return classifiedPossibleSuggestions;
     }
 }

@@ -13,16 +13,16 @@ import co.example.junjen.mobileinstagram.network.NetParams;
 
 /**
  * Created by Tou on 10/11/2015.
- *  SuggHelper helps the classification class to retrieve possible suggested users and define
- *  which users are suggested or not, so that classification can build a model and label unlabeled
- *  possible users
+ *  ClassificationHelper helps the classification class to retrieve possible suggested users and
+ *  define which users are suggested or not, so that classification can build a model and label
+ *  unlabeled possible users
  *
  *  This class will analyze two lists:
  *      - Suggested users are defined as users that self user is following
  *      - The other Not Suggested users which are users that self is followed by but not following
  *
  */
-public class SuggHelper {
+public class ClassificationHelper {
 
     // Instagram object to realize
     Instagram instagram;
@@ -34,7 +34,7 @@ public class SuggHelper {
 
     // Possible users to be classified ID list
     private ArrayList<String> possibleUsersId;
-    //User to be perform a SuggHelper
+    //User to be perform a ClassificationHelper
     private String userId;
 
     // Fetch a max amount of class suggested users
@@ -44,8 +44,8 @@ public class SuggHelper {
     // Number of possible users to be suggested per suggested user
     private static final int NUM_POSS_USR_PER_SUGG_USR = 2;
 
-    // SuggHelper for a user with userId
-    public SuggHelper(String userId){
+    // ClassificationHelper for a user with userId
+    public ClassificationHelper(String userId){
         this.userId = userId;
         this.instagram = new Instagram(NetParams.ACCESS_TOKEN);
         this.suggestedUsersIdList = fetchFollowsList(this.userId, MAX_SUGG_USR_TO_FETCH);;
