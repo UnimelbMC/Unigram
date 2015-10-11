@@ -28,7 +28,7 @@ public class TopBottomExpandableScrollView extends ExpandableScrollView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setScrollViewListener(TopScrollViewListener topScrollViewListener) {
+    public void setTopScrollViewListener(TopScrollViewListener topScrollViewListener) {
         this.topScrollViewListener = topScrollViewListener;
     }
 
