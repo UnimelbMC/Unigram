@@ -15,7 +15,14 @@ import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.entity.users.feed.UserFeed;
 import org.jinstagram.exceptions.InstagramException;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
@@ -51,7 +58,7 @@ public class Network {
                 thisUserData = instagram.getCurrentUserInfo().getData();
                 Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-                Suggestion suggestion = new Suggestion("self");
+              //  Suggestion suggestion = new Suggestion("self");
                 return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken faileddddddddddd " + e.getMessage());
@@ -84,6 +91,8 @@ public class Network {
         return new ArrayList<Post>();
     }
     public Profile getUserProfileInfo(String userId){
+        //TEST
+        getActivityFeedFollowing(null, null);
         return getUserProfileInfo(userId, null, null);
     }
 
@@ -128,12 +137,28 @@ public class Network {
             return null;
         }
     }
-
-    // get a profile's feed
     public ArrayList<Post> getProfileFeed(String userId, String minId, String maxId){
+        return getProfileFeed(userId, minId, maxId, null, null);
+    }
+    public ArrayList<Post> getProfileForActivityFeed(String userId, long maxDate, long minDate){
+
+            Date max = null;
+            Date min = null;
+            if(maxDate != 0){
+                max = new java.util.Date(maxDate*1000);
+            }
+            if(minDate!=0){
+                min = new java.util.Date(maxDate*1000);
+            }
+            return getProfileFeed(userId,null,null,max,min);
+
+    }
+    // get a profile's feed
+    public ArrayList<Post> getProfileFeed(String userId, String minId, String maxId, Date minDate,Date maxDate){
         try {
+
             MediaFeed mediaFeed = instagram.getRecentMediaFeed(
-                    userId, MAX_USER_FEED_POSTS,minId,maxId,null,null);
+                    userId, MAX_USER_FEED_POSTS,minId,maxId,maxDate,minDate);
             List<MediaFeedData> mediaFeeds = mediaFeed.getData();
             return getPostsList(mediaFeeds, true);
         }catch(InstagramException e) {
@@ -335,16 +360,61 @@ public class Network {
     }
 
     //Build list of activity objects for activity feed
-    public ArrayList<ActivityFollowing>getActivityFeedFollowing(){
+    public ArrayList<ActivityFollowing> getActivityFeedFollowing(String minTime,String maxTime){
         ArrayList<User> following = getFollowing();
+        ArrayList<Post> recentPosts = new ArrayList<>();
         ArrayList<ActivityFollowing> actFollowing = new ArrayList<>();
-        for (User followee :following){
-            String username = followee.getUsername().getUsername();
+        //MIN is later than
+        long week = 10080*60; // seconds
+        long month  = 43800 * 60; //seconds
+        long now = System.currentTimeMillis() / 1000L;
+        long minTimeSec = now - month;
+        for (User followee : following){
             String userId = followee.getUsername().getUserId();
-            String profUrl = followee.getUserImage().getImageString();
-           // ArrayList<Post> recentPost = getProfileFeed(userId,null,null);
-            //ActivityFollowing(User user, int recentPostCount, ArrayList<Post> postIcons)
+            ArrayList<Post> userPost = getProfileForActivityFeed(userId, minTimeSec, 0);
+            recentPosts.addAll(userPost);
         }
+        Collections.sort(recentPosts, new Comparator<Post>() {
+            @Override
+            public int compare(Post p1, Post p2) {
+                int t1 = Integer.parseInt(p1.getTimeSince().getTimeSince());
+                int t2 = Integer.parseInt(p2.getTimeSince().getTimeSince());
+                //   return t1-t2; // Ascending
+                return t2 - t1; // Descending
+            }
+
+        });
+        int rpSize = recentPosts.size();
+        ArrayList<Post> tmpPost = new ArrayList<>();
+        for (int i = 0; i <rpSize ; i++) {
+            Post p1;
+            String u1,u2;
+            p1 = recentPosts.get(i);
+
+            if (i != (rpSize - 1)) {
+                u1 = p1.getUsername().getUsername();
+                u2 = recentPosts.get(i + 1).getUsername().getUsername();
+
+                tmpPost.add(p1);
+                if (!u1.equalsIgnoreCase(u2)) {
+                    //Push the ActivityFollowing object into result list. Then Clear Posts list.
+                    ActivityFollowing aF = new ActivityFollowing(tmpPost.size(),tmpPost);
+                    actFollowing.add(aF);
+                    tmpPost= new ArrayList<>();
+                    continue;
+                }
+            }else{
+                //Special case for last post in arraylist
+                tmpPost.add(p1);
+                ActivityFollowing aF = new ActivityFollowing(tmpPost.size(),tmpPost);
+                actFollowing.add(aF);
+            }
+
+        }
+        Log.v("NETWORK",Integer.toString(actFollowing.size()));
         return actFollowing;
     }
+
 }
+
+

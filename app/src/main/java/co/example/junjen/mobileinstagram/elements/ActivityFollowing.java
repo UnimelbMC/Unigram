@@ -13,14 +13,12 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
  */
 public class ActivityFollowing {
 
-    private User user;
     private int recentPostCount;
     private ArrayList<Post> postIcons;
 
     private View activityView;
 
-    public ActivityFollowing(User user){
-        this.user = user;
+    public ActivityFollowing(){
         this.recentPostCount = Parameters.default_recentPostCount;
 
         this.postIcons = new ArrayList<>();
@@ -34,18 +32,13 @@ public class ActivityFollowing {
         }
     }
 
-    public ActivityFollowing(User user, int recentPostCount, ArrayList<Post> postIcons){
-        this.user = user;
+    public ActivityFollowing( int recentPostCount, ArrayList<Post> postIcons){
         this.recentPostCount = recentPostCount;
         this.postIcons = postIcons;
     }
 
     public View buildActivityView(LayoutInflater inflater){
         return null;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public int getRecentPostCount() {
