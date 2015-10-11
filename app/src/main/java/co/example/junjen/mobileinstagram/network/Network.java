@@ -18,6 +18,7 @@ import org.jinstagram.exceptions.InstagramException;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
 import co.example.junjen.mobileinstagram.elements.Comment;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.User;
@@ -334,14 +335,16 @@ public class Network {
     }
 
     //Build list of activity objects for activity feed
-    public void getActivityFeedFollowing(){
+    public ArrayList<ActivityFollowing>getActivityFeedFollowing(){
         ArrayList<User> following = getFollowing();
-
+        ArrayList<ActivityFollowing> actFollowing = new ArrayList<>();
         for (User followee :following){
             String username = followee.getUsername().getUsername();
             String userId = followee.getUsername().getUserId();
             String profUrl = followee.getUserImage().getImageString();
-            ArrayList<Post> recentPost = getProfileFeed(userId,null,null);
+           // ArrayList<Post> recentPost = getProfileFeed(userId,null,null);
+            //ActivityFollowing(User user, int recentPostCount, ArrayList<Post> postIcons)
         }
+        return actFollowing;
     }
 }
