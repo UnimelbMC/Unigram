@@ -11,11 +11,13 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 
 /**
  * Created by junjen on 1/10/2015.
+ *
+ * Holds parameters used in layout generation
  */
 public class Parameters {
 
     // Login parameters
-    public static boolean dummyData = true;
+    public static boolean dummyData = false;
     public static final String login_key = "@thisIsMyLogin";
     public static String loginUserId = null;
     public static String loginUsername = null;
@@ -58,11 +60,19 @@ public class Parameters {
     // Activity Feed parameters
     public static final String activityFollowing_key = "following";
     public static final String activityYou_key = "you";
+    public static final String initialActivityFeed = activityYou_key;
 
     // ActivityFollowingFragment parameters
     public static final int default_recentPostCount = 10;
-    public static final int activity_postIconsToShow = 3;
+    public static final int activityFollowingUsersToGet = 50;
+    public static final int activityFollowingPostsToGet = 3;
     public static final int activityFollowingToLoad = 10;
+    public static final int activityFollowingIconsPerRow = 6;
+    public static final int activityFollowingRowsToLoad = 1;
+
+    // ActivityYouFragment parameters
+    public static final int activityYouIconsPerRow = 3;
+    public static final int activityYouRowsToLoad = 5;
 
     // Like feedback animation parameters
     public static final int likeAppearDuration = 100;
@@ -98,6 +108,7 @@ public class Parameters {
     public static final int urlCountMax = 2;
     public static final int logoutBrowserCountMax = 3;
     public static int NavigationViewHeight = 0;
+    public static int loadingAnimationDelay = 0;
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
     public static int userFeedFragmentTop;

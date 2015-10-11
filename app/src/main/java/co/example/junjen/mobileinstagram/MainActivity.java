@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         Log.w("test", "main activity created");
 
         // get access token file path
-        NetParams.ACCESS_TOKEN_FILEPATH = getFilesDir().getPath().toString() + NetParams.ACCESS_TOKEN_FILENAME;
+        NetParams.ACCESS_TOKEN_FILEPATH =
+                getFilesDir().getPath().toString() + NetParams.ACCESS_TOKEN_FILENAME;
 
         //Set permission for library to access the internet
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -130,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
                 setContentView(mainActivityView);
 
+                checkToken();
+
                 // update details on login screen
                 updateLoginScreen();
 
@@ -182,8 +185,8 @@ public class MainActivity extends AppCompatActivity {
         //String authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
         // Getting the Access Token
         Verifier verifier = new Verifier(code);
-        NetParams.ACCESS_TOKEN = service.getAccessToken(EMPTY_TOKEN, verifier);
-        Log.v("TEST_ACCESS", NetParams.ACCESS_TOKEN.toString());
+//        NetParams.ACCESS_TOKEN = service.getAccessToken(EMPTY_TOKEN, verifier);
+//        Log.v("TEST_ACCESS", NetParams.ACCESS_TOKEN.toString());
 
         // writing ACCESS_TOKEN to access token file
         try {
@@ -193,8 +196,9 @@ public class MainActivity extends AppCompatActivity {
             }
             FileOutputStream fos = new FileOutputStream(accessTokenFile);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(NetParams.ACCESS_TOKEN);
+            oos.writeObject(service.getAccessToken(EMPTY_TOKEN, verifier));
             oos.close();
+            Log.w("test", "written token to file");
         } catch (FileNotFoundException e) {
             Log.w("test","file not found");
         } catch (IOException e){
@@ -229,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
                 FileInputStream fis = new FileInputStream(accessTokenFile);
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 NetParams.ACCESS_TOKEN = (Token) ois.readObject();
+                Log.v("TEST_ACCESS", NetParams.ACCESS_TOKEN.toString());
                 Log.w("test", "token exists");
             }
         } catch (Exception e){
