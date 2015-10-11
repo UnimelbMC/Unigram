@@ -20,8 +20,9 @@ public class Bluetooth {
     private OutputStream outputStream;
     private InputStream inStream;
 
-    private void init() throws IOException {
+    private void Bluetooth() {
         BluetoothAdapter blueAdapter = BluetoothAdapter.getDefaultAdapter();
+        try {
         if (blueAdapter != null) {
             if (blueAdapter.isEnabled()) {
                 Set<BluetoothDevice> bondedDevices = blueAdapter.getBondedDevices();
@@ -30,7 +31,8 @@ public class Bluetooth {
                     BluetoothDevice[] devices = (BluetoothDevice[]) bondedDevices.toArray();
                     BluetoothDevice device = devices[0];
                     ParcelUuid[] uuids = device.getUuids();
-                    BluetoothSocket socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+                    BluetoothSocket socket = null;
+                    socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
                     socket.connect();
                     outputStream = socket.getOutputStream();
                     inStream = socket.getInputStream();
@@ -40,6 +42,9 @@ public class Bluetooth {
             }else{
                 Log.e("error", "Bluetooth is disabled.");
             }
+        }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -61,8 +66,5 @@ public class Bluetooth {
             }
         }
     }
-
-
-
 
 }
