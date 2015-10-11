@@ -46,9 +46,6 @@ public class Bluetooth {
         }catch (IOException e){
             e.printStackTrace();
         }
-
-
-
     }
 
     public void write(String s) throws IOException {
@@ -71,8 +68,5 @@ public class Bluetooth {
             }
         }
     }
-
-
-
 
 }
