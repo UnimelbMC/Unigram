@@ -35,37 +35,23 @@
             <RadioButton
                 android:id="@+id/userfeed_button"
                 style="@style/navbar_button"
-                android:drawableTop="@drawable/userfeed_selector"
-                android:text="@string/title_user_feed" />
+                android:background="@drawable/user_feed_selector_2"/>
             <RadioButton
                 android:id="@+id/discover_button"
                 style="@style/navbar_button"
-                android:drawableTop="@drawable/discover_selector"
-                android:text="@string/title_discover"
-                android:layout_marginLeft="5dp"
-                />
+                android:background="@drawable/discover_selector_2"/>
             <RadioButton
                 android:id="@+id/camera_button"
                 style="@style/navbar_button"
-                android:drawableTop="@drawable/camera_selector"
-                android:text="@string/title_camera"
-                android:layout_marginLeft="@dimen/nav_button_margin"
-                />
+                android:background="@drawable/camera_button_2"/>
             <RadioButton
                 android:id="@+id/activityfeed_button"
                 style="@style/navbar_button"
-                android:drawableTop="@drawable/activityfeed_selector"
-                android:text="@string/title_activity_feed"
-                android:singleLine="true"
-                android:layout_marginLeft="@dimen/nav_button_margin"
-                />
+                android:background="@drawable/activity_feed_selector_2"/>
             <RadioButton
                 android:id="@+id/profile_button"
                 style="@style/navbar_button"
-                android:drawableTop="@drawable/profile_selector"
-                android:text="@string/title_profile"
-                android:layout_marginLeft="@dimen/nav_button_margin"
-                />
+                android:background="@drawable/profile_selector_2"/>
         </RadioGroup>
     </RelativeLayout>
 

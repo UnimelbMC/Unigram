@@ -53,6 +53,10 @@ public class Parameters {
     public static final int loadUserThreshold = 100;
     public static final int maxLikes = 300;
 
+    // ActivityFollowing parameters
+    public static final int default_recentPostCount = 10;
+    public static final int activity_postIconsToShow = 3;
+
     // Like feedback animation parameters
     public static final int likeAppearDuration = 100;
     public static final int likeStayDuration = 800;
@@ -89,6 +93,7 @@ public class Parameters {
     public static int NavigationViewHeight = 0;
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
+    public static int userFeedFragmentTop;
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){
         View actionBar = activity.getSupportActionBar().getCustomView();
