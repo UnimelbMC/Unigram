@@ -123,7 +123,7 @@ public class UserFeedFragment extends Fragment implements ScrollViewListener {
             userFeedView.addView(refresh, 0);
 
             // add scroll listener to update posts if scroll past top of user feed
-            setTopScrollListener();
+            //setTopScrollListener();
 
             // move back to user feed view if user scrolls into refresh bar
             // (after user's finger lifts off the screen
