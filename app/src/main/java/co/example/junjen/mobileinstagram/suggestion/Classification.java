@@ -12,6 +12,10 @@ import weka.core.Instances;
 
 /**
  * Created by Tou on 10/6/2015.
+ *  Classification class is in charged of classifying possible users labeling them as suggested
+ *  or not suggested.
+ *  This will build a Naive Bayes model and load the datasets
+ *
  */
 public class Classification {
 
@@ -261,7 +265,6 @@ public class Classification {
     /*Method
     *   Classify possible unlabeled(unclassified) users
     * @params
-    *   possibleUsers: possible users to classify
     * @returns
     * */
     public void classifyPossibleUsers(){
@@ -284,6 +287,11 @@ public class Classification {
 //        Log.d("classPosUser",classifiedPossUsers.toString());
     }
 
+    /*Method
+    *   Get the classified possible users
+    * @params
+    * @returns
+    * */
     public HashMap getClassifiedPossUsers(){
         classifyPossibleUsers();
         return this.classifiedPossUsers;

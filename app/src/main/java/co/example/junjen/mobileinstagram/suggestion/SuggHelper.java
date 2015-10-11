@@ -1,6 +1,5 @@
 package co.example.junjen.mobileinstagram.suggestion;
 
-import android.util.Log;
 
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.users.feed.UserFeedData;
@@ -11,10 +10,17 @@ import java.util.Collections;
 import java.util.List;
 
 import co.example.junjen.mobileinstagram.network.NetParams;
-import co.example.junjen.mobileinstagram.suggestion.Classification;
 
 /**
  * Created by Tou on 10/11/2015.
+ *  SuggHelper helps the classification class to retrieve possible suggested users and define
+ *  which users are suggested or not, so that classification can build a model and label unlabeled
+ *  possible users
+ *
+ *  This class will analyze two lists:
+ *      - Suggested users are defined as users that self user is following
+ *      - The other Not Suggested users which are users that self is followed by but not following
+ *
  */
 public class SuggHelper {
 
@@ -28,8 +34,6 @@ public class SuggHelper {
 
     // Possible users to be classified ID list
     private ArrayList<String> possibleUsersId;
-    // Classified possible users
-    private ArrayList<String> classifiedPossibleUsers;
     //User to be perform a SuggHelper
     private String userId;
 
@@ -40,33 +44,29 @@ public class SuggHelper {
     // Number of possible users to be suggested per suggested user
     private static final int NUM_POSS_USR_PER_SUGG_USR = 2;
 
-    //Classification object to classify possible users
-    private Classification cls;
-
     // SuggHelper for a user with userId
     public SuggHelper(String userId){
-        Log.d("SuggHelper", "start");
         this.userId = userId;
         this.instagram = new Instagram(NetParams.ACCESS_TOKEN);
         this.suggestedUsersIdList = fetchFollowsList(this.userId, MAX_SUGG_USR_TO_FETCH);;
         this.notSuggestedUsersIdList = new ArrayList<String>();
-        this.classifiedPossibleUsers = new ArrayList<String>();
         this.possibleUsersId = new ArrayList<String>();
 
     }
 
 
     public ArrayList<String> getSuggestedUsersIdList() {
-
         return suggestedUsersIdList;
     }
 
     public ArrayList<String> getNotSuggestedUsersIdList() {
+        // filter the not suggested list using filterNotSuggestedUsersList method
         filterNotSuggestedUsersList();
         return notSuggestedUsersIdList;
     }
 
     public ArrayList<String> getPossibleUsersId() {
+        // fetch possible users with fetchPossible users method
         fetchPossibleUsers();
         return possibleUsersId;
     }
@@ -82,7 +82,6 @@ public class SuggHelper {
         ArrayList<String> followsUsersId = new ArrayList<String>();
         try {
             List<UserFeedData> list =  instagram.getUserFollowList(userId).getUserList();
-            Log.d("suggHelper fetchFoll",list.toString());
             int i2;
             if(numberOfUsers > list.size()){
                 i2  = list.size();
@@ -180,19 +179,6 @@ public class SuggHelper {
             }
         }
     }
-
-//    /*Method
-//*   Classify possible unlabeled(unclassified) users
-//* @params
-//* @returns
-//* */
-//    public void classifyPossibleUsers(){
-////        Log.d("clasPosUsr", "startClasPosUsr");
-//        for(String usr : possibleUsersId){
-//            classify(usr);
-//        }
-//    }
-
 
 
 }
