@@ -330,4 +330,16 @@ public class Network {
             return null;
         }
     }
+
+    //Build list of activity objects for activity feed
+    public void getActivityFeedFollowing(){
+        ArrayList<User> following = getFollowing();
+
+        for (User followee :following){
+            String username = followee.getUsername().getUsername();
+            String userId = followee.getUsername().getUserId();
+            String profUrl = followee.getUserImage().getImageString();
+            ArrayList<Post> recentPost = getProfileFeed(userId,null,null);
+        }
+    }
 }
