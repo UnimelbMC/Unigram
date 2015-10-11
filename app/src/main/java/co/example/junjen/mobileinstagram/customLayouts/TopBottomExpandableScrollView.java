@@ -36,12 +36,14 @@ public class TopBottomExpandableScrollView extends ExpandableScrollView {
         this.scrollViewListener = scrollViewListener;
     }
 
-    // checks if bottom of a Scroll View has been reached
+    // checks if top or bottom of a Scroll View has been reached
     @Override
     protected void onScrollChanged(int x, int y, int oldx, int oldy) {
         View view = getChildAt(getChildCount() - 1);
         int diff = (view.getBottom() - (getHeight() + getScrollY()));
-        if (diff == 0) { // if diff is zero, then the bottom has been reached
+
+        // if diff is zero, then the bottom has been reached
+        if (diff == 0) {
             if (scrollViewListener != null && counter == 0) {
                 counter++;
                 scrollViewListener.onScrollEnded(this, x, y, oldx, oldy);
@@ -50,6 +52,7 @@ public class TopBottomExpandableScrollView extends ExpandableScrollView {
             counter = 0;
         }
 
+        // refresh panel at top of scroll reached
         View view2 = getChildAt(getChildCount() - 1);
         if (view2.getTop() < Parameters.userFeedFragmentTop) {
             topScrollViewListener.onScrollTop(this, x, y, oldx, oldy);

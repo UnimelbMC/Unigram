@@ -282,7 +282,7 @@ public class Post implements Serializable{
         }
     }
 
-    // get layout of post icons to be added to the bottom of a profile fragment
+    // get layout of post icons to be added to the bottom of a fragment
     public static void buildPostIcons(LayoutInflater inflater, ViewGroup postIconList,
                                       ArrayList<Post> posts, int iconsPerRow, int rowsToLoad){
 

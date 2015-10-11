@@ -62,7 +62,9 @@ public class NavigationBar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MainActivity.mainActivity.finish();
+        if(MainActivity.mainActivity != null){
+            MainActivity.mainActivity.finish();
+        }
         Parameters.NavigationBarActivity = this;
         Parameters.NavigationBarContext = this.getApplicationContext();
 
