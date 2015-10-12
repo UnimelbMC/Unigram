@@ -62,7 +62,9 @@ public class NavigationBar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MainActivity.mainActivity.finish();
+        if(MainActivity.mainActivity != null){
+            MainActivity.mainActivity.finish();
+        }
         Parameters.NavigationBarActivity = this;
         Parameters.NavigationBarContext = this.getApplicationContext();
 
@@ -157,34 +159,29 @@ public class NavigationBar extends AppCompatActivity {
                         ft.replace(navigationViewId,
                                 userFeedHistory.get(userFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
-                        activityFeedBar(false);
                         backButton(userFeedHistory);
                         break;
                     case discoverButtonId:
                         ft.replace(navigationViewId,
                                 discoverHistory.get(discoverHistory.size() - 1));
                         prevNavButtonId = checkedId;
-                        activityFeedBar(false);
                         backButton(discoverHistory);
                         break;
                     case cameraButtonId:
                         ft.replace(navigationViewId, cameraFragment);
                         cameraOn = true;
-                        activityFeedBar(false);
                         break;
                     case activityFeedButtonId:
                         ArrayList<Fragment> activityHistory = getCurrentActivityFeed();
                         ft.replace(navigationViewId,
                                 activityHistory.get(activityHistory.size() - 1));
                         prevNavButtonId = checkedId;
-                        activityFeedBar(true);
                         backButton(activityHistory);
                         break;
                     case profileButtonId:
                         ft.replace(navigationViewId,
                                 profileHistory.get(profileHistory.size() - 1));
                         prevNavButtonId = checkedId;
-                        activityFeedBar(false);
                         backButton(profileHistory);
                         break;
                 }
@@ -277,11 +274,6 @@ public class NavigationBar extends AppCompatActivity {
             showBackButton();
         } else {
             hideBackButton();
-
-            // show activity feed bar if at base activity feed fragment
-            if(history == activityFollowingHistory || history == activityYouHistory){
-                activityFeedBar(true);
-            }
         }
     }
 

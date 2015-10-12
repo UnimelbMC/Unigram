@@ -166,6 +166,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     public void setTitle(){
         Parameters.setTitle(Parameters.NavigationBarActivity,
                 profile.getUsername().getUsername().toUpperCase(), Parameters.subTitleSize);
+        Parameters.NavigationBarActivity.activityFeedBar(false);
     }
 
     @Override

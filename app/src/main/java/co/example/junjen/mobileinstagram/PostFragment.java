@@ -1,23 +1,16 @@
 package co.example.junjen.mobileinstagram;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
-import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 
@@ -33,9 +26,11 @@ public class PostFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String postId_key = "postId";
+    private static final String like_key = "like";
 
     // TODO: Rename and change types of parameters
     private String postId;
+    private boolean like;
 
     private ViewGroup postFragment;
 
@@ -46,13 +41,15 @@ public class PostFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param postId Parameter 1.
+     * @param like Parameter 2.
      * @return A new instance of fragment PostFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostFragment newInstance(String postId) {
+    public static PostFragment newInstance(String postId, boolean like) {
         PostFragment fragment = new PostFragment();
         Bundle args = new Bundle();
         args.putString(postId_key, postId);
+        args.putBoolean(like_key, like);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,6 +63,7 @@ public class PostFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             postId = getArguments().getString(postId_key);
+            like = getArguments().getBoolean(like_key);
 
             // display back button
             Parameters.NavigationBarActivity.showBackButton();
@@ -86,6 +84,9 @@ public class PostFragment extends Fragment {
             Post post;
             if (!postId.equals(Parameters.default_postId)) {
                 post = NetParams.NETWORK.getPostById(postId);
+                if(like){
+                    post.setLiked(Parameters.like);
+                }
             } else {
                 post = new Post();
             }
@@ -93,9 +94,9 @@ public class PostFragment extends Fragment {
             postFragment = (ViewGroup) inflater.inflate(R.layout.fragment_post, container, false);
             View postView = post.getPostView(inflater);
             if (postView != null) {
+
                 postFragment.addView(postView);
             }
-
         }
         // Inflate the layout for this fragment
         return postFragment;

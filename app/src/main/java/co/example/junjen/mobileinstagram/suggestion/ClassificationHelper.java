@@ -47,7 +47,7 @@ public class ClassificationHelper {
     // ClassificationHelper for a user with userId
     public ClassificationHelper(String userId){
         this.userId = userId;
-        this.instagram = new Instagram(NetParams.ACCESS_TOKEN);
+        this.instagram =  new Instagram(NetParams.ACCESS_TOKEN); //NetParams.NETWORK.getInstagram();//
         this.suggestedUsersIdList = fetchFollowsList(this.userId, MAX_SUGG_USR_TO_FETCH);;
         this.notSuggestedUsersIdList = new ArrayList<String>();
         this.possibleUsersId = new ArrayList<String>();

@@ -129,6 +129,8 @@ public class CameraFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Parameters.NavigationBarActivity.activityFeedBar(false);
+
         // remove loading animation
         Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
@@ -1206,6 +1208,7 @@ public class CameraFragment extends Fragment {
         if (actionBar != null) {
             actionBar.hide();
         }
+        Parameters.NavigationBarActivity.activityFeedBar(false);
     }
 
     @Override

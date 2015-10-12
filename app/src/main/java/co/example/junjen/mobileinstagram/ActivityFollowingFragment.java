@@ -14,13 +14,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
-import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.TopScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
@@ -34,7 +31,7 @@ import co.example.junjen.mobileinstagram.network.NetParams;
  * create an instance of this fragment.
  */
 public class ActivityFollowingFragment extends Fragment
-        implements ScrollViewListener, TopScrollViewListener {
+        implements TopScrollViewListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -105,11 +102,12 @@ public class ActivityFollowingFragment extends Fragment
 
         if(activityFollowingFragment == null) {
 
+            Parameters.NavigationBarActivity.activityFeedBar(true);
+
             activityFollowingFragment = (TopBottomExpandableScrollView)
                     inflater.inflate(R.layout.fragment_activity_following, container, false);
 
-            // set scroll listeners
-            activityFollowingFragment.setScrollViewListener(this);
+            // set scroll listener
             activityFollowingFragment.setTopScrollViewListener(this);
 
             activityFollowingView = (ViewGroup) activityFollowingFragment.
@@ -179,7 +177,7 @@ public class ActivityFollowingFragment extends Fragment
                 if (!initialised) {
                     returnToTop(activityFollowingFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.activityFeedFragmentTop = activityFollowingFragmentTop;
+                    Parameters.activityFollowingFragmentTop = activityFollowingFragmentTop;
                 }
             }
         });
@@ -218,18 +216,6 @@ public class ActivityFollowingFragment extends Fragment
         }, delay);
     }
 
-    // loads another chunk of activityFollowing when at the bottom of the activity feed ScrollView
-    @Override
-    public void onScrollEnded(ExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
-
-        // load new posts if no posts are currently being loaded
-        if(loadActivity){
-            loadActivity = false;
-            loadActivityFollowing();
-            loadActivity = true;
-        }
-    }
-
     // add scroll listener to update activityFollowing if scroll past top of activity view
     @Override
     public void onScrollTop(TopBottomExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
@@ -254,9 +240,7 @@ public class ActivityFollowingFragment extends Fragment
         if (!Parameters.dummyData) {
             // TODO: update method
             //Pass the date as strings min/max
-            activityFeed = NetParams.NETWORK. getActivityFeedFollowing(null,null);
-           // activityFeed = new ArrayList<>();
-
+            activityFeed = NetParams.NETWORK.getActivityFeedFollowing(null, null);
 
             int aFsize = activityFeed.size();
             if (activityFeed.size() > 0){
@@ -288,7 +272,6 @@ public class ActivityFollowingFragment extends Fragment
             activityFollowingIndex++;
         }
         allActivityFollowing.addAll(activityFeed);
-        updateTimeSince();
     }
 
     // get new activity of following
@@ -305,10 +288,8 @@ public class ActivityFollowingFragment extends Fragment
 
         if (!Parameters.dummyData) {
             // TODO: update method
-//            activityFeed = NetParams.NETWORK.getUserFeed(minTimeSince, null);
-            activityFeed = new ArrayList<>();
+            activityFeed = NetParams.NETWORK.getActivityFeedFollowing(minTimeSince, null);
 
-            int aFSize = activityFeed.size();
             if (activityFeed.size() > 0){
                 //Activity after first
                 minTimeSince = activityFeed.get(0).getPostIcons().get(0).getTimeSince().

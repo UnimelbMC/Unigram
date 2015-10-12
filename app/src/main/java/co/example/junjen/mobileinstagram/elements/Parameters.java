@@ -17,7 +17,7 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 public class Parameters {
 
     // Login parameters
-    public static boolean dummyData = false;
+    public static boolean dummyData = true;
     public static final String login_key = "@thisIsMyLogin";
     public static String loginUserId = null;
     public static String loginUsername = null;
@@ -112,7 +112,8 @@ public class Parameters {
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
     public static int userFeedFragmentTop;
-    public static int activityFeedFragmentTop;
+    public static int activityFollowingFragmentTop;
+    public static int activityYouFragmentTop;
 
     // Time constants
     public static final int minute = 60;
