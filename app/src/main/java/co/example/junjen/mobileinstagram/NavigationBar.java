@@ -67,6 +67,7 @@ public class NavigationBar extends AppCompatActivity {
         }
         Parameters.NavigationBarActivity = this;
         Parameters.NavigationBarContext = this.getApplicationContext();
+        Parameters.NavigationBarView = findViewById(navigationViewId);
 
         // set custom action bar
         actionBar = getSupportActionBar();
