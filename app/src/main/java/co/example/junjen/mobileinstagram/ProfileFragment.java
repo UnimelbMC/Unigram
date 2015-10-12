@@ -107,7 +107,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
 
                 if (profile == null){
                     // this might mean the profile is private, hence search for user info only
-                    profile = NetParams.NETWORK.searchUserById(userId);
+                    profile = NetParams.NETWORK.searchUserProfileById(userId);
 
                     if (profile == null) {
                         // at this point it means current user has restricted access to this profile

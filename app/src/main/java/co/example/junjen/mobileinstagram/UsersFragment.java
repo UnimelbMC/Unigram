@@ -155,47 +155,10 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
                 break;
             }
 
-            // load view components
+            // build user view components
             View userElement = inflater.inflate(R.layout.user_element, usersView, false);
-            ImageView userImage = (ImageView) userElement.findViewById(R.id.user_user_image);
-            TextView username = (TextView) userElement.findViewById(R.id.user_username);
-            TextView profName = (TextView) userElement.findViewById(R.id.user_prof_name);
-            final ToggleButton followButton = (ToggleButton)
-                    userElement.findViewById(R.id.user_follow_button);
-
             User user = users.get(userCount);
-
-            username.setText("");   // remove default text
-            stringComponents.add(user.getUsername().getUsernameLink());
-            StringFactory.stringBuilder(username, stringComponents);
-            stringComponents.clear();
-
-            Profile.checkIfFollowing(user.getUsername().getUserId(), followButton);
-
-            // set listener to followButton
-            followButton.setOnClickListener(new View.OnClickListener() {
-
-                // Handle clicks for like button
-                @Override
-                public void onClick(View v) {
-                    if (followButton.isChecked()) {
-                        Profile.updateFollowingCount(true);
-                    } else {
-                        Profile.updateFollowingCount(false);
-                    }
-                }
-            });
-
-            // set user image
-            Image.setImage(userImage, user.getUserImage());
-
-            // set user profile name
-            String text = user.getProfName();
-            if(text == null || text.equals("")){
-                profName.setVisibility(View.GONE);
-            } else {
-                profName.setText(text);
-            }
+            User.buildUserElement(user, userElement);
 
             usersView.addView(userElement, userCount);
             userCount++;

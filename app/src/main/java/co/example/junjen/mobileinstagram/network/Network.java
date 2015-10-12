@@ -347,12 +347,24 @@ public class Network {
     }
 
     // search for user info by user ID
-    public Profile searchUserById(String userId){
+    public Profile searchUserProfileById(String userId){
         try {
             UserInfo feed = instagram.getUserInfo(userId);
             return new Profile(new User(userId, feed.getData().getUsername(),
                     feed.getData().getProfilePicture(), feed.getData().getFullName()),
                     feed.getData().getBio());
+        } catch (InstagramException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // search for user info by user ID
+    public User searchUserInfoById(String userId){
+        try {
+            UserInfo feed = instagram.getUserInfo(userId);
+            return new User(userId, feed.getData().getUsername(),
+                    feed.getData().getProfilePicture(), feed.getData().getFullName());
         } catch (InstagramException e) {
             e.printStackTrace();
             return null;

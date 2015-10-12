@@ -179,7 +179,7 @@ public class ActivityYouFragment extends Fragment
                 if (!initialised) {
                     returnToTop(activityYouFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.activityYouFragmentTop = activityYouFragmentTop;
+                    activityYouFragment.setTopLevel(activityYouFragmentTop);
                 }
             }
         });

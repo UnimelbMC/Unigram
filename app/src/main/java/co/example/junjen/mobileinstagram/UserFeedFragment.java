@@ -187,7 +187,7 @@ public class UserFeedFragment extends Fragment
                 if (!initialised) {
                     returnToTop(userFeedFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.userFeedFragmentTop = userFeedFragmentTop;
+                    userFeedFragment.setTopLevel(userFeedFragmentTop);
                 }
             }
         });

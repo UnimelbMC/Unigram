@@ -179,7 +179,7 @@ public class ActivityFollowingFragment extends Fragment
                 if (!initialised) {
                     returnToTop(activityFollowingFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.activityFollowingFragmentTop = activityFollowingFragmentTop;
+                    activityFollowingFragment.setTopLevel(activityFollowingFragmentTop);
                 }
             }
         });
@@ -274,6 +274,10 @@ public class ActivityFollowingFragment extends Fragment
             activityFollowingIndex++;
         }
         allActivityFollowing.addAll(activityFeed);
+
+        if(!Parameters.dummyData) {
+            updateTimeSince();
+        }
     }
 
     // get new activity of following
@@ -323,7 +327,9 @@ public class ActivityFollowingFragment extends Fragment
         }
         activityFollowingIndex += size;
         allActivityFollowing.addAll(0, activityFeed);
-        updateTimeSince();
+        if(!Parameters.dummyData) {
+            updateTimeSince();
+        }
     }
 
     // update time since posted of all activity

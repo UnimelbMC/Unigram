@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
@@ -58,7 +60,9 @@ public class Parameters {
     public static final int maxUsers = 300;
 
     // Discover parameters
-    public static final int default_suggestions = 5;
+    public static final int default_suggestions = 10;
+    public static final int default_usersToSearch = 10;
+    public static final int searchedUsersToReturn = 19;
 
     // Activity Feed parameters
     public static final String activityFollowing_key = "following";
@@ -119,11 +123,11 @@ public class Parameters {
     public static int loadingAnimationDelay = 0;
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
-    public static int userFeedFragmentTop;
-    public static int activityFollowingFragmentTop;
-    public static int activityYouFragmentTop;
-    public static int discoverFragmentTop;
     public static View NavigationBarView;
+
+    // Follow UI helper
+    public static ArrayList<String> usersToFollow = new ArrayList<>();
+    public static ArrayList<String> usersToUnfollow = new ArrayList<>();
 
     // Time constants
     public static final int minute = 60;
