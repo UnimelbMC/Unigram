@@ -30,7 +30,7 @@ import co.example.junjen.mobileinstagram.PostFragment;
 import co.example.junjen.mobileinstagram.UsersFragment;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
-import co.example.junjen.mobileinstagram.customLayouts.LikeListener;
+import co.example.junjen.mobileinstagram.customLayouts.PostImageListener;
 import co.example.junjen.mobileinstagram.customLayouts.SquareImageView;
 import co.example.junjen.mobileinstagram.customLayouts.UserImageView;
 import co.example.junjen.mobileinstagram.network.NetParams;
@@ -149,7 +149,7 @@ public class Post implements Serializable{
                 Image.setImage(postImage, this.postImage);
             }
             // set listener to handle double tap likes on post image
-            new LikeListener(postImage, this);
+            new PostImageListener(postImage, this);
 
             // Like Feedback
             ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
@@ -492,8 +492,7 @@ public class Post implements Serializable{
         });
     }
 
-    //toString to converto to JSON
-
+    //toString to convert to JSON
     @Override
     public String toString() {
         return "Post [" +

@@ -170,14 +170,16 @@ public class ActivityYouFragment extends Fragment
 
                 // get starting position of user feed scroll view
                 activityYouFragmentTop = refresh.getBottom();
+                int start = refresh.getTop();
 
-                refreshPoint = Math.round(activityYouFragmentTop / Parameters.refreshThreshold);
+                refreshPoint = Math.round((activityYouFragmentTop - start)
+                        / Parameters.refreshThreshold + start);
 
                 // set scroll to initial position if user feed is being initialised
                 if (!initialised) {
                     returnToTop(activityYouFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.activityYouFragmentTop = activityYouFragmentTop;
+                    activityYouFragment.setTopLevel(activityYouFragmentTop);
                 }
             }
         });

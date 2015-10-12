@@ -1,0 +1,30 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/swipe_element_height"
+    android:layout_height="@dimen/swipe_element_height"
+    android:layout_margin="@dimen/post_margin">
+
+    <!-- User image -->
+    <co.example.junjen.mobileinstagram.customLayouts.UserImageView
+        android:layout_width="@dimen/post_header_user_image_width"
+        android:layout_height="@dimen/post_header_user_image_width"
+        android:id="@+id/swipe_user_image"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/empty_user_image"
+        android:adjustViewBounds="true"
+        android:contentDescription="Post User Image"
+        android:layout_marginBottom="@dimen/post_margin"/>
+
+    <!-- Username -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_username"
+        android:id="@+id/swipe_username"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:layout_below="@id/swipe_user_image"
+        android:layout_marginTop="@dimen/post_margin"/>
+
+
+</RelativeLayout>

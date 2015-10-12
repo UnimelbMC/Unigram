@@ -170,14 +170,16 @@ public class ActivityFollowingFragment extends Fragment
 
                 // get starting position of user feed scroll view
                 activityFollowingFragmentTop = refresh.getBottom();
+                int start = refresh.getTop();
 
-                refreshPoint = Math.round(activityFollowingFragmentTop / Parameters.refreshThreshold);
+                refreshPoint = Math.round((activityFollowingFragmentTop - start) /
+                        Parameters.refreshThreshold + start);
 
                 // set scroll to initial position if user feed is being initialised
                 if (!initialised) {
                     returnToTop(activityFollowingFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.activityFollowingFragmentTop = activityFollowingFragmentTop;
+                    activityFollowingFragment.setTopLevel(activityFollowingFragmentTop);
                 }
             }
         });
@@ -272,6 +274,10 @@ public class ActivityFollowingFragment extends Fragment
             activityFollowingIndex++;
         }
         allActivityFollowing.addAll(activityFeed);
+
+        if(!Parameters.dummyData) {
+            updateTimeSince();
+        }
     }
 
     // get new activity of following
@@ -321,7 +327,9 @@ public class ActivityFollowingFragment extends Fragment
         }
         activityFollowingIndex += size;
         allActivityFollowing.addAll(0, activityFeed);
-        updateTimeSince();
+        if(!Parameters.dummyData) {
+            updateTimeSince();
+        }
     }
 
     // update time since posted of all activity

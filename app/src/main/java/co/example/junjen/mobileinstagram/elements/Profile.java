@@ -190,9 +190,9 @@ public class Profile implements Serializable{
                 @Override
                 public void onClick(View v) {
                     if (followButton.isChecked()) {
-                        updateFollowingCount(true);
+                        updateFollowingCount(true, username.getUserId());
                     } else {
-                        updateFollowingCount(false);
+                        updateFollowingCount(false, username.getUserId());
                     }
                 }
             });
@@ -298,7 +298,7 @@ public class Profile implements Serializable{
     }
 
     // update following counts as seen on current user profile if following or unfollowing a user
-    public static void updateFollowingCount(boolean follow){
+    public static void updateFollowingCount(boolean follow, String userId){
 
         int count = Parameters.loginProfile.getFollowingCount();
 

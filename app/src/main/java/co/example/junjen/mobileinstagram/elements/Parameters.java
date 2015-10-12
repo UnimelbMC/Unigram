@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
@@ -55,7 +57,12 @@ public class Parameters {
     public static final int postsToLoad = 10;
     public static final int loadCommentThreshold = 20;
     public static final int loadUserThreshold = 100;
-    public static final int maxLikes = 300;
+    public static final int maxUsers = 300;
+
+    // Discover parameters
+    public static final int default_suggestions = 10;
+    public static final int default_usersToSearch = 10;
+    public static final int searchedUsersToReturn = 19;
 
     // Activity Feed parameters
     public static final String activityFollowing_key = "following";
@@ -100,6 +107,11 @@ public class Parameters {
     public static final String default_loginUserImageLink = "0";
     public static final String default_emptyUserImageLink = "1";
 
+    // Swipe parameters
+    public static final int SWIPE_MIN_DISTANCE = 120;
+    public static final int SWIPE_MAX_OFF_PATH = 50;
+    public static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
     // Application helpers
     public static Context MainActivityContext = null;
     public static NavigationBar NavigationBarActivity = null;
@@ -111,15 +123,18 @@ public class Parameters {
     public static int loadingAnimationDelay = 0;
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
-    public static int userFeedFragmentTop;
-    public static int activityFollowingFragmentTop;
-    public static int activityYouFragmentTop;
+    public static View NavigationBarView;
+
+    // Follow UI helper
+    public static ArrayList<String> usersToFollow = new ArrayList<>();
+    public static ArrayList<String> usersToUnfollow = new ArrayList<>();
 
     // Time constants
     public static final int minute = 60;
     public static final int hour = 60 * minute;
     public static final int day = 24 * hour;
     public static final int week = 7 * day;
+    public static final int month = 30 * day;
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){
         View actionBar = activity.getSupportActionBar().getCustomView();

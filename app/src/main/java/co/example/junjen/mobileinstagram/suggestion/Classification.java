@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import co.example.junjen.mobileinstagram.elements.Parameters;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -38,8 +39,8 @@ public class Classification {
     // Class attribute
     private Attribute cls;
     // Class attribute names
-    private final String suggestedCls = "suggested";
-    private final String notSuggestedCls = "notSuggested";
+    private final String suggestedCls = SuggestionParams.suggested_key;
+    private final String notSuggestedCls = SuggestionParams.notSuggested_key;
 
     //Updateable Naive Bayes classifier
     private static NaiveBayesUpdateable nb;

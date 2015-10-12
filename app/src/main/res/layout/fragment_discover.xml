@@ -1,18 +1,55 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context="co.example.junjen.mobileinstagram.DiscoverFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
-
-    <Button
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/discover_search_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send"
-        android:id="@+id/sendBlutoothButton"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/search_bar_2"
+        android:layout_margin="@dimen/comment_total_margin"/>
+
+    <View
+        android:id="@+id/discover_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@id/discover_search_bar"
+        android:layout_marginBottom="@dimen/post_margin"/>
+
+    <co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView
+        android:layout_below="@+id/discover_divider"
+        android:id="@+id/discover_full_view"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:id="@+id/discover_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/discover_header_text"
+                android:layout_margin="@dimen/comment_total_margin"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/discover_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView>
+
 </RelativeLayout>

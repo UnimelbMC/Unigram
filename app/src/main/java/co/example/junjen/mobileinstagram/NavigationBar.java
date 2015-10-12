@@ -1,5 +1,6 @@
 package co.example.junjen.mobileinstagram;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Handler;
@@ -20,14 +21,18 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeService;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
+import co.example.junjen.mobileinstagram.network.Bluetooth;
 import co.example.junjen.mobileinstagram.network.NetParams;
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 
 public class NavigationBar extends AppCompatActivity {
 
@@ -58,6 +63,11 @@ public class NavigationBar extends AppCompatActivity {
     private boolean cameraOn = false;
     private String currentActivityFeed;
 
+    // Intent request codes for bluetooth
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    private static final int REQUEST_ENABLE_BT = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +77,7 @@ public class NavigationBar extends AppCompatActivity {
         }
         Parameters.NavigationBarActivity = this;
         Parameters.NavigationBarContext = this.getApplicationContext();
+        Parameters.NavigationBarView = findViewById(navigationViewId);
 
         // set custom action bar
         actionBar = getSupportActionBar();
@@ -239,6 +250,7 @@ public class NavigationBar extends AppCompatActivity {
         }
     }
 
+    // starts the loading animation on screen
     private void loadingAnimation(){
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
@@ -248,7 +260,6 @@ public class NavigationBar extends AppCompatActivity {
             }
         }, Parameters.loadingAnimationDelay);
     }
-
 
     // replaces the main view with a fragment
     public void replaceView(Fragment fragment){
@@ -429,23 +440,69 @@ public class NavigationBar extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()){
+            case R.id.action_logout:{
+                clearToken();
 
-        // clear access token on logout
-        if (id == R.id.action_logout) {
-            clearToken();
+                // logout of instagram account
+                WebView myWebView = new WebView(getApplicationContext());
+                myWebView.clearFormData();
+                setContentView(myWebView);
+                myWebView.setWebViewClient(new LogoutWebViewClient());
+                myWebView.loadUrl(NetParams.LOGOUT_URL);
+                NetParams.ACCESS_TOKEN = null;
+                return true;
 
-            // logout of instagram account
-            WebView myWebView = new WebView(getApplicationContext());
-            myWebView.clearFormData();
-            setContentView(myWebView);
-            myWebView.setWebViewClient(new LogoutWebViewClient());
-            myWebView.loadUrl(NetParams.LOGOUT_URL);
-            NetParams.ACCESS_TOKEN = null;
-            return true;
+            }
+            // Bluetooth action swipe
+            case R.id.action_swipe:{
+
+//                BluetoothSwipeService
+                return true;
+
+            }
+
+
+
         }
+
         return super.onOptionsItemSelected(item);
     }
+
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        switch (requestCode) {
+//            case REQUEST_CONNECT_DEVICE_SECURE:
+//                // When DeviceListActivity returns with a device to connect
+//                if (resultCode == Activity.RESULT_OK) {
+//                    connectDevice(data, true);
+//                }
+//                break;
+//            case REQUEST_CONNECT_DEVICE_INSECURE:
+//                // When DeviceListActivity returns with a device to connect
+//                if (resultCode == Activity.RESULT_OK) {
+//                    connectDevice(data, false);
+//                }
+//                break;
+//            case REQUEST_ENABLE_BT:
+//                // When the request to enable Bluetooth returns
+//                if (resultCode == Activity.RESULT_OK) {
+//                    // Bluetooth is now enabled, so set up a chat session
+//                    setupChat();
+//                } else {
+//                    // User did not enable Bluetooth or an error occurred
+//                    Log.d(TAG, "BT not enabled");
+//                    Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
+//                            Toast.LENGTH_SHORT).show();
+//                    getActivity().finish();
+//                }
+//        }
+//
+//
+//    }
 
     // WebView client for logging out
     private class LogoutWebViewClient extends WebViewClient{
