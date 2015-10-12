@@ -22,7 +22,6 @@ import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.StringFactory;
-import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 /**
@@ -140,7 +139,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
         }
     }
 
-    // loads a number of comments based on a threshold
+    // loads a number of users based on a threshold
     private void loadUser(){
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -149,10 +148,10 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
         int loadUserThreshold = Parameters.loadUserThreshold;
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
-        // load chunk of comments based on a threshold
+        // load chunk of users based on a threshold
         for (i = 0; i < loadUserThreshold; i++){
 
-            if (userCount >= usersSize || userCount >= Parameters.maxLikes) {
+            if (userCount >= usersSize || userCount >= Parameters.maxUsers) {
                 break;
             }
 

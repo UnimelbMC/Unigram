@@ -240,6 +240,7 @@ public class NavigationBar extends AppCompatActivity {
         }
     }
 
+    // starts the loading animation on screen
     private void loadingAnimation(){
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
@@ -249,7 +250,6 @@ public class NavigationBar extends AppCompatActivity {
             }
         }, Parameters.loadingAnimationDelay);
     }
-
 
     // replaces the main view with a fragment
     public void replaceView(Fragment fragment){

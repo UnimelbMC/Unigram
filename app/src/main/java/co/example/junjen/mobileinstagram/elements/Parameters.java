@@ -55,7 +55,10 @@ public class Parameters {
     public static final int postsToLoad = 10;
     public static final int loadCommentThreshold = 20;
     public static final int loadUserThreshold = 100;
-    public static final int maxLikes = 300;
+    public static final int maxUsers = 300;
+
+    // Discover parameters
+    public static final int default_suggestions = 5;
 
     // Activity Feed parameters
     public static final String activityFollowing_key = "following";
@@ -72,7 +75,7 @@ public class Parameters {
 
     // ActivityYouFragment parameters
     public static final int activityYouIconsPerRow = 3;
-    public static final int activityYouRowsToLoad = 1;
+    public static final int activityYouRowsToLoad = 5;
 
     // Like feedback animation parameters
     public static final int likeAppearDuration = 100;
@@ -119,6 +122,7 @@ public class Parameters {
     public static int userFeedFragmentTop;
     public static int activityFollowingFragmentTop;
     public static int activityYouFragmentTop;
+    public static int discoverFragmentTop;
     public static View NavigationBarView;
 
     // Time constants
@@ -126,6 +130,7 @@ public class Parameters {
     public static final int hour = 60 * minute;
     public static final int day = 24 * hour;
     public static final int week = 7 * day;
+    public static final int month = 30 * day;
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){
         View actionBar = activity.getSupportActionBar().getCustomView();

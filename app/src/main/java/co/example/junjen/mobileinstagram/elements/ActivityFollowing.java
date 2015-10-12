@@ -66,6 +66,13 @@ public class ActivityFollowing {
         Image.setImage(userImageView, this.userImage);
         usernameView.setText("");   // remove default text
         stringComponents.add(this.username.getUsernameLink());
+
+        String temp = ".";
+        if(postIcons.size() > 1){
+            temp = "s.";
+        }
+
+        stringComponents.add(" posted "+postIcons.size()+ " photo" + temp);
         StringFactory.stringBuilder(usernameView, stringComponents);
         stringComponents.clear();
         timeSinceView.setText(postIcons.get(0).getTimeSince().getTimeSinceDisplay());

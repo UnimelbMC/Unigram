@@ -39,7 +39,7 @@ public class Network {
     // Object used to retrieve data from Instagram API
     private final int MAX_USER_FEED_POSTS =
             Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
-    private final int MAX_ACTIVITY_FOLLOWING = 50;
+    private final int MAX_ACTIVITY_FOLLOWING = Parameters.activityFollowingUsersToGet;
     private Instagram instagram;
     private UserInfoData thisUserData;
     private ArrayList<Post> fakePost = new ArrayList<>();
@@ -55,7 +55,6 @@ public class Network {
                 thisUserData = instagram.getCurrentUserInfo().getData();
                 Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-//                Suggestion suggestion = new Suggestion("self");
                 return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken failed " + e.getMessage());
@@ -366,8 +365,8 @@ public class Network {
         ArrayList<Post> recentPosts = new ArrayList<>();
         ArrayList<ActivityFollowing> actFollowing = new ArrayList<>();
         //MIN is later than
-        long week = 10080*60; // seconds
-        long month  = 43800 * 60; //seconds
+        long week = Parameters.week; // seconds
+        long month  = Parameters.month; //seconds
         long now = System.currentTimeMillis() / 1000L;
         long minTimeSec = now - month;  // last month
         long maxTimeSec = now - 3600;   //last minute;

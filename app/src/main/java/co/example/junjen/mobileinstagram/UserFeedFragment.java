@@ -127,9 +127,6 @@ public class UserFeedFragment extends Fragment
             // initialise scroll view position using a global layout listener
             initialisePosition();
 
-            // listener to go to initial position when views are loaded
-            goToInitialPosition();
-
             ((ViewGroup)refresh.getParent()).removeView(refresh);
             userFeedView.addView(refresh, 0);
 
@@ -155,26 +152,6 @@ public class UserFeedFragment extends Fragment
                 int[] location = new int[2];
                 userFeedFragment.getLocationOnScreen(location);
                 currentHeight = location[1] + userFeedFragment.getChildAt(0).getHeight();
-
-                if (currentHeight <= screenHeight) {
-                    loadUserFeedPosts();
-                }
-            }
-        });
-    }
-
-    // add layout listener to add content if default screen is not filled
-    private void goToInitialPosition(){
-        ViewTreeObserver vto = userFeedView.getViewTreeObserver();
-        final int screenHeight = Parameters.NavigationViewHeight;
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                userFeedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-
-                int[] location = new int[2];
-                userFeedView.getLocationOnScreen(location);
-                currentHeight = location[1] + userFeedView.getHeight();
 
                 if (currentHeight <= screenHeight) {
                     loadUserFeedPosts();
@@ -279,8 +256,6 @@ public class UserFeedFragment extends Fragment
             if (userFeed.size() > 0){
                 //Posts earlier than last
                 maxPostId = userFeed.get(uFSize - 1).getPostId();
-//                //Posts after first
-//                minPostId = userFeed.get(0).getPostId();
             }
         } else {
             userFeed = new ArrayList<>();
@@ -304,7 +279,10 @@ public class UserFeedFragment extends Fragment
             postIndex++;
         }
         allPosts.addAll(userFeed);
-        updateTimeSince();
+
+        if(!Parameters.dummyData) {
+            updateTimeSince();
+        }
     }
 
     // get new userfeed posts
@@ -324,8 +302,6 @@ public class UserFeedFragment extends Fragment
             int uFSize = userFeed.size();
             Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
             if (userFeed.size() > 0){
-//                //Posts earlier than last
-//                maxPostId = userFeed.get(uFSize - 1).getPostId();
                 //Posts after first
                 minPostId = userFeed.get(0).getPostId();
             }
@@ -354,7 +330,10 @@ public class UserFeedFragment extends Fragment
         }
         postIndex += size;
         allPosts.addAll(0, userFeed);
-        updateTimeSince();
+
+        if(!Parameters.dummyData) {
+            updateTimeSince();
+        }
     }
 
     // update time since posted of all posts
