@@ -72,7 +72,7 @@ public class Parameters {
 
     // ActivityYouFragment parameters
     public static final int activityYouIconsPerRow = 3;
-    public static final int activityYouRowsToLoad = 5;
+    public static final int activityYouRowsToLoad = 1;
 
     // Like feedback animation parameters
     public static final int likeAppearDuration = 100;
@@ -100,6 +100,11 @@ public class Parameters {
     public static final String default_loginUserImageLink = "0";
     public static final String default_emptyUserImageLink = "1";
 
+    // Swipe parameters
+    public static final int SWIPE_MIN_DISTANCE = 120;
+    public static final int SWIPE_MAX_OFF_PATH = 50;
+    public static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
     // Application helpers
     public static Context MainActivityContext = null;
     public static NavigationBar NavigationBarActivity = null;
@@ -114,6 +119,7 @@ public class Parameters {
     public static int userFeedFragmentTop;
     public static int activityFollowingFragmentTop;
     public static int activityYouFragmentTop;
+    public static View NavigationBarView;
 
     // Time constants
     public static final int minute = 60;
