@@ -76,7 +76,7 @@ public class DiscoverFragment extends Fragment {
 
         View v=inflater.inflate(R.layout.fragment_discover, container, false);
         bluetooth = new Bluetooth();
-        bluetooth.run();
+        //bluetooth.run();
 
 
 
