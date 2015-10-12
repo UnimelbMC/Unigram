@@ -26,12 +26,13 @@
 
     <co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView
         android:layout_below="@+id/discover_divider"
-        android:id="@+id/discover_view"
+        android:id="@+id/discover_full_view"
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
         <LinearLayout
+            android:id="@+id/discover_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

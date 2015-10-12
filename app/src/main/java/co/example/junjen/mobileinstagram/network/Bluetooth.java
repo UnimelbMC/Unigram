@@ -42,7 +42,7 @@ public class Bluetooth {
 
                     Log.e("error", "No appropriate paired devices.");
                 }else{
-                    Log.e("error", "BTService is disabled.");
+                    Log.e("error", "BluetoothSwipeService is disabled.");
                 }
             }
 

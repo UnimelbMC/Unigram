@@ -170,8 +170,10 @@ public class ActivityFollowingFragment extends Fragment
 
                 // get starting position of user feed scroll view
                 activityFollowingFragmentTop = refresh.getBottom();
+                int start = refresh.getTop();
 
-                refreshPoint = Math.round(activityFollowingFragmentTop / Parameters.refreshThreshold);
+                refreshPoint = Math.round((activityFollowingFragmentTop - start) /
+                        Parameters.refreshThreshold + start);
 
                 // set scroll to initial position if user feed is being initialised
                 if (!initialised) {

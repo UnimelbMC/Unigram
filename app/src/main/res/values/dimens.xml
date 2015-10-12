@@ -53,7 +53,6 @@
     <dimen name="user_follow_button_margin">10dp</dimen>
     <dimen name="user_follow_button_width">96dp</dimen>
     <dimen name="user_follow_button_height">30dp</dimen>
-    <dimen name="bottom_buffer_margin">640dp</dimen>
-
+    <dimen name="bottom_buffer_padding">640dp</dimen>
 
 </resources>
