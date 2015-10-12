@@ -102,6 +102,8 @@ public class ActivityFollowingFragment extends Fragment
 
         if(activityFollowingFragment == null) {
 
+            Parameters.NavigationBarActivity.activityFeedBar(true);
+
             activityFollowingFragment = (TopBottomExpandableScrollView)
                     inflater.inflate(R.layout.fragment_activity_following, container, false);
 

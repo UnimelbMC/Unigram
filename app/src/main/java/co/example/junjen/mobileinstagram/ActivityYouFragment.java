@@ -98,6 +98,8 @@ public class ActivityYouFragment extends Fragment
 
         if(activityYouFragment == null) {
 
+            Parameters.NavigationBarActivity.activityFeedBar(true);
+
             activityYouFragment = (TopBottomExpandableScrollView)
                     inflater.inflate(R.layout.fragment_activity_you, container, false);
             activityYouFragmentView = (ViewGroup)

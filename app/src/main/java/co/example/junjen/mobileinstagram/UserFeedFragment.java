@@ -105,6 +105,7 @@ public class UserFeedFragment extends Fragment
 
         // initialise userFeedFragment if not created yet
         if(userFeedFragment == null){
+
             userFeedFragment = (TopBottomExpandableScrollView)
                     inflater.inflate(R.layout.fragment_top_bottom_expandable_scroll_view, container, false);
 
@@ -376,6 +377,7 @@ public class UserFeedFragment extends Fragment
     private void setTitle() {
         Parameters.setTitle(Parameters.NavigationBarActivity,
                 Parameters.mainTitle, Parameters.mainTitleSize);
+        Parameters.NavigationBarActivity.activityFeedBar(false);
     }
 
     @Override
