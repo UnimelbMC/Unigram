@@ -7,4 +7,24 @@
 
     <item android:id="@+id/action_swipe" android:title="@string/action_swipe"
         android:orderInCategory="99" app:showAsAction="never"/>
+
+    <!-- Test bluetooth-->
+    <item
+        android:id="@+id/secure_connect_scan"
+
+        android:title="@string/secure_connect"/>
+
+    <item
+        android:id="@+id/insecure_connect_scan"
+
+        android:title="@string/insecure_connect"/>
+
+    <item
+        android:id="@+id/discoverable"
+
+        android:title="@string/discoverable"/>
+
+
+
+
 </menu>
