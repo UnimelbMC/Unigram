@@ -4,4 +4,7 @@
     tools:context="co.example.junjen.mobileinstagram.NavigationBar">
     <item android:id="@+id/action_logout" android:title="@string/action_logout"
         android:orderInCategory="100" app:showAsAction="never"/>
+
+    <item android:id="@+id/action_swipe" android:title="@string/action_swipe"
+        android:orderInCategory="99" app:showAsAction="never"/>
 </menu>

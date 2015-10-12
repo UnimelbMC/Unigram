@@ -18,11 +18,11 @@ import java.util.UUID;
 /**
  * Created by Tou on 10/12/2015.
  */
-public class BTService {
+public class BluetoothSwipeService {
 
 
     // Debugging
-    private static final String TAG = "BTService";
+    private static final String TAG = "BluetoothSwipeService";
 
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothSecure";
@@ -55,7 +55,7 @@ public class BTService {
      * @param context The UI Activity Context
      * @param handler A Handler to send messages back to the UI Activity
      */
-    public BTService(Context context, Handler handler) {
+    public BluetoothSwipeService(Context context, Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
@@ -246,7 +246,7 @@ public class BTService {
         mHandler.sendMessage(msg);
 
         // Start the service over to restart listening mode
-        BTService.this.start();
+        BluetoothSwipeService.this.start();
     }
 
     /**
@@ -261,7 +261,7 @@ public class BTService {
         mHandler.sendMessage(msg);
 
         // Start the service over to restart listening mode
-        BTService.this.start();
+        BluetoothSwipeService.this.start();
     }
 
     /**
@@ -313,7 +313,7 @@ public class BTService {
 
                 // If a connection was accepted
                 if (socket != null) {
-                    synchronized (BTService.this) {
+                    synchronized (BluetoothSwipeService.this) {
                         switch (mState) {
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
@@ -405,7 +405,7 @@ public class BTService {
             }
 
             // Reset the ConnectThread because we're done
-            synchronized (BTService.this) {
+            synchronized (BluetoothSwipeService.this) {
                 mConnectThread = null;
             }
 
@@ -467,7 +467,7 @@ public class BTService {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
                     // Start the service over to restart listening mode
-                    BTService.this.start();
+                    BluetoothSwipeService.this.start();
                     break;
                 }
             }

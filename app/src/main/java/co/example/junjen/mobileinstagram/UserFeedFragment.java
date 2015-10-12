@@ -1,20 +1,25 @@
 package co.example.junjen.mobileinstagram;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
@@ -64,6 +69,11 @@ public class UserFeedFragment extends Fragment
     private boolean loadPosts = true;
 
     private OnFragmentInteractionListener mListener;
+
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    private static final int REQUEST_ENABLE_BT = 3;
 
     /**
      * Use this factory method to create a new instance of
@@ -411,5 +421,26 @@ public class UserFeedFragment extends Fragment
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId()==R.id.action_swipe){
+            Toast.makeText(getActivity(),"userfeedfragment",Toast.LENGTH_LONG).show();
+
+//            Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+//            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+            return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    // Bluetooth swipe action
+
+
+
 
 }
