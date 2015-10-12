@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/activity_bar_height"
+    android:layout_marginBottom="@dimen/bottom_buffer_margin"
     tools:context="co.example.junjen.mobileinstagram.ActivityFollowingFragment">
 
     <LinearLayout

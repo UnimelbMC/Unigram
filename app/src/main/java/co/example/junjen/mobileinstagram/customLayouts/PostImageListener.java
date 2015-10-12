@@ -21,13 +21,13 @@ import co.example.junjen.mobileinstagram.elements.Post;
  * Listener for post images to detect double tap likes.
  */
 
-public class LikeListener extends GestureDetector.SimpleOnGestureListener {
+public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
 
     private ImageView postImageView;
     private Post post;
     GestureDetector mGestureDetector;
 
-    public LikeListener(ImageView postImageView, Post post){
+    public PostImageListener(ImageView postImageView, Post post){
         this.postImageView = postImageView;
         this.post = post;
         setListener();
@@ -95,5 +95,20 @@ public class LikeListener extends GestureDetector.SimpleOnGestureListener {
         post.likePost(true);
 
         return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        if (Math.abs(e1.getY() - e2.getY()) > Parameters.SWIPE_MAX_OFF_PATH)
+            return false;
+        if (Math.abs(e1.getX() - e2.getX()) > Parameters.SWIPE_MIN_DISTANCE
+                && Math.abs(velocityX) > Parameters.SWIPE_THRESHOLD_VELOCITY) {
+
+            Log.w("test", "swiped");
+
+            // TODO: bluetooth popup
+
+        }
+        return super.onFling(e1, e2, velocityX, velocityY);
     }
 }
