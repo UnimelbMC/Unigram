@@ -57,11 +57,15 @@ public class UserFeedFragment extends Fragment
     private ArrayList<Post> allPosts = new ArrayList<>();
 
     // keep track of max and min id of last post generated to generate new set of posts
-    private String maxPostId;
-    private String minPostId;
+    private String maxPostId = null;
+    private String minPostId = null;
 
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts = true;
+    //TEST remember to change to false
+    private boolean showPostByLoc = false;
+    private boolean showPostByTime = true;
+    private String prevSort = "time";
 
     private OnFragmentInteractionListener mListener;
 
@@ -304,7 +308,7 @@ public class UserFeedFragment extends Fragment
             postIndex++;
         }
         allPosts.addAll(userFeed);
-        updateTimeSince();
+        updateUserFeedView();
     }
 
     // get new userfeed posts
@@ -354,12 +358,45 @@ public class UserFeedFragment extends Fragment
         }
         postIndex += size;
         allPosts.addAll(0, userFeed);
-        updateTimeSince();
+        updateUserFeedView();
     }
 
     // update time since posted of all posts
-    private void updateTimeSince(){
+    private void updateUserFeedView(){
+        //Resort by location
+        if(showPostByLoc){
+            Log.v("sort","showByLoc");
+            Post.sortPostByLocation(allPosts);
+            prevSort = "loc";
+            userFeedView.removeAllViews();
+            for (Post post : allPosts) {
+                if (post.getLocation() != null){
+                    Log.v("sort",Double.toString(post.getLocDiff()));
+                }else{
+                    Log.v("sort",post.getUsername().getUsername());
+                }
+
+                userFeedView.addView(post.getPostView());
+            }
+         //resort by time if needed
+        }else if(showPostByTime && !prevSort.equals("time")){
+            prevSort = "time";
+            Post.sortPostByTime(allPosts);
+            userFeedView.removeAllViews();
+            for (Post post : allPosts){
+                if (post.getLocation() != null){
+                    Log.v("sort",Double.toString(post.getLocDiff()));
+                }else{
+                    Log.v("sort",post.getUsername().getUsername());
+                }
+                userFeedView.addView(post.getPostView());
+            }
+        }
+
         for (Post post : allPosts){
+            if(post.getLocation()!= null){
+                Log.v("DIFF",Double.toString(post.getLocDiff()));
+            }
             TimeSince timeSince = post.getTimeSince();
 
             // update post time since

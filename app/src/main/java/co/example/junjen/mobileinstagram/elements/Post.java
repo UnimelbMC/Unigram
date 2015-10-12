@@ -60,6 +60,8 @@ public class Post implements Serializable{
 
     private String liked = Parameters.checkLike;
 
+     private double locDiff = 10000;
+
     public Post(){
         // test constructor to create 'empty' Post objects
 
@@ -114,6 +116,10 @@ public class Post implements Serializable{
         this.commentCount = commentCount;
         this.likes = likes;
         this.comments = comments;
+
+        if (this.location!= null){
+            locDiff = getDiff(location.getLatitude(),location.getLongitude());
+        }
     }
 
     public View getPostView(LayoutInflater inflater) {
@@ -466,32 +472,57 @@ public class Post implements Serializable{
         return commentButtonOnClickListener;
     }
     //Sort post list by location
-    public void sortPostByLocation(ArrayList<Post> list){
+    public static void  sortPostByLocation(ArrayList<Post> list){
+        Log.v("SORT","byloc");
         Collections.sort(list, new Comparator<Post>() {
             @Override
             public int compare(Post p1, Post p2) {
-                String t1 = p1.getLocation().getLocation();
-                String t2 = p2.getLocation().getLocation();
-                return t1.compareTo(t2);
-                //   return t1-t2; // Ascending
+
+                double t1 = p1.getLocDiff();
+                double t2 = p2.getLocDiff();
+
+                if (t1 < t2) return -1;
+                if (t1 > t2) return 1;
+               // return t1.compareTo(t2);
+                return 0; // Ascending
                 //return t2 - t1; // Descending
             }
         });
     }
     //Sort post list by time
-    public void sortPostByTime(ArrayList<Post> list){
+    public static void sortPostByTime(ArrayList<Post> list){
         Collections.sort(list, new Comparator<Post>() {
             @Override
             public int compare(Post p1, Post p2) {
                 String t1 = p1.getTimeSince().getTimeSince();
                 String t2 = p2.getTimeSince().getTimeSince();
-                return t1.compareTo(t2);
+                return t2.compareTo(t1);
                 //   return t1-t2; // Ascending
                 //return t2 - t1; // Descending
             }
         });
     }
+    public double getLocDiff(){
+        return this.locDiff;
+    }
+    private double getDiff(double lat, double lon){
+        //Euclidean distance
+        double x1 = lat;
+        double y1 = lon;
+        double x2 = Parameters.DEV_LATITUDE;
+        double y2 = Parameters.DEV_LONGITUDE;
+        Log.v("sort",Double.toString(x1)+" "+ Double.toString(x2));
+        Log.v("sort",Double.toString(y1)+" "+ Double.toString(y2));
+        double  xDiff = Math.abs(x1-x2);
+        double  xSqr  = Math.pow(xDiff, 2);
 
+        double yDiff = Math.abs(y1-y2);
+        double ySqr = Math.pow(yDiff, 2);
+
+        double output   = Math.sqrt(xSqr + ySqr);
+        Log.v("sort - diff", Double.toString(output));
+        return output;
+    }
     //toString to converto to JSON
 
     @Override
