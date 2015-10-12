@@ -17,7 +17,7 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 public class Parameters {
 
     // Login parameters
-    public static boolean dummyData = true;
+    public static boolean dummyData = false;
     public static final String login_key = "@thisIsMyLogin";
     public static String loginUserId = null;
     public static String loginUsername = null;
@@ -129,4 +129,9 @@ public class Parameters {
             titleTextView.setTextSize(titleSize);
         }
     }
+
+    //Device location params
+    public static double devLatitude = 0.0;
+    public static double devLongitude = 0.0;
+
 }

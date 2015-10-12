@@ -29,4 +29,5 @@ dependencies {
     compile 'com.sachinhandiekar:jInstagram:1.1.4'
     compile files('libs/weka-3.6.6-android.jar')
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.google.android.gms:play-services-location:8.1.0'
 }

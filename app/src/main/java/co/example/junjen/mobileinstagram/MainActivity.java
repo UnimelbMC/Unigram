@@ -1,12 +1,16 @@
 package co.example.junjen.mobileinstagram;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.support.v7.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
-import android.os.StrictMode;
-import android.support.v7.app.AppCompatActivity;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.StrictMode;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,6 +20,12 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import org.jinstagram.auth.InstagramAuthService;
 import org.jinstagram.auth.model.Token;
@@ -32,11 +42,12 @@ import java.io.ObjectOutputStream;
 
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.network.Network;
 import co.example.junjen.mobileinstagram.network.NetParams;
+import co.example.junjen.mobileinstagram.network.Network;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,LocationListener{
 
     int mainActivityView = R.layout.activity_main;
     public static Activity mainActivity;
@@ -44,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
     int loginClickInBrowserCount = 0;
     int urlCount = 0;
     int splashScreenDuration = 0;
+    //Location needed
+    protected static GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    LocationRequest locationRequest;
+    boolean mRequestingLocationUpdates= true;
+    LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +95,18 @@ public class MainActivity extends AppCompatActivity {
 
         // check if token is present
         checkToken();
+        //Init LocationManager
+        initGoogleApiClient();
+        getLoc();
     }
-
+    //API Client to get location
+    private void initGoogleApiClient(){
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
     // action to take when login button is clicked
     public void loginButtonAction(View v){
 
@@ -98,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
             myWebView.loadUrl(NetParams.AUTHORIZE_URL);
         }
     }
+
 
     // WebView client for login sessions
     private class LoginWebViewClient extends WebViewClient{
@@ -290,6 +318,69 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static synchronized void getLoc() {
+        Log.v("GPS-Conn", "1");
+        if (mGoogleApiClient != null) {
+            Log.v("GPS-Conn", "2");
+            mGoogleApiClient.connect();
+        }
+    }
+    @Override
+    public void onConnected(Bundle connectionHint) {
+       // LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,  locationRequest, this);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        Log.v("GPS-onConn", "1");
+        if (mLastLocation != null) {
+            Parameters.devLatitude = mLastLocation.getLatitude();
+            Parameters.devLongitude = mLastLocation.getLongitude();
+            Log.v("GPS-SUCCESS", Double.toString(Parameters.devLatitude) + " " + Double.toString(Parameters.devLongitude));
+        }else{
+            Parameters.devLatitude = -37.8138434;
+            Parameters.devLongitude = 144.9595481;
+            Log.v("GPS-FAILED", Double.toString(Parameters.devLatitude) + " " + Double.toString(Parameters.devLongitude));
+        }
+        if (mRequestingLocationUpdates) {
+            createLocationRequest();
+            startLocationUpdates();
+        }
+
+    }
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest,  this);
+    }
+    @Override
+    public void onConnectionSuspended(int i) {
+       //NOTHING
+    }
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        //Latitude south, longitude east
+        Parameters.devLatitude = -37.8138434;
+        Parameters.devLongitude = 144.9595481;
+        Log.v("GPS-FAILED-CONN",Double.toString(Parameters.devLatitude)+" "+Double.toString(Parameters.devLongitude));
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        //Update device location
+        if (location != null) {
+            Parameters.devLatitude = location.getLatitude();
+            Parameters.devLongitude = location.getLongitude();
+            Log.v("GPS-UPDATED", Double.toString(Parameters.devLatitude) + " " + Double.toString(Parameters.devLongitude));
+        }
+        //Stop location listener
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -307,6 +398,13 @@ public class MainActivity extends AppCompatActivity {
         Log.v("start", "2");
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "main activity saved");
@@ -330,4 +428,5 @@ public class MainActivity extends AppCompatActivity {
 
         super.onDestroy();
     }
+
 }
