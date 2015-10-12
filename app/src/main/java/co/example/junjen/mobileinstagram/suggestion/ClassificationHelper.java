@@ -51,7 +51,6 @@ public class ClassificationHelper {
         this.suggestedUsersIdList = fetchFollowsList(this.userId, MAX_SUGG_USR_TO_FETCH);;
         this.notSuggestedUsersIdList = new ArrayList<String>();
         this.possibleUsersId = new ArrayList<String>();
-
     }
 
 
