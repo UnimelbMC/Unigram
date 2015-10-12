@@ -2,6 +2,7 @@ package co.example.junjen.mobileinstagram;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.StrictMode;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.network.Network;
@@ -78,6 +80,15 @@ public class MainActivity extends AppCompatActivity {
 
         // check if token is present
         checkToken();
+
+        if(savedInstanceState==null){
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            BluetoothSwipeFragment fragment = new BluetoothSwipeFragment();
+            transaction.replace(R.id.sample_content_fragment, fragment);
+            transaction.commit();
+
+        }
     }
 
     // action to take when login button is clicked
