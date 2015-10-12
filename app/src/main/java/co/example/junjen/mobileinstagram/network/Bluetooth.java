@@ -3,6 +3,8 @@ package co.example.junjen.mobileinstagram.network;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.ParcelUuid;
 import android.util.Log;
 
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by Tou on 10/11/2015.
