@@ -1279,8 +1279,8 @@ public class CameraFragment extends Fragment {
                 p.set("jpeg-quality", 100);
                 p.set("rotation", 90);
                 p.setPictureFormat(PixelFormat.JPEG);
-                //p.setPreviewSize(size.width, size.height);
-                p.setPreviewSize(preview.getHeight(), preview.getWidth());// here w h are reversed
+                p.setPreviewSize(size.width, size.height);
+               // p.setPreviewSize(preview.getHeight(), preview.getWidth());// here w h are reversed
                 mCamera1.setParameters(p);
 
                 mCamera1.setDisplayOrientation(90);
