@@ -1,14 +1,12 @@
 package co.example.junjen.mobileinstagram;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +17,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
@@ -62,11 +59,15 @@ public class UserFeedFragment extends Fragment
     private ArrayList<Post> allPosts = new ArrayList<>();
 
     // keep track of max and min id of last post generated to generate new set of posts
-    private String maxPostId;
-    private String minPostId;
+    private String maxPostId = null;
+    private String minPostId = null;
 
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts = true;
+    //TEST remember to change to false
+    private boolean showPostByLoc = false;
+    private boolean showPostByTime = true;
+    private String prevSort = "time";
 
     private OnFragmentInteractionListener mListener;
 
@@ -291,8 +292,10 @@ public class UserFeedFragment extends Fragment
         allPosts.addAll(userFeed);
 
         if(!Parameters.dummyData) {
-            updateTimeSince();
+            updateUserFeedView();
         }
+        //updateUserFeedView();
+
     }
 
     // get new userfeed posts
@@ -342,13 +345,46 @@ public class UserFeedFragment extends Fragment
         allPosts.addAll(0, userFeed);
 
         if(!Parameters.dummyData) {
-            updateTimeSince();
+            updateUserFeedView();
         }
     }
 
     // update time since posted of all posts
-    private void updateTimeSince(){
+    private void updateUserFeedView(){
+        //Resort by location
+        if(showPostByLoc){
+            Log.v("sort","showByLoc");
+            Post.sortPostByLocation(allPosts);
+            prevSort = "loc";
+            userFeedView.removeAllViews();
+            for (Post post : allPosts) {
+                if (post.getLocation() != null){
+                    Log.v("sort",Double.toString(post.getLocDiff()));
+                }else{
+                    Log.v("sort",post.getUsername().getUsername());
+                }
+
+                userFeedView.addView(post.getPostView());
+            }
+         //resort by time if needed
+        }else if(showPostByTime && !prevSort.equals("time")){
+            prevSort = "time";
+            Post.sortPostByTime(allPosts);
+            userFeedView.removeAllViews();
+            for (Post post : allPosts){
+                if (post.getLocation() != null){
+                    Log.v("sort",Double.toString(post.getLocDiff()));
+                }else{
+                    Log.v("sort",post.getUsername().getUsername());
+                }
+                userFeedView.addView(post.getPostView());
+            }
+        }
+
         for (Post post : allPosts){
+            if(post.getLocation()!= null){
+                Log.v("DIFF",Double.toString(post.getLocDiff()));
+            }
             TimeSince timeSince = post.getTimeSince();
 
             // update post time since

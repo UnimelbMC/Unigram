@@ -146,7 +146,8 @@ public class Parameters {
     }
 
     //Device location params
-    public static double devLatitude = 0.0;
-    public static double devLongitude = 0.0;
+    public static double DEV_LATITUDE = -37.8138434;
+    public static double DEV_LONGITUDE = 144.9595481;
+    public static boolean LOC_DONE = false;
 
 }
