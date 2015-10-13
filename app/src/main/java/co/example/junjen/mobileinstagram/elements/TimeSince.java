@@ -2,7 +2,10 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.content.res.Resources;
 
+import org.json.JSONArray;
+
 import java.io.Serializable;
+import java.util.Arrays;
 
 import co.example.junjen.mobileinstagram.R;
 
@@ -80,5 +83,13 @@ public class TimeSince implements Serializable{
         double timeDiff = 0;
 
         return timeDiff;
+    }
+
+
+    public JSONArray toJson() {
+        String mStringArray[] = { timeSince,timeSinceDisplay};
+
+        JSONArray mJSONArray = new JSONArray(Arrays.asList(mStringArray));
+        return mJSONArray;
     }
 }

@@ -2,7 +2,10 @@ package co.example.junjen.mobileinstagram.elements;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+
 import java.io.Serializable;
+import java.util.Arrays;
 
 
 /**
@@ -12,14 +15,12 @@ import java.io.Serializable;
  */
 
 public class Location implements Serializable{
-    @Override
-    public String toString() {
-        return "Location{" +
-                "latitude=" + latitude +
-                ", locationId='" + locationId + '\'' +
-                ", location='" + location + '\'' +
-                ", longitude=" + longitude +
-                '}';
+
+    public JSONArray toJson() {
+        String mStringArray[] = { Double.toString(latitude),Double.toString(longitude),
+            location,locationId};
+        JSONArray mJSONArray = new JSONArray(Arrays.asList(mStringArray));
+        return mJSONArray;
     }
 
     private String locationId;
@@ -42,7 +43,9 @@ public class Location implements Serializable{
     public String getLocation() {
         return location;
     }
-
+    public String getLocationId() {
+        return locationId;
+    }
     public double getLatitude(){
         return latitude;
     }
@@ -50,5 +53,4 @@ public class Location implements Serializable{
     public double getLongitude(){
         return longitude;
     }
-
 }

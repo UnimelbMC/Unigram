@@ -31,7 +31,7 @@ public class Parameters {
     public static User loginUser = null;
     public static Profile loginProfile = null;
     public static ExpandableScrollView loginProfileView = null;
-    public static String dummyDataGreeting = "Hello "
+    public static String dummyDataGreeting = "Hello ";
 
     // Titles
     public static final String mainTitleBuffer = "     ";

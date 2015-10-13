@@ -2,6 +2,8 @@ package co.example.junjen.mobileinstagram.network;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.jinstagram.Instagram;
 import org.jinstagram.entity.comments.CommentData;
 import org.jinstagram.entity.comments.MediaCommentsFeed;
@@ -15,8 +17,11 @@ import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.entity.users.feed.UserFeed;
 import org.jinstagram.entity.users.feed.UserFeedData;
 import org.jinstagram.exceptions.InstagramException;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -205,6 +210,7 @@ public class Network {
     //Get arrayList of liked Posts for ActivityYou
     public ArrayList<Post> getPostsLikedList(List<MediaFeedData> mediaFeeds,boolean thumb){
         ArrayList<Post> thePosts = new ArrayList<>();
+        int i =0;
         for (MediaFeedData thisPost : mediaFeeds) {
             // omit posts that are in posts to unlike set (from UI clicks)
             if(!Parameters.postIdToUnlike.contains(thisPost.getId())) {
@@ -212,6 +218,7 @@ public class Network {
                 Parameters.postIdToLike.remove(post.getPostId());
                 thePosts.add(post);
             }
+            i++;
         }
         // add posts that are in the posts to like set (from UI clicks)
         for (String postId : Parameters.postIdToLike){
@@ -268,7 +275,6 @@ public class Network {
                 postData.getCreatedTime(), imgUrl, cap, likeCount,
                 postData.getComments().getCount(), likes,
                 getCommentsByPostId(postData.getId(), true));
-
         return post;
     }
 

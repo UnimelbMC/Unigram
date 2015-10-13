@@ -19,11 +19,14 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -41,33 +44,34 @@ import co.example.junjen.mobileinstagram.network.NetParams;
 
 public class Post implements Serializable{
 
-    private String postId;
-    private Post post = this;
+    protected String postId;
+    protected Post post = this;
 
     // post header
-    private Image userImage;
-    private Username username;
-    private Location location;
-    private TimeSince timeSince;
+    protected Image userImage;
+    protected Username username;
+    protected Location location;
+    protected TimeSince timeSince;
 
     // post content
-    private Image postImage;
-    private String caption;
-    private int likeCount;
-    private int commentCount;
-    private ArrayList<User> likes;
-    private ArrayList<Comment> comments;
+    protected Image postImage;
+    protected String caption;
+    protected int likeCount;
+    protected int commentCount;
+    protected ArrayList<User> likes;
+    protected ArrayList<Comment> comments;
 
     // post view
-    private RelativeLayout postView;
-    private ToggleButton likeButton;
+    protected RelativeLayout postView;
+    protected ToggleButton likeButton;
 
-    // swiped post source
-    private Username swipedFrom;
+    // swiped post variables
+    protected Username swipedFrom;
+    protected byte[] swipedPostImage;
 
     // helper variables
-    private String liked = Parameters.checkLike;
-    private double locDiff = 10000;
+    protected String liked = Parameters.checkLike;
+    protected double locDiff = 10000;
 
     public Post(){
         // test constructor to create 'empty' Post objects
@@ -162,14 +166,14 @@ public class Post implements Serializable{
 
     // constructor for swiped posts
     public Post(String postId, Username poster, String userImage, Location location,
-                String timeSince, String postImage, String caption, Username swipedFrom){
+                String timeSince, byte[] postImage, String caption, Username swipedFrom){
 
         this.postId = postId;
         this.userImage = new Image(userImage);
         this.username = poster;
         this.location = location;
         this.timeSince = new TimeSince(timeSince);
-        this.postImage = new Image(postImage);
+        this.swipedPostImage = postImage;
         this.caption = caption;
 
         this.swipedFrom = swipedFrom;
@@ -311,9 +315,8 @@ public class Post implements Serializable{
 
         // Post image
         ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-        if (!this.postImage.getImageString().equals(Parameters.default_image)) {
-            Image.setImage(postImage, this.postImage);
-        }
+        Image.setSwipedImage(this.swipedPostImage, postImage);
+
         // set listener to handle double tap likes on post image
         new PostImageListener(postImage, this);
 
@@ -717,27 +720,57 @@ public class Post implements Serializable{
         Log.v("sort - diff", Double.toString(output));
         return output;
     }
-    //toString to converto to JSON
 
-    @Override
-    public String toString() {
-        return "Post [" +
-                "caption='" + caption + '\'' +
-                ", postId='" + postId + '\'' +
-                ", post=" + post +
-                ", userImage=" + userImage +
-                ", username=" + username +
-                ", location=" + location +
-                ", timeSince=" + timeSince +
-                ", postImage=" + postImage +
-                ", likeCount=" + likeCount +
-                ", commentCount=" + commentCount +
-                ", likes=" + likes +
-                ", comments=" + comments +
-                ", postView=" + postView +
-                ", likeButton=" + likeButton +
-                ", liked='" + liked + '\'' +
-                ']';
+    public String toJson(byte[] postImage,Username from) {
+        String locId="",location= "";
+        String lat="0.0",lon= "0.0";
+       if(this.location!=null) {
+           locId =this.location.getLocationId();
+           location= this.location.getLocation();
+           lat = Double.toString(this.location.getLatitude());
+           lon = Double.toString(this.location.getLongitude());
+       }
+        String posImg = (postImage != null)? Arrays.toString(postImage): "";
+
+        String mStringArray[] = { this.postId,this.username.getUserId(),this.username.toString(),this.userImage.getImageString(),locId,location,lat,lon,
+            this.timeSince.getTimeSince(),posImg,this.caption,from.getUserId(),from.getUsername()};
+
+        JSONArray mJSONArray = new JSONArray(Arrays.asList(mStringArray));
+      return mJSONArray.toString();
+    }
+    public  static Post fromJson(String jsonString) {
+        /*["1083357674137135574_43112249","43112249","junjen","https:\/\/igcdn-photos-g-a.akamaihd.net\/hphotos-ak-xap1\/t51.2885-19\/10616895_1513523718919046_1668960888_a.jpg","355312","Regent Theatre","-37.815726848","144.967848051","1443366320","","Brings back memories watching one of my favourite films in its musical form.","eqe2","jimbart098"]
+        * */
+        JSONArray jsonA = null;
+        try {
+            jsonA = new JSONArray(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> list = new ArrayList<String>();
+        if (jsonA != null) {
+            int len = jsonA.length();
+            for (int x=0;x<len;x++){
+                try {
+                    list.add(jsonA.get(x).toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        String[] json = new String[list.size()];
+        json = list.toArray(json);
+
+        String postId = json[0];
+        Username poster = new Username(json[1],json[2]);
+        String userImage = json[3];
+        Location location = new Location(json[4], json[5],Double.parseDouble(json[6]),Double.parseDouble(json[7]));
+        String timeSince = json[8];
+        byte[] postImage = json[9].getBytes();
+        String caption=json[10];
+        Username swipedFrom = new Username(json[11],json[12]);
+
+        return new Post(postId,poster,userImage,location,timeSince,postImage,caption,swipedFrom);
     }
 
     public void setLiked(String like){
