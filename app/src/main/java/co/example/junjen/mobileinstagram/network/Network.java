@@ -30,7 +30,6 @@ import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.elements.User;
-import co.example.junjen.mobileinstagram.suggestion.Suggestion;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -39,10 +38,11 @@ public class Network {
     // Object used to retrieve data from Instagram API
     private final int MAX_USER_FEED_POSTS =
             Parameters.postIconsPerRow * Parameters.postIconRowsToLoad;
-    private final int MAX_ACTIVITY_FOLLOWING = 50;
+    private final int MAX_ACTIVITY_FOLLOWING = Parameters.activityFollowingUsersToGet;
     private Instagram instagram;
     private UserInfoData thisUserData;
     private ArrayList<Post> fakePost = new ArrayList<>();
+    private boolean first = true;
 
     public Network() {
         instagram = new Instagram(NetParams.ACCESS_TOKEN);
@@ -55,7 +55,6 @@ public class Network {
                 thisUserData = instagram.getCurrentUserInfo().getData();
                 Log.v("NETWORK", "accesstoken success");
                 gotData = 100;
-//                Suggestion suggestion = new Suggestion("self");
                 return;
             } catch (InstagramException e) {
                 Log.v("NETWORK", "accesstoken failed " + e.getMessage());
@@ -175,7 +174,15 @@ public class Network {
     public ArrayList<Post> getUserFeed(String minId, String maxId){
 
         try {
-            MediaFeed feed = instagram.getUserFeeds(maxId, minId, Parameters.postsToLoad);
+
+            MediaFeed feed;
+           /* if(first){
+                feed = instagram.getUserFeeds();
+                first = false;
+            }else{*/
+                feed = instagram.getUserFeeds(maxId, minId, Parameters.postsToLoad);
+            //}
+
             List<MediaFeedData> userFeed = feed.getData();
             return getPostsList(userFeed,false);
         } catch (InstagramException e) {
@@ -190,6 +197,26 @@ public class Network {
             Post post = buildPost(thisPost, thumb);
             thePosts.add(post);
         }
+        Log.v("NETWORK","size of the post from ingram"+Integer.toString(thePosts.size()));
+        return thePosts;
+    }
+
+    //Get arrayList of liked Posts for ActivityYou
+    public ArrayList<Post> getPostsLikedList(List<MediaFeedData> mediaFeeds,boolean thumb){
+        ArrayList<Post> thePosts = new ArrayList<>();
+        for (MediaFeedData thisPost : mediaFeeds) {
+            // omit posts that are in posts to unlike set (from UI clicks)
+            if(!Parameters.postIdToUnlike.contains(thisPost.getId())) {
+                Post post = buildPost(thisPost, thumb);
+                Parameters.postIdToLike.remove(post.getPostId());
+                thePosts.add(post);
+            }
+        }
+        // add posts that are in the posts to like set (from UI clicks)
+        for (String postId : Parameters.postIdToLike){
+            thePosts.add(0, getPostById(postId));
+        }
+
         Log.v("NETWORK","size of the post from ingram"+Integer.toString(thePosts.size()));
         return thePosts;
     }
@@ -211,7 +238,7 @@ public class Network {
     // creates Post object based on post data
     public Post buildPost(MediaFeedData postData, boolean thumb){
 
-        Location loc = null;
+        Location loc = null;// new Location();
         String cap = null;
         String imgUrl;
         if (postData.getLocation()!= null){
@@ -224,13 +251,13 @@ public class Network {
         if (thumb){
             imgUrl = postData.getImages().getThumbnail().getImageUrl();
         } else {
-            imgUrl = postData.getImages().getStandardResolution().getImageUrl();
+            imgUrl = postData.getImages().getLowResolution().getImageUrl();
         }
 
         // get likes
         int likeCount = postData.getLikes().getCount();
         ArrayList<User> likes = new ArrayList<>();
-        if (likeCount <= Parameters.likePreviewThreshold){
+        if (likeCount <= Parameters.likePreviewThreshold + 1){
             likes = getLikesByPostId(postData.getId());
         }
 
@@ -322,8 +349,12 @@ public class Network {
             List<UserFeedData> users = feed.getUserList();
             ArrayList<User> result = new ArrayList<>();
             for (UserFeedData u : users){
-                User newFollowing = new User(u.getId(), u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
-                result.add(newFollowing);
+                // omit users to unfollow
+                if(!Parameters.userIdToUnfollow.contains(u.getId())) {
+                    User newFollowing = new User(u.getId(), u.getUserName(),
+                            u.getProfilePictureUrl(), u.getFullName());
+                    result.add(newFollowing);
+                }
             }
 
             return result;
@@ -348,12 +379,24 @@ public class Network {
     }
 
     // search for user info by user ID
-    public Profile searchUserById(String userId){
+    public Profile searchUserProfileById(String userId){
         try {
             UserInfo feed = instagram.getUserInfo(userId);
             return new Profile(new User(userId, feed.getData().getUsername(),
                     feed.getData().getProfilePicture(), feed.getData().getFullName()),
                     feed.getData().getBio());
+        } catch (InstagramException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // search for user info by user ID
+    public User searchUserInfoById(String userId){
+        try {
+            UserInfo feed = instagram.getUserInfo(userId);
+            return new User(userId, feed.getData().getUsername(),
+                    feed.getData().getProfilePicture(), feed.getData().getFullName());
         } catch (InstagramException e) {
             e.printStackTrace();
             return null;
@@ -366,8 +409,8 @@ public class Network {
         ArrayList<Post> recentPosts = new ArrayList<>();
         ArrayList<ActivityFollowing> actFollowing = new ArrayList<>();
         //MIN is later than
-        long week = 10080*60; // seconds
-        long month  = 43800 * 60; //seconds
+        long week = Parameters.week; // seconds
+        long month  = Parameters.month; //seconds
         long now = System.currentTimeMillis() / 1000L;
         long minTimeSec = now - month;  // last month
         long maxTimeSec = now - 3600;   //last minute;
@@ -447,7 +490,7 @@ public class Network {
 
             List<MediaFeedData> mediaFeeds = mediaFeed.getData();
             Log.v("NET LIKES",Integer.toString(mediaFeeds.size()));
-            return getPostsList(mediaFeeds, true);
+            return getPostsLikedList(mediaFeeds, true);
         } catch (InstagramException e) {
             e.printStackTrace();
             return null;
@@ -475,6 +518,17 @@ public class Network {
         } catch (InstagramException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public boolean isPostLikedByLoginUser(String postId){
+        boolean liked;
+        try {
+            liked = instagram.getMediaInfo(postId).getData().isUserHasLiked();
+            return liked;
+        } catch (InstagramException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

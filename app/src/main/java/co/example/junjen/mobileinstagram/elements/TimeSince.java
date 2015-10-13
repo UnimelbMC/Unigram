@@ -39,23 +39,25 @@ public class TimeSince implements Serializable{
         int day = Parameters.day;
         int week = Parameters.week;
 
+        int absTime = Math.abs((int) time);
+
         // eg: 11w
-        if (time >= week){
+        if (absTime >= week){
             convertedTime = (int) Math.floor(time/week);
             formattedTime = Integer.toString(convertedTime) + "w";
         }
         // eg: 11d
-        else if (time >= day){
+        else if (absTime >= day){
             convertedTime = (int) Math.floor(time/day);
             formattedTime = Integer.toString(convertedTime) + "d";
         }
         // eg: 11h
-        else if (time >= hour){
+        else if (absTime >= hour){
             convertedTime = (int) Math.floor(time/hour);
             formattedTime = Integer.toString(convertedTime) + "h";
         }
         // eg: 11m
-        else if (time >= minute){
+        else if (absTime >= minute){
             convertedTime = (int) Math.floor(time/minute);
             formattedTime = Integer.toString(convertedTime) + "m";
         }

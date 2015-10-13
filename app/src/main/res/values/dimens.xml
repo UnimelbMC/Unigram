@@ -8,6 +8,9 @@
 
     <!-- Activity Bar -->
     <dimen name="activity_bar_height">46dp</dimen>
+    <dimen name="sort_button_height">25dp</dimen>
+    <dimen name="sort_button_width">50dp</dimen>
+
 
     <!-- Nav bar -->
     <dimen name="nav_bar_height">51dp</dimen>
@@ -53,7 +56,6 @@
     <dimen name="user_follow_button_margin">10dp</dimen>
     <dimen name="user_follow_button_width">96dp</dimen>
     <dimen name="user_follow_button_height">30dp</dimen>
-    <dimen name="bottom_buffer_margin">640dp</dimen>
-
+    <dimen name="bottom_buffer_padding">640dp</dimen>
 
 </resources>

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.common.logger.Log;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
@@ -22,7 +23,6 @@ import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.StringFactory;
-import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 /**
@@ -54,14 +54,10 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     private OnFragmentInteractionListener mListener;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @param user Parameter 1.
      * @param title Parameter 2.
      * @return A new instance of fragment UsersFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static UsersFragment newInstance(ArrayList<User> user, String title) {
         UsersFragment fragment = new UsersFragment();
         Bundle args = new Bundle();
@@ -91,12 +87,17 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Log.w("test", "user create");
+
         // remove loading animation
         Parameters.NavigationBarActivity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
         if(userFragment == null) {
 
             if (users != null) {
+
+                setTitle();
+
                 userFragment = (ExpandableScrollView) inflater.inflate(
                         R.layout.fragment_expandable_scroll_view, container, false);
                 userFragment.setScrollViewListener(this);
@@ -140,7 +141,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
         }
     }
 
-    // loads a number of comments based on a threshold
+    // loads a number of users based on a threshold
     private void loadUser(){
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -149,53 +150,21 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
         int loadUserThreshold = Parameters.loadUserThreshold;
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
-        // load chunk of comments based on a threshold
+        // load chunk of users based on a threshold
         for (i = 0; i < loadUserThreshold; i++){
 
-            if (userCount >= usersSize || userCount >= Parameters.maxLikes) {
+            if (userCount >= usersSize || userCount >= Parameters.maxUsers) {
                 break;
             }
 
-            // load view components
+            // build user view components
             View userElement = inflater.inflate(R.layout.user_element, usersView, false);
-            ImageView userImage = (ImageView) userElement.findViewById(R.id.user_user_image);
-            TextView username = (TextView) userElement.findViewById(R.id.user_username);
-            TextView profName = (TextView) userElement.findViewById(R.id.user_prof_name);
-            final ToggleButton followButton = (ToggleButton)
-                    userElement.findViewById(R.id.user_follow_button);
-
             User user = users.get(userCount);
+            user.buildUserElement(userElement);
 
-            username.setText("");   // remove default text
-            stringComponents.add(user.getUsername().getUsernameLink());
-            StringFactory.stringBuilder(username, stringComponents);
-            stringComponents.clear();
-
-            Profile.checkIfFollowing(user.getUsername().getUserId(), followButton);
-
-            // set listener to followButton
-            followButton.setOnClickListener(new View.OnClickListener() {
-
-                // Handle clicks for like button
-                @Override
-                public void onClick(View v) {
-                    if (followButton.isChecked()) {
-                        Profile.updateFollowingCount(true);
-                    } else {
-                        Profile.updateFollowingCount(false);
-                    }
-                }
-            });
-
-            // set user image
-            Image.setImage(userImage, user.getUserImage());
-
-            // set user profile name
-            String text = user.getProfName();
-            if(text == null || text.equals("")){
-                profName.setVisibility(View.GONE);
-            } else {
-                profName.setText(text);
+            // check follow button if in following list
+            if(title.equals(Parameters.followingTitle)) {
+                Profile.checkFollowButton(user.getFollowButton(), true);
             }
 
             usersView.addView(userElement, userCount);
@@ -206,26 +175,28 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     // sets the action bar title when in a comment fragment
     public void setTitle(){
         Parameters.setTitle(Parameters.NavigationBarActivity, title, Parameters.subTitleSize);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        Parameters.NavigationBarActivity.activityFeedBar(false);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
+        Log.w("test", "user attach");
+
         setTitle();
+
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onResume() {
+        super.onResume();
+
+        if(users != null){
+            for(User user : users){
+                user.updateFollowButton();
+            }
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
@@ -170,14 +171,16 @@ public class ActivityFollowingFragment extends Fragment
 
                 // get starting position of user feed scroll view
                 activityFollowingFragmentTop = refresh.getBottom();
+                int start = refresh.getTop();
 
-                refreshPoint = Math.round(activityFollowingFragmentTop / Parameters.refreshThreshold);
+                refreshPoint = Math.round((activityFollowingFragmentTop - start) /
+                        Parameters.refreshThreshold + start);
 
                 // set scroll to initial position if user feed is being initialised
                 if (!initialised) {
                     returnToTop(activityFollowingFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.activityFollowingFragmentTop = activityFollowingFragmentTop;
+                    activityFollowingFragment.setTopLevel(activityFollowingFragmentTop);
                 }
             }
         });
@@ -232,7 +235,8 @@ public class ActivityFollowingFragment extends Fragment
     // loads a chunk of activityFollowing on the activity view
     private void loadActivityFollowing() {
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<LayoutInflater>(LayoutInflater.from(getContext()));
         int i;
         View activityView;
         ArrayList<ActivityFollowing> activityFeed;
@@ -242,12 +246,14 @@ public class ActivityFollowingFragment extends Fragment
             //Pass the date as strings min/max
             activityFeed = NetParams.NETWORK.getActivityFeedFollowing(null, null);
 
-            int aFsize = activityFeed.size();
-            if (activityFeed.size() > 0){
-                //Posts earlier than last
-                int size = activityFeed.get(aFsize - 1).getPostIcons().size();
-                maxTimeSince = activityFeed.get(aFsize - 1).getPostIcons().get(size - 1).
-                        getTimeSince().getTimeSince();
+            if (activityFeed != null) {
+                int aFsize = activityFeed.size();
+                if (activityFeed.size() > 0) {
+                    //Posts earlier than last
+                    int size = activityFeed.get(aFsize - 1).getPostIcons().size();
+                    maxTimeSince = activityFeed.get(aFsize - 1).getPostIcons().get(size - 1).
+                            getTimeSince().getTimeSince();
+                }
             }
         } else {
             activityFeed = new ArrayList<>();
@@ -256,7 +262,7 @@ public class ActivityFollowingFragment extends Fragment
             }
         }
         for (ActivityFollowing activity : activityFeed) {
-            activity.buildActivityView(inflater);
+            activity.buildActivityView(weakInflater.get());
             activityView = activity.getActivityView();
 
             // if activity is from dummyData
@@ -272,6 +278,10 @@ public class ActivityFollowingFragment extends Fragment
             activityFollowingIndex++;
         }
         allActivityFollowing.addAll(activityFeed);
+
+        if(!Parameters.dummyData) {
+            updateTimeSince();
+        }
     }
 
     // get new activity of following
@@ -281,7 +291,8 @@ public class ActivityFollowingFragment extends Fragment
         // to the activity view
         refreshActivity = false;
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<LayoutInflater>(LayoutInflater.from(getContext()));
         int i;
         View activityView;
         ArrayList<ActivityFollowing> activityFeed;
@@ -305,7 +316,7 @@ public class ActivityFollowingFragment extends Fragment
         int size = activityFeed.size();
         activityTopCount += size;
         for (ActivityFollowing activity : activityFeed) {
-            activity.buildActivityView(inflater);
+            activity.buildActivityView(weakInflater.get());
             activityView = activity.getActivityView();
 
             // if activity is from dummyData
@@ -321,7 +332,9 @@ public class ActivityFollowingFragment extends Fragment
         }
         activityFollowingIndex += size;
         allActivityFollowing.addAll(0, activityFeed);
-        updateTimeSince();
+        if(!Parameters.dummyData) {
+            updateTimeSince();
+        }
     }
 
     // update time since posted of all activity

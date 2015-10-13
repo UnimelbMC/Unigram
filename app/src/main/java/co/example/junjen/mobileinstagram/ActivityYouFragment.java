@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
@@ -170,14 +171,16 @@ public class ActivityYouFragment extends Fragment
 
                 // get starting position of user feed scroll view
                 activityYouFragmentTop = refresh.getBottom();
+                int start = refresh.getTop();
 
-                refreshPoint = Math.round(activityYouFragmentTop / Parameters.refreshThreshold);
+                refreshPoint = Math.round((activityYouFragmentTop - start)
+                        / Parameters.refreshThreshold + start);
 
                 // set scroll to initial position if user feed is being initialised
                 if (!initialised) {
                     returnToTop(activityYouFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.activityYouFragmentTop = activityYouFragmentTop;
+                    activityYouFragment.setTopLevel(activityYouFragmentTop);
                 }
             }
         });
@@ -244,7 +247,8 @@ public class ActivityYouFragment extends Fragment
     // loads a chunk of activityFollowing on the activity view
     private void loadActivityYou() {
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         ArrayList<Post> activityFeed;
         int count = Parameters.activityYouIconsPerRow * Parameters.activityYouRowsToLoad;
@@ -253,12 +257,14 @@ public class ActivityYouFragment extends Fragment
             // TODO: update method
             activityFeed = NetParams.NETWORK.getMediaUserLikes(Long.parseLong(maxPostId), count);
 
-            int aFsize = activityFeed.size();
-            if (activityFeed.size() > 0){
-                //Posts earlier than last
-                String temp = activityFeed.get(aFsize - 1).getPostId();
-                String[] stringArray = temp.split("_");
-                maxPostId = stringArray[0];
+            if (activityFeed != null) {
+                int aFsize = activityFeed.size();
+                if (activityFeed.size() > 0) {
+                    //Posts earlier than last
+                    String temp = activityFeed.get(aFsize - 1).getPostId();
+                    String[] stringArray = temp.split("_");
+                    maxPostId = stringArray[0];
+                }
             }
         } else {
             activityFeed = new ArrayList<>();
@@ -272,7 +278,7 @@ public class ActivityYouFragment extends Fragment
             post.setLiked(Parameters.like);
         }
 
-        Post.buildPostIcons(inflater, activityYouFragmentView, activityFeed,
+        Post.buildPostIcons(weakInflater.get(), activityYouFragmentView, activityFeed,
                 Parameters.activityYouIconsPerRow, Parameters.activityYouRowsToLoad);
 
         allActivityYou.addAll(activityFeed);
@@ -285,7 +291,8 @@ public class ActivityYouFragment extends Fragment
         // to the activity view
         refreshActivity = false;
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         ArrayList<Post> activityFeed;
         int count = Parameters.activityYouIconsPerRow * Parameters.activityYouRowsToLoad;
@@ -314,7 +321,7 @@ public class ActivityYouFragment extends Fragment
 
         allActivityYou.addAll(0, activityFeed);
         activityYouFragmentView.removeAllViews();
-        Post.buildPostIcons(inflater, activityYouFragmentView, allActivityYou,
+        Post.buildPostIcons(weakInflater.get(), activityYouFragmentView, allActivityYou,
                 Parameters.activityYouIconsPerRow, Parameters.activityYouRowsToLoad);
     }
 

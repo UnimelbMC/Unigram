@@ -38,11 +38,11 @@ public class ClassificationHelper {
     private String userId;
 
     // Fetch a max amount of class suggested users
-    private static final int MAX_SUGG_USR_TO_FETCH = 14;
+    private static final int MAX_SUGG_USR_TO_FETCH = SuggestionParams.MAX_SUGG_USR_TO_FETCH;
     // Fetch a max amount of class not sugg users
-    private static final int MAX_NOT_SUGG_USR_TO_FETCH = 9;
+    private static final int MAX_NOT_SUGG_USR_TO_FETCH = SuggestionParams.MAX_NOT_SUGG_USR_TO_FETCH;
     // Number of possible users to be suggested per suggested user
-    private static final int NUM_POSS_USR_PER_SUGG_USR = 2;
+    private static final int NUM_POSS_USR_PER_SUGG_USR = SuggestionParams.NUM_POSS_USR_PER_SUGG_USR;
 
     // ClassificationHelper for a user with userId
     public ClassificationHelper(String userId){
@@ -107,10 +107,11 @@ public class ClassificationHelper {
     public ArrayList<String> fetchNotInterestingUsers(){
         ArrayList<String> notInterestingUsers = new ArrayList<String>();
         try{
-            ArrayList<String> followList = fetchFollowsList(userId, 50);
+            ArrayList<String> followList = fetchFollowsList(userId, SuggestionParams.followersToGet);
             List<UserFeedData> followedByList =  instagram.getUserFollowedByList(userId).getUserList();
             int counter = 0;
-            while(notInterestingUsers.size() < 10 && !(followedByList.size() == 0) ){
+            while(notInterestingUsers.size() < MAX_NOT_SUGG_USR_TO_FETCH
+                    && !(followedByList.size() == 0) ){
                 if(!followList.contains(followedByList.get(counter))){
                     notInterestingUsers.add(followedByList.get(counter).getId());
                     counter++;
@@ -140,9 +141,10 @@ public class ClassificationHelper {
                 && !(notInterestingUsersList.size()==0)){
             for(String userId2: notInterestingUsersList){
                 int i = 0;
-                ArrayList<String> userIdList= fetchFollowsList(userId2, 10);
+                ArrayList<String> userIdList= fetchFollowsList(userId2, MAX_SUGG_USR_TO_FETCH);
                 if(userIdList.size()!=0){
-                    while(i<2 && !(userIdList.size()==0) && notSuggestedUsersIdList.size()<10){
+                    while(i<2 && !(userIdList.size()==0)
+                            && notSuggestedUsersIdList.size()<MAX_NOT_SUGG_USR_TO_FETCH){
                         userId1 = userIdList.get(i);
                         // if userId1 is not an user self follows add it to not suggested
                         if(!(selfList.contains(userId1))){

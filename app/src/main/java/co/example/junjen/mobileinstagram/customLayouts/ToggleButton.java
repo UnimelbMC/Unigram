@@ -8,7 +8,7 @@ import android.widget.RadioGroup;
 /**
  * Created by junjen on 1/10/2015.
  *
- * Custom Like button that can be toggled off
+ * Custom Like or follow button that can be toggled off
  */
 
 public class ToggleButton extends RadioButton {

@@ -5,6 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
@@ -55,7 +59,12 @@ public class Parameters {
     public static final int postsToLoad = 10;
     public static final int loadCommentThreshold = 20;
     public static final int loadUserThreshold = 100;
-    public static final int maxLikes = 300;
+    public static final int maxUsers = 300;
+
+    // Discover parameters
+    public static final int default_suggestions = 10;
+    public static final int default_usersToSearch = 10;
+    public static final int searchedUsersToReturn = 14;
 
     // Activity Feed parameters
     public static final String activityFollowing_key = "following";
@@ -72,7 +81,7 @@ public class Parameters {
 
     // ActivityYouFragment parameters
     public static final int activityYouIconsPerRow = 3;
-    public static final int activityYouRowsToLoad = 1;
+    public static final int activityYouRowsToLoad = 5;
 
     // Like feedback animation parameters
     public static final int likeAppearDuration = 100;
@@ -116,16 +125,21 @@ public class Parameters {
     public static int loadingAnimationDelay = 0;
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
-    public static int userFeedFragmentTop;
-    public static int activityFollowingFragmentTop;
-    public static int activityYouFragmentTop;
     public static View NavigationBarView;
+
+    // Follow UI helper
+    public static final String follows_key = "follows";
+    public static Set<String> userIdToFollow = new HashSet<>();
+    public static Set<String> userIdToUnfollow = new HashSet<>();
+    public static Set<String> postIdToLike = new HashSet<>();
+    public static Set<String> postIdToUnlike = new HashSet<>();
 
     // Time constants
     public static final int minute = 60;
     public static final int hour = 60 * minute;
     public static final int day = 24 * hour;
     public static final int week = 7 * day;
+    public static final int month = 30 * day;
 
     public static void setTitle(AppCompatActivity activity, String title, float titleSize){
         View actionBar = activity.getSupportActionBar().getCustomView();
@@ -135,4 +149,10 @@ public class Parameters {
             titleTextView.setTextSize(titleSize);
         }
     }
+
+    //Device location params
+    public static double DEV_LATITUDE = -37.8138434;
+    public static double DEV_LONGITUDE = 144.9595481;
+    public static boolean LOC_DONE = false;
+
 }

@@ -1,14 +1,12 @@
 package co.example.junjen.mobileinstagram;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,9 +15,9 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
@@ -62,11 +60,16 @@ public class UserFeedFragment extends Fragment
     private ArrayList<Post> allPosts = new ArrayList<>();
 
     // keep track of max and min id of last post generated to generate new set of posts
-    private String maxPostId;
-    private String minPostId;
+    private String maxPostId = null;
+    private String minPostId = null;
 
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts = true;
+
+    //TEST remember to change to false
+    private boolean showPostByLoc = false;
+    private boolean showPostByTime = true;
+    private String prevSort = "time";
 
     private OnFragmentInteractionListener mListener;
 
@@ -137,9 +140,6 @@ public class UserFeedFragment extends Fragment
             // initialise scroll view position using a global layout listener
             initialisePosition();
 
-            // listener to go to initial position when views are loaded
-            goToInitialPosition();
-
             ((ViewGroup)refresh.getParent()).removeView(refresh);
             userFeedView.addView(refresh, 0);
 
@@ -173,26 +173,6 @@ public class UserFeedFragment extends Fragment
         });
     }
 
-    // add layout listener to add content if default screen is not filled
-    private void goToInitialPosition(){
-        ViewTreeObserver vto = userFeedView.getViewTreeObserver();
-        final int screenHeight = Parameters.NavigationViewHeight;
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                userFeedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-
-                int[] location = new int[2];
-                userFeedView.getLocationOnScreen(location);
-                currentHeight = location[1] + userFeedView.getHeight();
-
-                if (currentHeight <= screenHeight) {
-                    loadUserFeedPosts();
-                }
-            }
-        });
-    }
-
     // initialise scroll view position using a global layout listener
     private void initialisePosition(){
         ViewTreeObserver vto = refresh.getViewTreeObserver();
@@ -210,7 +190,7 @@ public class UserFeedFragment extends Fragment
                 if (!initialised) {
                     returnToTop(userFeedFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.userFeedFragmentTop = userFeedFragmentTop;
+                    userFeedFragment.setTopLevel(userFeedFragmentTop);
                 }
             }
         });
@@ -277,7 +257,8 @@ public class UserFeedFragment extends Fragment
     // loads a chunk of posts on the user feed view
     private void loadUserFeedPosts() {
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         View postView;
         ArrayList<Post> userFeed;
@@ -289,8 +270,6 @@ public class UserFeedFragment extends Fragment
             if (userFeed.size() > 0){
                 //Posts earlier than last
                 maxPostId = userFeed.get(uFSize - 1).getPostId();
-//                //Posts after first
-//                minPostId = userFeed.get(0).getPostId();
             }
         } else {
             userFeed = new ArrayList<>();
@@ -299,7 +278,7 @@ public class UserFeedFragment extends Fragment
             }
         }
         for (Post post : userFeed) {
-            postView = post.getPostView(inflater);
+            postView = post.getPostView(weakInflater.get());
 
             // if post is from dummyData
             if (Parameters.dummyData) {
@@ -314,7 +293,10 @@ public class UserFeedFragment extends Fragment
             postIndex++;
         }
         allPosts.addAll(userFeed);
-        updateTimeSince();
+
+        if(!Parameters.dummyData) {
+            updateUserFeedView();
+        }
     }
 
     // get new userfeed posts
@@ -324,7 +306,8 @@ public class UserFeedFragment extends Fragment
         // to the user feed view
         refreshPost = false;
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         View postView;
         ArrayList<Post> userFeed;
@@ -334,8 +317,6 @@ public class UserFeedFragment extends Fragment
             int uFSize = userFeed.size();
             Log.v("NETWORK", "sizeof ufeed " + Integer.toString(uFSize));
             if (userFeed.size() > 0){
-//                //Posts earlier than last
-//                maxPostId = userFeed.get(uFSize - 1).getPostId();
                 //Posts after first
                 minPostId = userFeed.get(0).getPostId();
             }
@@ -349,7 +330,7 @@ public class UserFeedFragment extends Fragment
         int size = userFeed.size();
         postTopCount += size;
         for (Post post : userFeed) {
-            postView = post.getPostView(inflater);
+            postView = post.getPostView(weakInflater.get());
 
             // if post is from dummyData
             if (Parameters.dummyData) {
@@ -364,12 +345,48 @@ public class UserFeedFragment extends Fragment
         }
         postIndex += size;
         allPosts.addAll(0, userFeed);
-        updateTimeSince();
+
+        if(!Parameters.dummyData) {
+            updateUserFeedView();
+        }
     }
 
     // update time since posted of all posts
-    private void updateTimeSince(){
+    private void updateUserFeedView(){
+        //Resort by location
+        if(showPostByLoc){
+            Log.v("sort","showByLoc");
+            Post.sortPostByLocation(allPosts);
+            prevSort = "loc";
+            userFeedView.removeAllViews();
+            for (Post post : allPosts) {
+                if (post.getLocation() != null){
+                    Log.v("sort",Double.toString(post.getLocDiff()));
+                }else{
+                    Log.v("sort",post.getUsername().getUsername());
+                }
+
+                userFeedView.addView(post.getPostView());
+            }
+         //resort by time if needed
+        }else if(showPostByTime && !prevSort.equals("time")){
+            prevSort = "time";
+            Post.sortPostByTime(allPosts);
+            userFeedView.removeAllViews();
+            for (Post post : allPosts){
+                if (post.getLocation() != null){
+                    Log.v("sort",Double.toString(post.getLocDiff()));
+                }else{
+                    Log.v("sort",post.getUsername().getUsername());
+                }
+                userFeedView.addView(post.getPostView());
+            }
+        }
+
         for (Post post : allPosts){
+            if(post.getLocation()!= null){
+                Log.v("DIFF",Double.toString(post.getLocDiff()));
+            }
             TimeSince timeSince = post.getTimeSince();
 
             // update post time since
@@ -400,10 +417,14 @@ public class UserFeedFragment extends Fragment
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(allPosts != null){
+            for(Post post : allPosts){
+                post.checkLikeButton();
+            }
         }
     }
 

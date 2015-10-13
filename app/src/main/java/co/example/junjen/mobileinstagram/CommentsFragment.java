@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -271,7 +272,9 @@ public class CommentsFragment extends Fragment {
 
         // update post
         comments.add(comments.size(), comment);
-        post.buildCommentView(LayoutInflater.from(getContext()));
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
+        post.buildCommentView(weakInflater.get());
 
         commentsScrollView.post(new Runnable() {
             @Override
