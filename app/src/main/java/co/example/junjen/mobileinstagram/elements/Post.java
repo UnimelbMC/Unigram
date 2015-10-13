@@ -67,7 +67,7 @@ public class Post implements Serializable{
 
     // swiped post variables
     protected Username swipedFrom;
-    protected byte[] swipedPostImage;
+    protected Image swipedPostImage;
 
     // helper variables
     protected String liked = Parameters.checkLike;
@@ -166,14 +166,14 @@ public class Post implements Serializable{
 
     // constructor for swiped posts
     public Post(String postId, Username poster, String userImage, Location location,
-                String timeSince, byte[] postImage, String caption, Username swipedFrom){
+                String timeSince,String postImage, String caption, Username swipedFrom){
 
         this.postId = postId;
         this.userImage = new Image(userImage);
         this.username = poster;
         this.location = location;
         this.timeSince = new TimeSince(timeSince);
-        this.swipedPostImage = postImage;
+        this.swipedPostImage =new Image(postImage);
         this.caption = caption;
 
         this.swipedFrom = swipedFrom;
@@ -315,7 +315,7 @@ public class Post implements Serializable{
 
         // Post image
         ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-        Image.setSwipedImage(this.swipedPostImage, postImage);
+       // Image.setSwipedImage(this.swipedPostImage, postImage);
 
         // set listener to handle double tap likes on post image
         new PostImageListener(postImage, this);
@@ -720,8 +720,8 @@ public class Post implements Serializable{
         Log.v("sort - diff", Double.toString(output));
         return output;
     }
-
-    public String toJson(byte[] postImage,Username from) {
+    //Conver post to Json object
+    public String toJson(Username from) {
         String locId="",location= "";
         String lat="0.0",lon= "0.0";
        if(this.location!=null) {
@@ -730,7 +730,7 @@ public class Post implements Serializable{
            lat = Double.toString(this.location.getLatitude());
            lon = Double.toString(this.location.getLongitude());
        }
-        String posImg = (postImage != null)? Arrays.toString(postImage): "";
+        String posImg =this.getPostImage().getImageString();// (postImage != null)? Arrays.toString(postImage): "";
 
         String mStringArray[] = { this.postId,this.username.getUserId(),this.username.toString(),this.userImage.getImageString(),locId,location,lat,lon,
             this.timeSince.getTimeSince(),posImg,this.caption,from.getUserId(),from.getUsername()};
@@ -738,9 +738,8 @@ public class Post implements Serializable{
         JSONArray mJSONArray = new JSONArray(Arrays.asList(mStringArray));
       return mJSONArray.toString();
     }
+    //Generate post object from json obj received through BT
     public  static Post fromJson(String jsonString) {
-        /*["1083357674137135574_43112249","43112249","junjen","https:\/\/igcdn-photos-g-a.akamaihd.net\/hphotos-ak-xap1\/t51.2885-19\/10616895_1513523718919046_1668960888_a.jpg","355312","Regent Theatre","-37.815726848","144.967848051","1443366320","","Brings back memories watching one of my favourite films in its musical form.","eqe2","jimbart098"]
-        * */
         JSONArray jsonA = null;
         try {
             jsonA = new JSONArray(jsonString);
@@ -766,7 +765,7 @@ public class Post implements Serializable{
         String userImage = json[3];
         Location location = new Location(json[4], json[5],Double.parseDouble(json[6]),Double.parseDouble(json[7]));
         String timeSince = json[8];
-        byte[] postImage = json[9].getBytes();
+        String postImage = json[9];
         String caption=json[10];
         Username swipedFrom = new Username(json[11],json[12]);
 

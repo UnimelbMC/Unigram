@@ -481,7 +481,6 @@ public class BluetoothSwipeService {
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
             byte[] buffer = new byte[1024*1024];
-            byte[] buffer2 = new byte[1024*1024];
             int bytes =0;
 
             // Keep listening to the InputStream while connected
@@ -492,7 +491,7 @@ public class BluetoothSwipeService {
                     if (byteNo != -1) {
                         //ensure DATAMAXSIZE Byte is read.
                         int byteNo2 = byteNo;
-                        int bufferSize = 7340;
+                        int bufferSize = 1024*1024;
                         while(byteNo2 != bufferSize){
                             bufferSize = bufferSize - byteNo2;
                             byteNo2 = mmInStream.read(buffer,byteNo,bufferSize);
