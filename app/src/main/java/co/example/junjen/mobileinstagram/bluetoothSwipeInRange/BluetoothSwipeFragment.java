@@ -345,7 +345,6 @@ public class BluetoothSwipeFragment extends Fragment{
                     Log.d(TAG, "BT not enabled");
                     Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
                             Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
                 }
         }
     }
