@@ -337,13 +337,14 @@ public class BluetoothSwipeFragment extends Fragment {
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
                 // When DeviceListActivity returns with a device to connect
+                Log.d(TAG,"resultCOde "+resultCode+"activity result OK "+ Activity.RESULT_OK);
                 if (resultCode == Activity.RESULT_OK) {
                     connectDevice(data, true);
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
                 // When DeviceListActivity returns with a device to connect
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode -1 == Activity.RESULT_OK) {
                     connectDevice(data, false);
                 }
                 break;
@@ -397,7 +398,7 @@ public class BluetoothSwipeFragment extends Fragment {
                 Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
                 return true;
-            }
+        }
             case R.id.discoverable: {
                 // Ensure this device is discoverable by others
                 ensureDiscoverable();
@@ -405,6 +406,6 @@ public class BluetoothSwipeFragment extends Fragment {
             }
         }
         return false;
-    }
+        }
 
-}
+        }
