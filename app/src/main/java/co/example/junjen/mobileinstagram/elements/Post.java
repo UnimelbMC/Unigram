@@ -19,6 +19,8 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -60,8 +62,11 @@ public class Post implements Serializable{
     private RelativeLayout postView;
     private ToggleButton likeButton;
 
-    private String liked = Parameters.checkLike;
+    // swiped post source
+    private Username swipedFrom;
 
+    // helper variables
+    private String liked = Parameters.checkLike;
     private double locDiff = 10000;
 
     public Post(){
@@ -115,13 +120,14 @@ public class Post implements Serializable{
 
     }
 
-    public Post(String postId, String userId, String userImage, String username, Location location,
+    // constructor for actual instagram post data
+    public Post(String postId, Username poster, String userImage, Location location,
                 String timeSince, String postImage, String caption, int likeCount, int commentCount,
                 ArrayList<User> likes, ArrayList<Comment> comments){
 
         this.postId = postId;
         this.userImage = new Image(userImage);
-        this.username = new Username(userId, username);
+        this.username = poster;
         this.location = location;
         this.timeSince = new TimeSince(timeSince);
         this.postImage = new Image(postImage);
@@ -154,6 +160,23 @@ public class Post implements Serializable{
         }
     }
 
+    // constructor for swiped posts
+    public Post(String postId, Username poster, String userImage, Location location,
+                String timeSince, String postImage, String caption, Username swipedFrom){
+
+        this.postId = postId;
+        this.userImage = new Image(userImage);
+        this.username = poster;
+        this.location = location;
+        this.timeSince = new TimeSince(timeSince);
+        this.postImage = new Image(postImage);
+        this.caption = caption;
+
+        this.swipedFrom = swipedFrom;
+
+    }
+
+    // get full view of post
     public View getPostView(LayoutInflater inflater) {
 
         postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
@@ -256,6 +279,98 @@ public class Post implements Serializable{
 
         // Comments
         buildCommentView(inflater);
+
+        return postView;
+    }
+
+    // build minimal swiped post view
+    public View getSwipedPostView(LayoutInflater inflater) {
+
+        postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+
+        /** Fixed parameters **/
+
+        // User image
+        if (!this.userImage.getImageString().equals(Parameters.default_image)) {
+            UserImageView userImage = (UserImageView)
+                    postView.findViewById(R.id.post_header_user_image);
+            Image.setImage(userImage, this.userImage);
+        }
+
+        // Username
+        TextView username = (TextView) postView.findViewById(R.id.post_header_username);
+        username.setText("");   // remove default text
+        stringComponents.add(this.username.getUsernameLink());
+        StringFactory.stringBuilder(username, stringComponents);
+        stringComponents.clear();
+
+        // Time since posted
+        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+        timeSince.setText(this.timeSince.getTimeSinceDisplay());
+
+        // Post image
+        ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
+        if (!this.postImage.getImageString().equals(Parameters.default_image)) {
+            Image.setImage(postImage, this.postImage);
+        }
+        // set listener to handle double tap likes on post image
+        new PostImageListener(postImage, this);
+
+        // Like Feedback
+        ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
+        ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
+        likeFeedback.setLayoutParams(layoutParams);
+        likeFeedback.setVisibility(View.INVISIBLE);
+
+        // Hide Like Comments
+        postView.findViewById(R.id.like_button_group).setVisibility(View.GONE);
+        postView.findViewById(R.id.comment_button).setVisibility(View.GONE);
+        postView.findViewById(R.id.post_comment_count).setVisibility(View.GONE);
+        postView.findViewById(R.id.post_comments).setVisibility(View.GONE);
+        postView.findViewById(R.id.like_count_line).setVisibility(View.GONE);
+
+        // Show Swipe Tag
+        RelativeLayout swipeTag = (RelativeLayout) postView.findViewById(R.id.swipe_tag);
+        swipeTag.setVisibility(View.VISIBLE);
+        TextView swipedFrom = (TextView) swipeTag.findViewById(R.id.swipe_text);
+        swipedFrom.setText("");   // remove default text
+        stringComponents.add(Parameters.default_swipeText);
+        stringComponents.add(this.swipedFrom.getUsernameLink());
+        StringFactory.stringBuilder(swipedFrom, stringComponents);
+        stringComponents.clear();
+
+        /** Optional parameters **/
+
+        // Location
+        TextView location = (TextView) postView.findViewById(R.id.post_header_location);
+        if (this.location != null) {
+            location.setText("");    // remove default text
+
+            String locText = this.location.getLocation();
+            if(locText.equals("")){
+                locText = "Lat: " + this.location.getLatitude() + ", " +
+                        "Long: " + this.location.getLongitude();
+            }
+
+            stringComponents.add(locText);
+            StringFactory.stringBuilder(location, stringComponents);
+            stringComponents.clear();
+        } else {
+            location.setVisibility(View.GONE);
+        }
+
+        // Caption
+        TextView caption = (TextView) postView.findViewById(R.id.post_caption);
+        if (this.caption != null) {
+            caption.setText("");    // remove default text
+            stringComponents.add(this.username.getUsernameLink());
+            stringComponents.add(" " + this.caption);
+            StringFactory.stringBuilder(caption, stringComponents);
+            stringComponents.clear();
+        } else {
+            caption.setVisibility(View.GONE);
+        }
 
         return postView;
     }

@@ -49,6 +49,7 @@
 
     <!-- Swipe to send -->
     <dimen name="swipe_element_height">70dp</dimen>
+    <dimen name="swipe_icon_width">20dp</dimen>
 
     <!-- Additional -->
     <dimen name="pull_down_refresh_height">150dp</dimen>

@@ -68,6 +68,12 @@ public class Parameters {
     public static final int maxUsers = 300;
     public static final String swipe_toast_message = "Post swiped!";
 
+    // Swipe parameters
+    public static final int SWIPE_MIN_DISTANCE = 120;
+    public static final int SWIPE_MAX_OFF_PATH = 50;
+    public static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    public static final String default_swipeText = "Swiped from ";
+
     // Discover parameters
     public static final int default_suggestions = 10;
     public static final int default_usersToSearch = 10;
@@ -115,11 +121,6 @@ public class Parameters {
     // Image Links
     public static final String default_loginUserImageLink = "0";
     public static final String default_emptyUserImageLink = "1";
-
-    // Swipe parameters
-    public static final int SWIPE_MIN_DISTANCE = 120;
-    public static final int SWIPE_MAX_OFF_PATH = 50;
-    public static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
     // Application helpers
     public static Context MainActivityContext = null;

@@ -53,7 +53,7 @@
 
     <!-- Swipe to send -->
     <string name="swipe_to_send_header">Send post to...</string>
-
+    <string name="swipe_tag">Swiped from Username</string>
 
     <!--  DeviceListActivity -->
     <string name="scanning">scanning for devices...</string>

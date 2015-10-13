@@ -30,6 +30,7 @@ import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.elements.User;
+import co.example.junjen.mobileinstagram.elements.Username;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -261,8 +262,9 @@ public class Network {
             likes = getLikesByPostId(postData.getId());
         }
 
-        Post post = new Post(postData.getId(), postData.getUser().getId(),
-                postData.getUser().getProfilePictureUrl(), postData.getUser().getUserName(),loc,
+        Post post = new Post(postData.getId(),
+                new Username(postData.getUser().getId(), postData.getUser().getUserName()),
+                postData.getUser().getProfilePictureUrl(),loc,
                 postData.getCreatedTime(), imgUrl, cap, likeCount,
                 postData.getComments().getCount(), likes,
                 getCommentsByPostId(postData.getId(), true));
