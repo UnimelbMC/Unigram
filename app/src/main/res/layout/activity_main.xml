@@ -13,6 +13,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- Buffer Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="invisible"/>
+
         <!-- User Image -->
         <co.example.junjen.mobileinstagram.customLayouts.UserImageView
             android:layout_width="@dimen/login_user_image_width"
@@ -46,14 +53,15 @@
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:onClick="loginButtonAction" />
 
-        <FrameLayout
-            android:id="@+id/sample_content_fragment"
-            android:layout_weight="2"
-            android:layout_width="match_parent"
-            android:layout_height="0px" />
+        <TextView
+            android:id="@+id/dummy_data_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_gravity="center_horizontal"
+            android:visibility="invisible"
+            android:text="@string/dummy_data_flag" />
 
     </LinearLayout>
-
-
 
 </ScrollView>

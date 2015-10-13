@@ -12,6 +12,7 @@ import java.util.Set;
 
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.UserFeedFragment;
 import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 
@@ -23,13 +24,14 @@ import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 public class Parameters {
 
     // Login parameters
-    public static boolean dummyData = true;
+    public static boolean dummyData = false;
     public static final String login_key = "@thisIsMyLogin";
     public static String loginUserId = null;
     public static String loginUsername = null;
     public static User loginUser = null;
     public static Profile loginProfile = null;
     public static ExpandableScrollView loginProfileView = null;
+    public static String dummyDataGreeting = "Hello "
 
     // Titles
     public static final String mainTitleBuffer = "     ";
@@ -137,6 +139,7 @@ public class Parameters {
     public static float refreshThreshold = 10;
     public static View NavigationBarView;
     public static BluetoothSwipeFragment bluetoothSwipeFragment;
+    public static UserFeedFragment userFeedFragment;
 
     // Follow UI helper
     public static final String follows_key = "follows";

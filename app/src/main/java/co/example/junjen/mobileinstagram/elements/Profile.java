@@ -183,7 +183,9 @@ public class Profile implements Serializable{
             followButton = (ToggleButton)
                     profileView.findViewById(R.id.profile_follow_button);
 
-            checkIfFollowing(username.getUserId(), followButton);
+            if(!Parameters.dummyData) {
+                checkIfFollowing(username.getUserId(), followButton);
+            }
 
             // set listener to followButton
             followButton.setOnClickListener(new View.OnClickListener() {
