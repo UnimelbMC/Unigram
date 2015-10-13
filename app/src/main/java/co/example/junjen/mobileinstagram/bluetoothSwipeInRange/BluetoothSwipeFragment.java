@@ -44,6 +44,8 @@ import co.example.junjen.mobileinstagram.elements.Post;
 
 import android.util.Log;
 
+import java.util.Arrays;
+
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
@@ -194,9 +196,31 @@ public class BluetoothSwipeFragment extends Fragment{
 
         // Check that there's actually something to send
         if (message.length() > 0) {
+            int chunksize = 20;
             // Get the message bytes and tell the BluetoothSwipeService to write
             byte[] send = message.getBytes();
-            mSwipeService.write(send);
+            int msgSize = send.length;
+            if (msgSize>chunksize) {
+                int packetsToSend = (int) Math.ceil(msgSize / chunksize);
+
+               // mSwipeService.write(Integer.toString(packetsToSend).getBytes());
+
+                byte[][] packets = new byte[packetsToSend][chunksize];
+                int start = 0;
+                for (int i = 0; i < packets.length; i++) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    packets[i] = Arrays.copyOfRange(send, start, start + chunksize);
+                    start += chunksize;
+                    mSwipeService.write(packets[i]);
+                }
+            }else{
+                mSwipeService.write(send);
+            }
+
             Toast.makeText(Parameters.NavigationBarActivity," Swoop! ", Toast.LENGTH_LONG).show();
 
             // Reset out string buffer to zero and clear the edit text field

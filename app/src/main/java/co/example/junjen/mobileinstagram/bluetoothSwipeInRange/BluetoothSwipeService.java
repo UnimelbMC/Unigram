@@ -505,6 +505,7 @@ public class BluetoothSwipeService {
          */
         public void write(byte[] buffer) {
             try {
+
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
