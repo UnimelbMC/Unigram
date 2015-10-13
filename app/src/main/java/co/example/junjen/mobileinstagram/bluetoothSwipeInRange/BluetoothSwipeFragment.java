@@ -71,7 +71,7 @@ public class BluetoothSwipeFragment extends Fragment {
     /**
      * Array adapter for the conversation thread
      */
-    private ArrayAdapter<String> mConversationArrayAdapter;
+    private ArrayAdapter<String> mArrayAdapter;
 
     /**
      * String buffer for outgoing messages
@@ -168,9 +168,9 @@ public class BluetoothSwipeFragment extends Fragment {
 
 
         // Initialize the array adapter for the conversation thread
-        mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
+        mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
 
-//        mConversationView.setAdapter(mConversationArrayAdapter);
+//        mConversationView.setAdapter(mArrayAdapter);
 //
 //        // Initialize the compose field with a listener for the return key
 //        mOutEditText.setOnEditorActionListener(mWriteListener);
@@ -293,7 +293,7 @@ public class BluetoothSwipeFragment extends Fragment {
                     switch (msg.arg1) {
                         case BluetoothSwipeService.STATE_CONNECTED:
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                            mConversationArrayAdapter.clear();
+                            mArrayAdapter.clear();
                             break;
                         case BluetoothSwipeService.STATE_CONNECTING:
                             setStatus(R.string.title_connecting);
@@ -308,13 +308,13 @@ public class BluetoothSwipeFragment extends Fragment {
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
+                    mArrayAdapter.add("Me:  " + writeMessage);
                     break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    mArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
