@@ -32,26 +32,33 @@
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:contentDescription="Login User Image"/>
 
-        <!-- Username -->
-        <TextView
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/login_button_height"
             android:layout_gravity="center"
-            android:id="@+id/login_username"
-            android:text="@string/default_username"
-            android:layout_weight="1"
-            android:visibility="gone"/>
+            android:layout_weight="1">
 
-        <!-- Login Button -->
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            android:id="@+id/login_button"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:onClick="loginButtonAction" />
+            <!-- Username -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/login_username"
+                android:visibility="gone"
+                android:text="@string/default_username"/>
+
+            <!-- Login Button -->
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_button_text"
+                android:id="@+id/login_button"
+                android:layout_gravity="center"
+                android:onClick="loginButtonAction" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/dummy_data_flag"
@@ -59,6 +66,7 @@
             android:layout_height="wrap_content"
             android:gravity="bottom"
             android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/post_margin"
             android:visibility="invisible"
             android:text="@string/dummy_data_flag" />
 

@@ -17,20 +17,18 @@ import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PostFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PostFragment#newInstance} factory method to
- * create an instance of this fragment.
+ *
+ * Created by junjen at 8/10/2015.
+ *
+ * Creates the Post Fragment to show individual posts.
+ *
  */
+
 public class PostFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String postId_key = "postId";
     private static final String like_key = "like";
 
-    // TODO: Rename and change types of parameters
     private String postId;
     private boolean like;
 
@@ -39,14 +37,10 @@ public class PostFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @param postId Parameter 1.
      * @param like Parameter 2.
      * @return A new instance of fragment PostFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static PostFragment newInstance(String postId, boolean like) {
         PostFragment fragment = new PostFragment();
         Bundle args = new Bundle();

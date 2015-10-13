@@ -129,7 +129,6 @@ public class NavigationBar extends AppCompatActivity {
                         Parameters.login_key);
             }
 
-
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             Parameters.loginProfileView = Parameters.loginProfile.getProfileView(inflater);
             Parameters.loginUserId = Parameters.loginProfile.getUsername().getUserId();

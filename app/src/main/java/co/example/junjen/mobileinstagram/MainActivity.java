@@ -16,6 +16,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.security.PrivilegedAction;
 
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
@@ -50,12 +50,18 @@ import co.example.junjen.mobileinstagram.network.Network;
 
 public class MainActivity extends AppCompatActivity {
 
-    int mainActivityView = R.layout.activity_main;
+    private int mainActivityView = R.layout.activity_main;
     public static Activity mainActivity;
 
-    int loginClickInBrowserCount = 0;
-    int urlCount = 0;
-    int splashScreenDuration = 0;
+    private int loginClickInBrowserCount = 0;
+    private int urlCount = 0;
+    private int splashScreenDuration = 0;
+    private boolean loggedIn = false;
+
+    private ImageButton backButton;
+    private ImageView profileImage;
+    private TextView dummyDataFlag;
+    private GestureDetector mGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,37 +98,13 @@ public class MainActivity extends AppCompatActivity {
         checkToken();
 
         // set dummy data option in empty profile image through double tap
-        final ImageView profileImage = (ImageView) findViewById(R.id.login_user_image);
-        final TextView dummyDataFlag = (TextView) findViewById(R.id.dummy_data_flag);
-        profileImage.setClickable(true);
-        GestureDetector.SimpleOnGestureListener mGestureListener =
-                new GestureDetector.SimpleOnGestureListener(){
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                if(Parameters.dummyData){
-                    Parameters.dummyData = false;
-                    dummyDataFlag.setVisibility(View.INVISIBLE);
-                } else {
-                    Parameters.dummyData = true;
-                    dummyDataFlag.setVisibility(View.VISIBLE);
-                }
-                return super.onDoubleTap(e);
-            }
-        };
-        final GestureDetector mGestureDetector =
-                new GestureDetector( this.getApplicationContext(), mGestureListener, null, true );
-        profileImage.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mGestureDetector.onTouchEvent(event);
-                profileImage.invalidate();
-                return true; // indicate event was handled
-            }
-        });
+        profileImage = (ImageView) findViewById(R.id.login_user_image);
+        dummyDataFlag = (TextView) findViewById(R.id.dummy_data_flag);
+        setDummyDataFlagListener();
 
         // set dummy data flag to false as default
         Parameters.dummyData = false;
+        dummyDataFlag.setVisibility(View.INVISIBLE);
     }
 
     // action to take when login button is clicked
@@ -137,19 +119,46 @@ public class MainActivity extends AppCompatActivity {
             // if no access token found, go to browser to authenticate
             if (NetParams.ACCESS_TOKEN == null) {
 
-                WebView myWebView = new WebView(getApplicationContext());
+                final WebView myWebView = new WebView(getApplicationContext());
                 myWebView.clearFormData();
                 setContentView(myWebView);
                 myWebView.setWebViewClient(new LoginWebViewClient());
                 myWebView.loadUrl(NetParams.AUTHORIZE_URL);
+
+                ActionBar actionBar = getSupportActionBar();
+                if(actionBar != null) {
+                    // show back button to return to login screen
+                    backButton = (ImageButton)
+                            actionBar.getCustomView().findViewById(R.id.back_button);
+                    backButton.setVisibility(View.VISIBLE);
+                    backButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // on click, go back to default login screen
+                            myWebView.destroy();
+                            setContentView(mainActivityView);
+                            backButton.setVisibility(View.GONE);
+
+                            checkToken();
+
+                            if(!loggedIn) {
+                                profileImage = (ImageView) findViewById(R.id.login_user_image);
+                                dummyDataFlag = (TextView) findViewById(R.id.dummy_data_flag);
+                                setDummyDataFlagListener();
+                            }
+                        }
+                    });
+                }
             }
         } else {
             // update login screen to show dummy login
-            TextView dummyDataFlag = (TextView) findViewById(R.id.dummy_data_flag);
-            dummyDataFlag.setText
+            TextView username = (TextView) findViewById(R.id.login_username);
+            username.setText
                     (Html.fromHtml("Hello <b>" + Parameters.dummyDataName.toUpperCase() + "</b>"));
+            username.setTextSize(Parameters.subTitleSize);
             Button loginButton = (Button) this.findViewById(R.id.login_button);
             loginButton.setVisibility(View.GONE);
+            username.setVisibility(View.VISIBLE);
             ImageView userImage = (ImageView) this.findViewById(R.id.login_user_image);
             Image.setImage(userImage, new Image(Parameters.default_loginUserImageLink));
 
@@ -172,18 +181,22 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLoadResource(WebView view, String url) {
 
-            Log.w("test", "login webView url: "+url);
+            Log.w("test", "login webView url: " + url);
 
             // if redirected, access code is in url
             if (url.startsWith(NetParams.REDIRECT_URI)) {
                 loginClickInBrowserCount = 0;
                 urlCount = 0;
+                loggedIn = true;
+
+                // remove back button
+                backButton.setVisibility(View.INVISIBLE);
 
                 // extract access code
                 String[] parts = url.split("=");
-                NetParams.AUHTORIZE_CODE = parts[1];
-                Log.v("TEST_NET", NetParams.AUHTORIZE_CODE);
-                getAccessCode(NetParams.AUHTORIZE_CODE);
+                NetParams.AUTHORIZE_CODE = parts[1];
+                Log.v("TEST_NET", NetParams.AUTHORIZE_CODE);
+                getAccessCode(NetParams.AUTHORIZE_CODE);
 
                 // update view of main activity
                 view.destroy();
@@ -202,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
             // (prevents error page popup from spamming the login button)
             else if (url.startsWith(NetParams.LOGIN_URL_HEADER)) {
                 loginClickInBrowserCount++;
-
                 if (loginClickInBrowserCount == Parameters.loginClickInBrowserCountMax) {
+                    backButton.setClickable(false);
                     view.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
@@ -215,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
             // if login is incorrect enable webview clicking
             if (loginClickInBrowserCount == Parameters.loginClickInBrowserCountMax) {
                 urlCount++;
-
+                backButton.setClickable(true);
                 if (urlCount > Parameters.urlCountMax) {
                     urlCount = 0;
                     loginClickInBrowserCount = 1;
@@ -259,6 +272,39 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    // double tap listener for login user image to set dummy data mode
+    public void setDummyDataFlagListener(){
+        profileImage.setClickable(true);
+        GestureDetector.SimpleOnGestureListener mGestureListener =
+                new GestureDetector.SimpleOnGestureListener(){
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e) {
+
+                        Log.w("test","login image double tap");
+
+                        if(Parameters.dummyData){
+                            Parameters.dummyData = false;
+                            dummyDataFlag.setVisibility(View.INVISIBLE);
+                        } else {
+                            Parameters.dummyData = true;
+                            dummyDataFlag.setVisibility(View.VISIBLE);
+                        }
+                        return super.onDoubleTap(e);
+                    }
+                };
+        mGestureDetector =
+                new GestureDetector( this.getApplicationContext(), mGestureListener, null, true );
+        profileImage.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mGestureDetector.onTouchEvent(event);
+                profileImage.invalidate();
+                return true; // indicate event was handled
+            }
+        });
     }
 
     // go to the navigation screen
@@ -324,8 +370,6 @@ public class MainActivity extends AppCompatActivity {
             }
             userImageLink = NetParams.NETWORK.getProfilePic();
             usernameText = NetParams.NETWORK.getUsername();
-
-            // TODO: overwrite userImageLink and usernameText using Data Object
 
             Image.setImage(userImage, new Image(userImageLink));
             username.setText(Html.fromHtml("Hello <b>" + usernameText.toUpperCase() + "</b>"));

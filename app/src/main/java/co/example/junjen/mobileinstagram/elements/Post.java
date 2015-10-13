@@ -567,7 +567,6 @@ public class Post implements Serializable{
 
         if (this.likeCount != 0){
             likeLine.setVisibility(View.VISIBLE);
-            Log.w("test", "likecount: " + Integer.toString(this.likeCount));
             TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
             int likeCount = this.likeCount;
             int likeThreshold = Parameters.likePreviewThreshold;

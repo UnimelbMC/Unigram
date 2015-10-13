@@ -9,38 +9,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.util.Log;
 
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
-import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
-import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.elements.StringFactory;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link UsersFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link UsersFragment#newInstance} factory method to
- * create an instance of this fragment.
+ *
+ * Created by junjen at 7/10/2015.
+ *
+ * Creates fragments that lists Users (Likers, Following, Followers, Suggested Users in Discover)
+ *
  */
 public class UsersFragment extends Fragment implements ScrollViewListener{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String users_key = "users";
     private static final String title_key = "title";
 
-    // TODO: Rename and change types of parameters
     private ArrayList<User> users;
     private String title;
 

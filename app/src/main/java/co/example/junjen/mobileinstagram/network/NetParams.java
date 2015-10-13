@@ -18,7 +18,7 @@ public class NetParams {
     public static final String REDIRECT_URI = "network://localhost/redirect/";
     //Flow 1, get code from instagram auth server
     public static final String AUTHORIZE_URL= "https://instagram.com/oauth/authorize/?client_id="+CLIENT_ID+"&redirect_uri="+REDIRECT_URI+"&response_type=code";
-    public static String AUHTORIZE_CODE="";
+    public static String AUTHORIZE_CODE ="";
     public static Token ACCESS_TOKEN = null;
 
     public static final String LOGIN_URL_HEADER = "https://instagram.com/accounts/login/?force_classic_login";

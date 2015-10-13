@@ -8,6 +8,7 @@
 
     <!-- Login Screen -->
     <string name="dummy_data_flag">(Dummy Data mode : On)</string>
+    <string name="login_button_text">Login</string>
 
     <!-- Navigation Bar -->
     <string name="title_activity_navigation_bar">UniGram</string>

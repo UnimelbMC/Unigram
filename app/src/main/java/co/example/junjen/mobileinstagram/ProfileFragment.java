@@ -22,15 +22,15 @@ import co.example.junjen.mobileinstagram.network.NetParams;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ *
+ * Created by junjen at 8/10/2015.
+ *
+ * Creates the Profile Fragment to show user profiles.
+ *
  */
+
 public class ProfileFragment extends Fragment implements ScrollViewListener{
-    // the fragment initialization parameters
+
     private static final String userId_key = "userId";
     private static final String backButton_key = "backButton";
 
@@ -49,14 +49,10 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     private OnFragmentInteractionListener mListener;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @param userId Parameter 1.
      * @param backButton Parameter 2.
      * @return A new instance of fragment ProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(String userId, boolean backButton) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
@@ -190,13 +186,6 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
 
         //fragment specific menu creation
         setTitle();
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     /**
