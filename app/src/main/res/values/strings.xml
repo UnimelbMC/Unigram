@@ -61,7 +61,7 @@
     <string name="title_not_connected">not connected</string>
 
     <!--  DeviceListActivity -->
-    <string name="scanning">scanning for devices...</string>
+    <string name="scanning">Scanning in range Unigramers</string>
     <string name="select_device">select a device to connect</string>
     <string name="none_paired">No devices have been paired</string>
     <string name="none_found">No devices found</string>

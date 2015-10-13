@@ -295,19 +295,21 @@ public class BluetoothSwipeService {
 
         public void run() {
             Log.d(TAG, "Socket Type: " + mSocketType +
-                    "BEGIN mAcceptThread" + this);
+                    " BEGIN mAcceptThread " + this);
             setName("AcceptThread" + mSocketType);
 
             BluetoothSocket socket = null;
 
             // Listen to the server socket if we're not connected
             while (mState != STATE_CONNECTED) {
+                Log.d(TAG,"listen to server socket");
                 try {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
-                    Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
+                    Log.e(TAG, e.toString());
+                    Log.e(TAG, "Socket Type: " + mSocketType + " accept() failed", e);
                     break;
                 }
 
@@ -369,9 +371,11 @@ public class BluetoothSwipeService {
             // given BluetoothDevice
             try {
                 if (secure) {
+                    Log.d(TAG,"trying to insecure connect");
                     tmp = device.createRfcommSocketToServiceRecord(
                             MY_UUID_SECURE);
                 } else {
+                    Log.d(TAG,"trying to insecure connect");
                     tmp = device.createInsecureRfcommSocketToServiceRecord(
                             MY_UUID_INSECURE);
                 }
