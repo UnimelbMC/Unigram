@@ -195,17 +195,10 @@ public class BluetoothSwipeFragment extends Fragment{
         // Check that there's actually something to send
         if (message.length() > 0) {
 
-            int chunksize = 1024;
-
             // Get the message bytes and tell the BluetoothSwipeService to write
             byte[] send = message.getBytes();
             mSwipeService.write(send);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            mSwipeService.write("done".getBytes());
+
             Toast.makeText(Parameters.NavigationBarActivity," Swoop! ", Toast.LENGTH_LONG).show();
 
             // Reset out string buffer to zero and clear the edit text field

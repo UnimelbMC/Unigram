@@ -480,28 +480,30 @@ public class BluetoothSwipeService {
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[1024*1024];
+            byte[] buffer2 = new byte[1024*1024];
             int bytes =0;
 
             // Keep listening to the InputStream while connected
             while (true) {
+                int byteNo;
                 try {
-                 //   int bytes = 0;
-                    boolean done = false;
-                   BufferedInputStream inBuffer ;
-                    while (!done) {
-                        // Read from the InputStream
-                        bytes = mmInStream.read(buffer);
-                        int offset = bytes - 11;
-                        byte[] eofByte = new byte[11];
-                        eofByte = Arrays.copyOfRange(buffer, offset, bytes);
-                        String message = new String(eofByte, 0, 11);
-                        if(message.equals("end of file")) {
-                            done = true;
+                    byteNo = mmInStream.read(buffer);
+                    if (byteNo != -1) {
+                        //ensure DATAMAXSIZE Byte is read.
+                        int byteNo2 = byteNo;
+                        int bufferSize = 7340;
+                        while(byteNo2 != bufferSize){
+                            bufferSize = bufferSize - byteNo2;
+                            byteNo2 = mmInStream.read(buffer,byteNo,bufferSize);
+                            if(byteNo2 == -1){
+                                break;
+                            }
+                            byteNo = byteNo+byteNo2;
                         }
                     }
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
+                    mHandler.obtainMessage(Constants.MESSAGE_READ, byteNo, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
@@ -510,6 +512,7 @@ public class BluetoothSwipeService {
                     BluetoothSwipeService.this.start();
                     break;
                 }
+
             }
         }
 
@@ -522,6 +525,7 @@ public class BluetoothSwipeService {
             try {
 
                 mmOutStream.write(buffer);
+                mmOutStream.flush();
 
                 // Share the sent message back to the UI Activity
                 mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
