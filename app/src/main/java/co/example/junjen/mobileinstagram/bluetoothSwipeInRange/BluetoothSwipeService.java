@@ -320,6 +320,7 @@ public class BluetoothSwipeService {
                                 // Situation normal. Start the connected thread.
                                 connected(socket, socket.getRemoteDevice(),
                                         mSocketType);
+                                Log.d(TAG,"stateConnecting");
                                 break;
                             case STATE_NONE:
                             case STATE_CONNECTED:

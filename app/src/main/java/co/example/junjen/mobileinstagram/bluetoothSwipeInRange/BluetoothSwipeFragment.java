@@ -43,7 +43,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import co.example.junjen.mobileinstagram.R;
-import co.example.junjen.mobileinstagram.common.logger.Log;
+//import co.example.junjen.mobileinstagram.common.logger.Log;
+import android.util.Log;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
@@ -140,19 +141,24 @@ public class BluetoothSwipeFragment extends Fragment {
             }
         }
     }
+//_______________________________
+//here the layout for the swipe post
+// _______________________________
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_bluetooth_swipe, container, false);
-    }
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+//                             @Nullable Bundle savedInstanceState) {
+//        return inflater.inflate(R.layout.fragment_bluetooth_swipe, container, false);
+//    }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mConversationView = (ListView) view.findViewById(R.id.in);
-        mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
-        mSendButton = (Button) view.findViewById(R.id.button_send);
-    }
+
+
+//    @Override
+//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+//        mConversationView = (ListView) view.findViewById(R.id.in);
+//        mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
+//        mSendButton = (Button) view.findViewById(R.id.button_send);
+//    }
 
     /**
      * Set up the UI and background operations for Swipe.
@@ -160,32 +166,33 @@ public class BluetoothSwipeFragment extends Fragment {
     private void setupSwipe() {
         Log.d(TAG, "setupSwipe()");
 
+
         // Initialize the array adapter for the conversation thread
 //        mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
 
-        mConversationView.setAdapter(mConversationArrayAdapter);
+//        mConversationView.setAdapter(mConversationArrayAdapter);
+//
+//        // Initialize the compose field with a listener for the return key
+//        mOutEditText.setOnEditorActionListener(mWriteListener);
 
-        // Initialize the compose field with a listener for the return key
-        mOutEditText.setOnEditorActionListener(mWriteListener);
-
-        // Initialize the send button with a listener that for click events
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Send a message using content of the edit text widget
-                View view = getView();
-                if (null != view) {
-//                    TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
-//                    String message = textView.getText().toString();
-//                    sendMessage(message);
-                }
-            }
-        });
+        // Initialize the gesture listener for the swipe
+//        mSendButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                // Send a message using content of the edit text widget
+//                View view = getView();
+//                if (null != view) {
+////                    TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
+////                    String message = textView.getText().toString();
+////                    sendMessage(message);
+//                }
+//            }
+//        });
 
         // Initialize the BluetoothSwipeService to perform bluetooth connections
         mSwipeService = new BluetoothSwipeService(getActivity(), mHandler);
 
         // Initialize the buffer for outgoing messages
-        mOutStringBuffer = new StringBuffer("");
+//        mOutStringBuffer = new StringBuffer("");
     }
 
     /**
@@ -227,17 +234,17 @@ public class BluetoothSwipeFragment extends Fragment {
     /**
      * The action listener for the EditText widget, to listen for the return key
      */
-    private TextView.OnEditorActionListener mWriteListener
-            = new TextView.OnEditorActionListener() {
-        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-            // If the action is a key-up event on the return key, send the message
-            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                String message = view.getText().toString();
-                sendMessage(message);
-            }
-            return true;
-        }
-    };
+//    private TextView.OnEditorActionListener mWriteListener
+//            = new TextView.OnEditorActionListener() {
+//        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+//            // If the action is a key-up event on the return key, send the message
+//            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
+//                String message = view.getText().toString();
+//                sendMessage(message);
+//            }
+//            return true;
+//        }
+//    };
 
     /**
      * Updates the status on the action bar.

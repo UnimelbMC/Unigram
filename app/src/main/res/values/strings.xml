@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_logout">Logout</string>
-    <string name="action_swipe">Connect to device</string>
+
 
     <!-- Navigation Bar -->
     <string name="title_activity_navigation_bar">UniGram</string>
@@ -50,10 +50,6 @@
     <string name="profile_no_post_flag">No posts</string>
     <string name="private_profile">This user is private.</string>
     <string name="restricted_profile">Restricted access to profile.</string>
-
-    <!-- Swipe to send -->
-    <string name="swipe_to_send_header">Send post to...</string>
-
 
     <!-- Testing-->
     <!--  BluetoothChat -->

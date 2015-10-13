@@ -5,8 +5,6 @@
     <item android:id="@+id/action_logout" android:title="@string/action_logout"
         android:orderInCategory="100" app:showAsAction="never"/>
 
-    <item android:id="@+id/action_swipe" android:title="@string/action_swipe"
-        android:orderInCategory="99" app:showAsAction="never"/>
 
     <!-- Test bluetooth-->
     <item
@@ -23,11 +21,8 @@
         android:id="@+id/discoverable"
 
         android:title="@string/discoverable"/>
-    <FrameLayout
-        android:id="@+id/sample_content_fragment"
-        android:layout_weight="2"
-        android:layout_width="match_parent"
-        android:layout_height="0px" />
+
+
 
 
 

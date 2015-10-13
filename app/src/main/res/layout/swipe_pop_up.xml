@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:id="@+id/swipe_header"
         android:layout_height="wrap_content"
-        android:text="@string/swipe_to_send_header"
+
         android:layout_margin="@dimen/comment_total_margin"/>
 
     <View
