@@ -313,7 +313,7 @@ public class BluetoothSwipeFragment extends Fragment{
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    Log.d(TAG,readMessage);
+                    Log.d(TAG,readMessage+" "+msg.arg1);
                     Toast.makeText(getActivity(),Parameters.swipeReceivedMessage,Toast.LENGTH_LONG).show();
                     receiveMessage(readMessage);
                     break;
