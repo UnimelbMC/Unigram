@@ -34,6 +34,14 @@ import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
+/**
+ *
+ * Created by junjen at 7/10/2015.
+ *
+ * Navigation activity for UniGram application. This is where the user navigates the application.
+ *
+ */
+
 public class NavigationBar extends AppCompatActivity {
 
     private FragmentTransaction ft;

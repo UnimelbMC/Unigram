@@ -321,7 +321,7 @@ public class ActivityYouFragment extends Fragment
 
         allActivityYou.addAll(0, activityFeed);
         activityYouFragmentView.removeAllViews();
-        Post.buildPostIcons(weakInflater.get(), activityYouFragmentView, allActivityYou,
+        Post.buildPostIcons(we, activityYouFragmentView, allActivityYou,
                 Parameters.activityYouIconsPerRow, Parameters.activityYouRowsToLoad);
     }
 
