@@ -58,6 +58,7 @@
             android:exported="true" >
         </service>
 
+
     </application>
 
 </manifest>

@@ -115,9 +115,9 @@ public class CameraFragment extends Fragment {
         return fragment;
     }
 
-
+    // Required empty public constructor
     public CameraFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -230,6 +230,7 @@ public class CameraFragment extends Fragment {
         return c; // returns null if camera is unavailable
     }
 
+    //Callback for takePicture
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         public void onPictureTaken(byte[] data, Camera camera) {
             FileOutputStream outStream = null;
@@ -291,7 +292,6 @@ public class CameraFragment extends Fragment {
     };
 
      // Decode strem.
-
     public static Bitmap decodeStrem(File fil, Uri selectedImage,
                                      Context mContext) {
 
@@ -320,7 +320,6 @@ public class CameraFragment extends Fragment {
     }
 
    //Decode file.
-
     public static Bitmap decodeFile(File f, int sampling) {
         try {
             BitmapFactory.Options o2 = new BitmapFactory.Options();
@@ -348,8 +347,7 @@ public class CameraFragment extends Fragment {
     }
 
 
-     // Rotate image.
-
+     // Rotate image function
     public static Bitmap rotateImage(Bitmap bmp, String imageUrl) {
         if (bmp != null) {
             ExifInterface ei;
@@ -391,8 +389,7 @@ public class CameraFragment extends Fragment {
 
 
 
-     //Gets the thumb size.
-
+     //Gets the thumb size
     public static int getThumbSize(Bitmap bitmap) {
 
         int THUMBNAIL_SIZE = 250;
@@ -412,7 +409,7 @@ public class CameraFragment extends Fragment {
         return THUMBNAIL_SIZE;
     }
 
-
+    //Set Brightness function
    public Bitmap SetBrightness(Bitmap src, int value) {
         // original image size
         int width = src.getWidth();
@@ -455,6 +452,7 @@ public class CameraFragment extends Fragment {
         return bmOut;
     }
 
+    //Set Contrast function
     private Bitmap adjustedContrast(Bitmap src, double value)
     {
         // image size
@@ -508,6 +506,7 @@ public class CameraFragment extends Fragment {
         return bmOut;
     }
 
+    //override onResume method to recover camera view
     @Override
     public void onResume() {
         super.onResume();
@@ -519,6 +518,7 @@ public class CameraFragment extends Fragment {
         }
     }
 
+    //override onPause method to release camera
     @Override
     public void onPause() {
         super.onPause();
@@ -532,19 +532,19 @@ public class CameraFragment extends Fragment {
         }
     }
 
+    //Listener methods for Button and Image Buttons
 
 
     private View.OnClickListener takePhotoButtonListener= new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
-            // get an image from the camera
+            // Get an image from the camera
             mCamera.takePicture(null, null, mPicture);
             layer=false;
 
         }
     };
-
 
     private View.OnClickListener closeButtonListener= new View.OnClickListener() {
         @Override
@@ -560,17 +560,16 @@ public class CameraFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-
+            //Intent Crop Listener
             Bitmap bitmap=null;
-
+            //Retireve image from ImageView
             if(layer==true){
                 bitmap =((BitmapDrawable)((LayerDrawable)cameraView.getDrawable()).getDrawable(0)).getBitmap();
 
             }else{
                 bitmap=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
-
             }
-
+            //Passing URL path to perform Crop
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
             String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
@@ -579,6 +578,7 @@ public class CameraFragment extends Fragment {
         }
     };
 
+    //Crop function
     private void performCrop(Uri picUri) {
         try {
 
@@ -611,6 +611,7 @@ public class CameraFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
+            //Brightness Button selected
             seekLayout.setVisibility(View.VISIBLE);
             confirmationLayout.setVisibility(View.VISIBLE);
             filterLayout.setVisibility(View.INVISIBLE);
@@ -628,6 +629,7 @@ public class CameraFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
+            //Contrast Button selected
             seekLayout.setVisibility(View.VISIBLE);
             confirmationLayout.setVisibility(View.VISIBLE);
             filterLayout.setVisibility(View.INVISIBLE);
@@ -640,14 +642,17 @@ public class CameraFragment extends Fragment {
         }
     };
 
+    //Post photo in Instagram
     private View.OnClickListener btnAcceptListener= new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
             try {
 
-
+                //verified if Instagram is installed
                 if (verificaInstagram()) {
+
+                    //Save photo in phone memory to get URL and use share Intend
 
                     File miDirs = new File(
                             Environment.getExternalStorageDirectory() + "/myphotos");
@@ -673,7 +678,6 @@ public class CameraFragment extends Fragment {
 
                     }else{
                         bitmap=((BitmapDrawable) cameraView.getDrawable()).getBitmap();
-
                     }
 
                     //create a file to write bitmap data
@@ -708,8 +712,7 @@ public class CameraFragment extends Fragment {
                     shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
                     shareIntent.setPackage("com.instagram.android");
 
-                    startActivity(Intent.createChooser(shareIntent, "Share to"));;
-                    //startActivity(shareIntent);
+                    startActivity(Intent.createChooser(shareIntent, "Share to"));
 
                     c1.close();
                 }else{
@@ -723,7 +726,7 @@ public class CameraFragment extends Fragment {
         }
     };
 
-
+    //Function to verified Instagram
     private boolean verificaInstagram(){
         boolean installed = false;
 
@@ -736,8 +739,7 @@ public class CameraFragment extends Fragment {
         return installed;
     }
 
-
-
+    //SeekBar change Listener to change brightness and constrast
     private SeekBar.OnSeekBarChangeListener cbSeekbarListener= new SeekBar.OnSeekBarChangeListener() {
 
 
@@ -802,15 +804,7 @@ public class CameraFragment extends Fragment {
         }
     };
 
-    //get Radio
-    public Double[] getRatio(){
-        Camera.Size s = mPreview.getCameraParameters().getPreviewSize();
-        double heightRatio = (double)s.height/(double)cameraView.getHeight();
-        double widthRatio = (double)s.width/(double)cameraView.getWidth();
-        Double[] ratio = {heightRatio,widthRatio};
-        return ratio;
-    }
-
+    //Accept Button for Brightness and Contrast result
     private View.OnClickListener acceptButtonListener= new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -846,10 +840,10 @@ public class CameraFragment extends Fragment {
 
                     break;
             }
-
-
         }
     };
+
+    //Negate Brightness and Contrast results
     private View.OnClickListener xButtonListener= new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -860,51 +854,43 @@ public class CameraFragment extends Fragment {
             switch (optionCamera){
 
                 case "brightness":
-
                     cameraView.setImageBitmap(originalbmpfiltered);
-
-
                     break;
                 case "contrast":
                     cameraView.setImageBitmap(originalbmpfiltered);
-
                     break;
                 default:
 
 
                     break;
             }
-
         }
     };
 
-
+    //Grid on Camera view
     private View.OnClickListener gridButtonListener= new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             grid=!grid;
             mPreview.postInvalidate();
-
         }
     };
 
-
+    //No FilterButton
     private View.OnClickListener noFilterButtonListener= new View.OnClickListener(){
         @Override
         public void onClick(View v) {
 
-            //NoFilter
             cameraView.setImageBitmap(originalbmp);
             layer=false;
         }
     };
 
-
+    //Invert Filter Button
     private View.OnClickListener filter1ButtonListener= new View.OnClickListener(){
         @Override
         public void onClick(View v) {
 
-            //Filter
             bitmapImage=originalbmp;
             Bitmap newPhoto=invertImage(bitmapImage);
             cameraView.setImageBitmap(newPhoto);
@@ -912,11 +898,11 @@ public class CameraFragment extends Fragment {
         }
     };
 
+    //Dirty Filter Button
     private View.OnClickListener filter2ButtonListener= new View.OnClickListener(){
         @Override
         public void onClick(View v) {
 
-            //Second Filter
             bitmapImage=originalbmp;
             LayerDrawable newPhoto2=dirtyImage(bitmapImage);
             cameraView.setImageDrawable(newPhoto2);
@@ -924,11 +910,11 @@ public class CameraFragment extends Fragment {
         }
     };
 
+    //Black and White Filter Button
     private View.OnClickListener filter3ButtonListener= new View.OnClickListener(){
         @Override
         public void onClick(View v) {
 
-            //Third Filter
             bitmapImage=originalbmp;
             Bitmap newPhoto=BlackWhiteImage(bitmapImage);
             cameraView.setImageBitmap(newPhoto);
@@ -936,8 +922,7 @@ public class CameraFragment extends Fragment {
         }
     };
 
-
-
+    // Load Image with Intent Object
     private View.OnClickListener loadImageButtonListener= new View.OnClickListener(){
         @Override
         public void onClick(View v) {
@@ -951,10 +936,12 @@ public class CameraFragment extends Fragment {
         }
     };
 
+    // OnActivityResult for Load Photo and Crop Photo Intent
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
+        //Select Intent Result
         if (resultCode == getActivity().RESULT_OK && intent.equals("selectPhoto")) {
             // Let's read picked image data - its URI
             Uri pickedImage = imageReturnedIntent.getData();
@@ -963,7 +950,7 @@ public class CameraFragment extends Fragment {
             Cursor cursor = getActivity().getContentResolver().query(pickedImage, filePath, null, null, null);
             cursor.moveToFirst();
             String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-
+            //Transform Image into Bitmap using BitmapFactory
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath, options);
@@ -973,9 +960,8 @@ public class CameraFragment extends Fragment {
 
             // At the end remember to close the cursor or you will end with the RuntimeException!
             cursor.close();
-
         }
-
+        //Crop Intent Result
         if (intent.equals("cropPhoto")) {
 
             if (imageReturnedIntent != null) {
@@ -987,76 +973,33 @@ public class CameraFragment extends Fragment {
                 cameraView.setImageBitmap(selectedBitmap);
             }
         }
-
-
-
-    }
-    private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
-
-        // Decode image size
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(selectedImage), null, o);
-
-        // The new size we want to scale to
-        final int REQUIRED_SIZE = 140;
-
-        // Find the correct scale value. It should be the power of 2.
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-        int scale = 1;
-        while (true) {
-            if (width_tmp / 2 < REQUIRED_SIZE
-                    || height_tmp / 2 < REQUIRED_SIZE) {
-                break;
-            }
-            width_tmp /= 2;
-            height_tmp /= 2;
-            scale *= 2;
-        }
-
-        // Decode with inSampleSize
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        return BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(selectedImage), null, o2);
-
     }
 
-
+    //Flash Option Listener
     private View.OnClickListener flashButtonListener=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             Camera.Parameters params=mCamera.getParameters();
-
-
-
-
             if(!params.getFlashMode().equals(Camera.Parameters.FLASH_MODE_ON) ){
                 params.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
-                //Log.d(TAG, "Supuestamente on");
                 mCamera.setParameters(params);
                 flashButton.setImageResource(R.drawable.ic_flash_on);
 
-
-
             }else{
                 params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-               // Log.d(TAG, "Supuestamente OFF");
-
                 mCamera.setParameters(params);
                 mCamera.startPreview();
                 flashButton.setImageResource(R.drawable.ic_flash_off2);
-
-
             }
 
         }
     };
+
+    //Back Button to go back to CameraView
     private View.OnClickListener backButtonListener=new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             onBackPressedButton();
-
             mCamera.startPreview();
 
         }
@@ -1068,7 +1011,8 @@ public class CameraFragment extends Fragment {
         return getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
     }
 
-    //Filters
+    //Filters Functions
+    //Invert Function method.
     private Bitmap invertImage(Bitmap originalImage) {
         //creating Blank Bitmap with same dimensions as original Image
         Bitmap modifiedImage= Bitmap.createBitmap(originalImage.getWidth(), originalImage.getHeight(), originalImage.getConfig());
@@ -1088,11 +1032,9 @@ public class CameraFragment extends Fragment {
 
             }
         }
-
-
         return modifiedImage;
     }
-    //Filters
+    //BlackWhite method.
     private Bitmap BlackWhiteImage(Bitmap originalImage) {
         //creating Blank Bitmap with same dimensions as original Image
         Bitmap modifiedImage= Bitmap.createBitmap(originalImage.getWidth(), originalImage.getHeight(), originalImage.getConfig());
@@ -1114,26 +1056,22 @@ public class CameraFragment extends Fragment {
 
             }
         }
-
-
         return modifiedImage;
     }
 
 
-
+    //Dirty Filter method.
     private LayerDrawable dirtyImage(Bitmap originalImage){
         Bitmap modifiedImage= Bitmap.createBitmap(originalImage.getWidth(),originalImage.getHeight(),originalImage.getConfig());
-
-        //Another filter
         Drawable[] layers=new Drawable[2];
 
         layers[0]=new BitmapDrawable(getResources(), originalImage);
         layers[1]=getResources().getDrawable(R.drawable.noise);
         LayerDrawable layerDrawable=new LayerDrawable(layers);
-        //cameraView.setImageDrawable(layerDrawable);
         return layerDrawable;
     }
 
+    //Method called when picture were taken
     private void showTakenPicture(Bitmap bitmap) {
         brightness=0;
         contrast=0;
@@ -1143,7 +1081,7 @@ public class CameraFragment extends Fragment {
         updateState(STATE_SETUP_PHOTO);
     }
 
-
+    //Method called when back Button is pressed and return to CameraView
     public void onBackPressedButton() {
         if (currentState == STATE_SETUP_PHOTO) {
             //btnTakePhoto.setEnabled(true);
@@ -1153,6 +1091,7 @@ public class CameraFragment extends Fragment {
         }
     }
 
+    // Method to generate animation between CameraView and ImageView
     private void updateState(int state) {
 
         Animation slide_in_left, slide_out_right;
@@ -1169,11 +1108,7 @@ public class CameraFragment extends Fragment {
             vUpperPanel.setOutAnimation(slide_out_right);
             vLowerPanel.setInAnimation(slide_in_left);
             vLowerPanel.setOutAnimation(slide_out_right);
-
             cameraView.setVisibility(View.INVISIBLE);
-
-
-
 
         } else if (currentState == STATE_SETUP_PHOTO) {
 
@@ -1181,15 +1116,10 @@ public class CameraFragment extends Fragment {
             vUpperPanel.setOutAnimation(slide_in_left);
             vLowerPanel.setInAnimation(slide_out_right);
             vLowerPanel.setOutAnimation(slide_in_left);
-
-
             cameraView.setVisibility(View.VISIBLE);
 
         }
     }
-
-
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -1271,9 +1201,7 @@ public class CameraFragment extends Fragment {
             try {
 
                 final Camera.Parameters p = mCamera1.getParameters();
-                //List<Camera.Size> mSupportedPictureSizes = p.getSupportedPictureSizes();
                 final Camera.Size size = getOptimalSize();
-
                 //p.setPictureSize(size.height,size.width);
 
                 p.set("jpeg-quality", 100);
@@ -1282,10 +1210,8 @@ public class CameraFragment extends Fragment {
                 p.setPreviewSize(size.width, size.height);
                // p.setPreviewSize(preview.getHeight(), preview.getWidth());// here w h are reversed
                 mCamera1.setParameters(p);
-
                 mCamera1.setDisplayOrientation(90);
                 mCamera1.setPreviewDisplay(holder);
-
                 mCamera1.startPreview();
 
 
@@ -1294,6 +1220,7 @@ public class CameraFragment extends Fragment {
             }
         }
 
+        //Get Optimeze size picture for different camera specifications
         private Camera.Size getOptimalSize() {
             final double PREVIEW_SIZE_FACTOR = 1.30;
             Camera.Size result = null;
@@ -1326,16 +1253,13 @@ public class CameraFragment extends Fragment {
             return mCamera1.getParameters();
         }
 
-
+        //Overrride OnDraw method to draw Grid on Camera View
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 
             if(grid){
             //  Find Screen size first
-            /*DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-            int screenWidth = metrics.widthPixels;
-            int screenHeight = (int) (metrics.heightPixels*0.9);*/
             int screenWidth = preview.getWidth();
             int screenHeight = (int) (preview.getHeight());
 
@@ -1351,8 +1275,6 @@ public class CameraFragment extends Fragment {
             canvas.drawLine(0,(screenHeight/3),screenWidth,(screenHeight/3),paint);
             }
         }
-
-
 
         public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
             // If your preview can change or rotate, take care of those events here.
@@ -1371,10 +1293,6 @@ public class CameraFragment extends Fragment {
             } catch (Exception e){
                 // ignore: tried to stop a non-existent preview
             }
-
-
-
-
 
             // set preview size and make any resize, rotate or
             // reformatting changes here
