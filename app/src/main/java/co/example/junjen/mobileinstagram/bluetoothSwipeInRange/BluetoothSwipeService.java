@@ -39,6 +39,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.UUID;
 
+import co.example.junjen.mobileinstagram.elements.Parameters;
+
 /**
  * Created by Tou on 10/12/2015.
  */
@@ -164,6 +166,7 @@ public class BluetoothSwipeService {
         mConnectThread = new ConnectThread(device, secure);
         mConnectThread.start();
         setState(STATE_CONNECTING);
+        Parameters.swipeSender = true;
     }
 
     /**
@@ -283,6 +286,7 @@ public class BluetoothSwipeService {
         bundle.putString(Constants.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
+        Parameters.swipeSender = false;
 
         // Start the service over to restart listening mode
         BluetoothSwipeService.this.start();
