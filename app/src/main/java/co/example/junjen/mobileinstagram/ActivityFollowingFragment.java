@@ -172,11 +172,11 @@ public class ActivityFollowingFragment extends Fragment
             @Override
             public void onGlobalLayout() {
 
-                // if view in refresh panel, return after a lengthy delay
+                // if view in refresh panel, return after a delay
                 int scrollY = activityFollowingFragment.getScrollY();
                 if (scrollY < activityFollowingFragmentTop) {
                     // if new user feed loading, delay before returning to top of scroll view
-                    returnToTop(activityFollowingFragmentTop, 2 * Parameters.refreshReturnDelay);
+                    returnToTop(activityFollowingFragmentTop, Parameters.refreshReturnDelay);
                 }
             }
         });

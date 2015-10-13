@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private int urlCount = 0;
     private int splashScreenDuration = 0;
     private boolean loggedIn = false;
+    private boolean navBarStarted = false;
 
     private ImageButton backButton;
     private ImageView profileImage;
@@ -94,8 +95,10 @@ public class MainActivity extends AppCompatActivity {
             title.setTextSize(Parameters.mainTitleSize);
         }
 
-        // check if token is present
-        checkToken();
+        if(!loggedIn) {
+            // check if token is present
+            checkToken();
+        }
 
         // set dummy data option in empty profile image through double tap
         profileImage = (ImageView) findViewById(R.id.login_user_image);
@@ -310,17 +313,20 @@ public class MainActivity extends AppCompatActivity {
     // go to the navigation screen
     public void startNavBar(){
 
-        // show splash screen for a duration of time before going to navigation screen
-        int DELAY = splashScreenDuration;
+        if(!navBarStarted) {
+            // show splash screen for a duration of time before going to navigation screen
+            int DELAY = splashScreenDuration;
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, NavigationBar.class);
-                MainActivity.this.startActivity(intent);
-            }
-        }, DELAY);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(MainActivity.this, NavigationBar.class);
+                    MainActivity.this.startActivity(intent);
+                }
+            }, DELAY);
+        }
+        navBarStarted = true;
     }
 
     // checks if there is a access token present

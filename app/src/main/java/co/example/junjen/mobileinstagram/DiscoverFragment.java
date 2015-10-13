@@ -171,11 +171,11 @@ public class DiscoverFragment extends Fragment implements TopScrollViewListener 
             @Override
             public void onGlobalLayout() {
 
-                // if view in refresh panel, return after a lengthy delay
+                // if view in refresh panel, return after a delay
                 int scrollY = discoverFragment.getScrollY();
                 if (scrollY < discoverFragmentTop) {
                     // if new user feed loading, delay before returning to top of scroll view
-                    returnToTop(discoverFragmentTop, 2 * Parameters.refreshReturnDelay);
+                    returnToTop(discoverFragmentTop, Parameters.refreshReturnDelay);
                 }
             }
         });

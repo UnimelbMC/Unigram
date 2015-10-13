@@ -233,11 +233,11 @@ public class UserFeedFragment extends Fragment
                     postHeights.add(post.getPostView().getTop());
                 }
 
-                // if view in refresh panel, return after a lengthy delay
+                // if view in refresh panel, return after a delay
                 int scrollY = userFeedFragment.getScrollY();
                 if (scrollY < userFeedFragmentTop) {
                     // if new user feed loading, delay before returning to top of scroll view
-                    returnToTop(userFeedFragmentTop, 2 * Parameters.refreshReturnDelay);
+                    returnToTop(userFeedFragmentTop, Parameters.refreshReturnDelay);
                 }
             }
         });
@@ -393,7 +393,7 @@ public class UserFeedFragment extends Fragment
             int i = 0;
             for (int height : postHeights) {
                 // if current scroll level matches user feed post's height, insert swiped post here
-                if (scrollY >= height) {
+                if (scrollY <= height) {
                     userFeedView.addView(swipedPostView, i + 1);
                     allPosts.add(i, swipedPost);
                     postIndex++;
