@@ -11,6 +11,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
@@ -97,6 +98,7 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
         return true;
     }
 
+    // handle swipe motion for swipe to send
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (Math.abs(e1.getY() - e2.getY()) > Parameters.SWIPE_MAX_OFF_PATH)
@@ -107,6 +109,11 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
             Log.w("test", "swiped");
 
             // TODO: bluetooth popup
+
+            if(Parameters.bluetoothSwipeFragment != null) {
+                Toast.makeText(Parameters.NavigationBarActivity);
+                Parameters.bluetoothSwipeFragment.sendMessage("Hello world from Bluetooth!");
+            }
 
         }
         return super.onFling(e1, e2, velocityX, velocityY);

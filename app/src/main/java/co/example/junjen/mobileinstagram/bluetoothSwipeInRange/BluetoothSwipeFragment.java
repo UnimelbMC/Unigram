@@ -27,11 +27,14 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -43,13 +46,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.elements.Parameters;
 //import co.example.junjen.mobileinstagram.common.logger.Log;
 import android.util.Log;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
-public class BluetoothSwipeFragment extends Fragment {
+public class BluetoothSwipeFragment extends Fragment{
 
     private static final String TAG = "BluetoothSwipeFragment";
 
@@ -146,10 +150,48 @@ public class BluetoothSwipeFragment extends Fragment {
 // _______________________________
 
 //    @Override
-//    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-//                             @Nullable Bundle savedInstanceState) {
-//        return inflater.inflate(R.layout.fragment_bluetooth_swipe, container, false);
-//    }
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View swipeView = inflater.inflate(R.layout.post, container,
+                false);
+
+        final GestureDetector gestureDetector = new GestureDetector(getActivity(),
+                new GestureDetector.SimpleOnGestureListener(){
+                    @Override
+                    public boolean onDown(MotionEvent e) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                        if (Math.abs(e1.getY() - e2.getY()) > Parameters.SWIPE_MAX_OFF_PATH)
+                            return false;
+                        if (Math.abs(e1.getX() - e2.getX()) > Parameters.SWIPE_MIN_DISTANCE
+                                && Math.abs(velocityX) > Parameters.SWIPE_THRESHOLD_VELOCITY) {
+
+                            Toast.makeText(getActivity(),"you just swiped",Toast.LENGTH_LONG).show();
+                            Log.w("test", "swiped");
+
+                            // TODO: bluetooth popup
+
+                        }
+                        return super.onFling(e1, e2, velocityX, velocityY);
+                    }
+                }
+        );
+
+        swipeView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+
+
+
+        });
+
+        return swipeView;
+    }
 
 
 
@@ -212,7 +254,7 @@ public class BluetoothSwipeFragment extends Fragment {
      *
      * @param message A string of text to send.
      */
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mSwipeService.getState() != BluetoothSwipeService.STATE_CONNECTED) {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
@@ -409,4 +451,4 @@ public class BluetoothSwipeFragment extends Fragment {
         return false;
         }
 
-        }
+}

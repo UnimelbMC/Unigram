@@ -50,6 +50,7 @@ public class NavigationBar extends AppCompatActivity {
     private int navigationViewId = R.id.view1;
     private ActionBar actionBar;
     private View navigationBar;
+    private BluetoothSwipeFragment bluetoothSwipeFragment;
 
     // Button IDs
     private final int userFeedButtonId = R.id.userfeed_button;
@@ -347,6 +348,8 @@ public class NavigationBar extends AppCompatActivity {
         activityFollowingHistory.add(new ActivityFollowingFragment());
         activityYouHistory.add(new ActivityYouFragment());
         profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
+        bluetoothSwipeFragment = new BluetoothSwipeFragment();
+        Parameters.bluetoothSwipeFragment = bluetoothSwipeFragment;
     }
 
     // gets the current activity feed

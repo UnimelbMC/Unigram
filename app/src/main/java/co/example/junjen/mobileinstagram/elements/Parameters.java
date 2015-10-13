@@ -1,12 +1,14 @@
 package co.example.junjen.mobileinstagram.elements;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 
 /**
@@ -120,6 +122,7 @@ public class Parameters {
     public static int activityFollowingFragmentTop;
     public static int activityYouFragmentTop;
     public static View NavigationBarView;
+    public static BluetoothSwipeFragment bluetoothSwipeFragment;
 
     // Time constants
     public static final int minute = 60;
