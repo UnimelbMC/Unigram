@@ -1,12 +1,17 @@
 package co.example.junjen.mobileinstagram.elements;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
-import co.example.junjen.mobileinstagram.R;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+
+import co.example.junjen.mobileinstagram.R;
 
 /**
  * Created by junjen on 30/09/2015.
@@ -44,4 +49,19 @@ public class Image implements Serializable {
     }
 
 
+    public static byte[] compressImage(ImageView image){
+
+        Bitmap original = ((BitmapDrawable)image.getDrawable()).getBitmap();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        original.compress(Bitmap.CompressFormat.PNG, 100, out);
+        return out.toByteArray();
+
+    }
+    public static void decodeImage(byte[] imgByte, ImageView image){
+        Bitmap bmp;
+        if(imgByte!=null && image != null) {
+            bmp = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
+            image.setImageBitmap(bmp);
+        }
+    }
 }
