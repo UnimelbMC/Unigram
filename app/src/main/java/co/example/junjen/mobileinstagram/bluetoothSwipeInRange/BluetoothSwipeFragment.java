@@ -382,17 +382,23 @@ public class BluetoothSwipeFragment extends Fragment{
     };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.d(TAG,"onActivityResult1");
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
+                Log.d(TAG,"onActivityResult2");
                 // When DeviceListActivity returns with a device to connect
                 Log.d(TAG,"resultCOde "+resultCode+"activity result OK "+ Activity.RESULT_OK);
                 if (resultCode == Activity.RESULT_OK) {
+                    Log.d(TAG,"onActivityResult3");
                     connectDevice(data, true);
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
+                Log.d(TAG,"onActivityResult4");
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
+                    Log.d(TAG,"onActivityResult5");
                     connectDevice(data, false);
                 }
                 break;
@@ -434,6 +440,7 @@ public class BluetoothSwipeFragment extends Fragment{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.secure_connect_scan: {
                 // Launch the DeviceListActivity to see devices and do scan
