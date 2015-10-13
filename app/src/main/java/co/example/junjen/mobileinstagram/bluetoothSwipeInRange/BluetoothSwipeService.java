@@ -25,6 +25,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -505,6 +507,7 @@ public class BluetoothSwipeService {
          */
         public void write(byte[] buffer) {
             try {
+
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
