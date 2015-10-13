@@ -30,23 +30,15 @@ import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link UserFeedFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link UserFeedFragment#newInstance} factory method to
- * create an instance of this fragment.
+ *
+ * Created by junjen at 7/10/2015.
+ *
+ * User Feed fragment for UniGram application. This is where the user views his user feed.
+ *
  */
+
 public class UserFeedFragment extends Fragment
         implements ScrollViewListener, TopScrollViewListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private TopBottomExpandableScrollView userFeedFragment;
     private ViewGroup userFeedView;
@@ -62,6 +54,7 @@ public class UserFeedFragment extends Fragment
     private boolean initialised = false;
     private boolean loadInitialFeed = true;
     private ArrayList<Post> allPosts = new ArrayList<>();
+    private ArrayList<Integer> postHeights = new ArrayList<>();
 
     // keep track of max and min id of last post generated to generate new set of posts
     private String maxPostId = null;
@@ -81,35 +74,14 @@ public class UserFeedFragment extends Fragment
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UserFeedFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UserFeedFragment newInstance(String param1, String param2) {
-        UserFeedFragment fragment = new UserFeedFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    // Required empty public constructor
     public UserFeedFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -173,6 +145,9 @@ public class UserFeedFragment extends Fragment
             // (after user's finger lifts off the screen)
             setReturnToTopListener();
 
+            // set user feed view listener to keep track of post height
+            setPostHeightListener();
+
             // load initial chunk of user feed posts
             loadUserFeedPosts();
         }
@@ -186,6 +161,7 @@ public class UserFeedFragment extends Fragment
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+
                 userFeedFragment.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
                 int[] location = new int[2];
@@ -244,6 +220,23 @@ public class UserFeedFragment extends Fragment
         });
     }
 
+    // listener to keep track of post height
+    private void setPostHeightListener(){
+        ViewTreeObserver vto = userFeedView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                postHeights.clear();
+
+                for(Post post : allPosts){
+                    postHeights.add(post.getPostView().getTop());
+                }
+
+            }
+        });
+    }
+
     // return scroll level to top of user feed view
     private void returnToTop(final int scrollY, int delay){
         Handler h = new Handler();
@@ -270,6 +263,7 @@ public class UserFeedFragment extends Fragment
     // add scroll listener to update posts if scroll past top of user feed
     @Override
     public void onScrollTop(TopBottomExpandableScrollView scrollView, int x, int y, int oldx, int oldy) {
+
         if (y >= userFeedFragmentTop) {
             refreshPost = true;
         } else if (y < userFeedFragmentTop) {
@@ -379,6 +373,24 @@ public class UserFeedFragment extends Fragment
 
         if(!Parameters.dummyData) {
             updateUserFeedView();
+        }
+    }
+
+    // inserts swiped posts into user feed view
+    public void insertSwipedPost(Post swipedPost){
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
+        View swipedPostView = swipedPost.getSwipedPostView(weakInflater.get());
+        int scrollY = userFeedFragment.getLastScrollY();
+        int i = 0;
+        for(int height : postHeights){
+            if (scrollY >= height){
+                userFeedView.addView(swipedPostView, i + 1);
+                allPosts.add(i, swipedPost);
+                postIndex++;
+                break;
+            }
+            i++;
         }
     }
 
