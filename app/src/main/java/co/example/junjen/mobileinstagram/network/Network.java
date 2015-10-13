@@ -251,7 +251,7 @@ public class Network {
         if (thumb){
             imgUrl = postData.getImages().getThumbnail().getImageUrl();
         } else {
-            imgUrl = postData.getImages().getStandardResolution().getImageUrl();
+            imgUrl = postData.getImages().getLowResolution().getImageUrl();
         }
 
         // get likes
