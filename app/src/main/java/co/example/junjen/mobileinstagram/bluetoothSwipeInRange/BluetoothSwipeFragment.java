@@ -194,6 +194,8 @@ public class BluetoothSwipeFragment extends Fragment{
 
         // Check that there's actually something to send
         if (message.length() > 0) {
+            
+
             // Get the message bytes and tell the BluetoothSwipeService to write
             byte[] send = message.getBytes();
             mSwipeService.write(send);
@@ -293,6 +295,7 @@ public class BluetoothSwipeFragment extends Fragment{
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
+                    Log.d(TAG,readMessage);
                     Toast.makeText(getActivity(),Parameters.swipeReceivedMessage,Toast.LENGTH_LONG).show();
                     receiveMessage(readMessage);
 //                    mArra yAdapter.add(mConnectedDeviceName + ":  " + readMessage);
