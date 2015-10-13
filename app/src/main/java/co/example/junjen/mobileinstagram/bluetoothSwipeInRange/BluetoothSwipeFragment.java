@@ -98,7 +98,7 @@ public class BluetoothSwipeFragment extends Fragment {
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             FragmentActivity activity = getActivity();
-            Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Bluetooth is not available.", Toast.LENGTH_LONG).show();
             activity.finish();
         }
     }
@@ -109,7 +109,7 @@ public class BluetoothSwipeFragment extends Fragment {
         super.onStart();
         // If BT is not on, request that it be enabled.
         // setupSwipe() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
+        if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the Swipe session

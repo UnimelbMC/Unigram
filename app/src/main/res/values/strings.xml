@@ -51,6 +51,10 @@
     <string name="private_profile">This user is private.</string>
     <string name="restricted_profile">Restricted access to profile.</string>
 
+    <!-- Swipe to send -->
+    <string name="swipe_to_send_header">Send post to...</string>
+    <string name="swipe_tag">Swiped from Username</string>
+
     <!-- Testing-->
     <!--  BluetoothChat -->
     <string name="send">Send</string>
