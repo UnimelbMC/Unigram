@@ -2,11 +2,17 @@ package co.example.junjen.mobileinstagram;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+
 import android.content.Intent;
-import android.os.StrictMode;
-import android.support.v7.app.AppCompatActivity;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.StrictMode;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,10 +36,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.network.Network;
+import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
+import co.example.junjen.mobileinstagram.network.Network;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -72,12 +81,22 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setCustomView(R.layout.action_bar);
             TextView title = (TextView) getSupportActionBar().
                     getCustomView().findViewById(R.id.action_bar_title);
-            title.setText(Parameters.mainTitle);
+            title.setText(Parameters.mainTitleText);
             title.setTextSize(Parameters.mainTitleSize);
         }
 
         // check if token is present
         checkToken();
+
+        if(savedInstanceState==null){
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            BluetoothSwipeFragment fragment = new BluetoothSwipeFragment();
+            transaction.replace(R.id.sample_content_fragment, fragment);
+            transaction.commit();
+
+        }
+
     }
 
     // action to take when login button is clicked
@@ -98,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             myWebView.loadUrl(NetParams.AUTHORIZE_URL);
         }
     }
+
 
     // WebView client for login sessions
     private class LoginWebViewClient extends WebViewClient{
@@ -249,8 +269,6 @@ public class MainActivity extends AppCompatActivity {
             }
             // go to navigation screen
             startNavBar();
-
-            mainActivity.finish();
         }
     }
 
@@ -301,12 +319,22 @@ public class MainActivity extends AppCompatActivity {
         checkToken();
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
-        Log.v("start", "2");
+
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    /*    if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }*/
+    }
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "main activity saved");
@@ -330,4 +358,5 @@ public class MainActivity extends AppCompatActivity {
 
         super.onDestroy();
     }
+
 }

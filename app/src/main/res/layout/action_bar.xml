@@ -5,6 +5,25 @@
     android:layout_gravity="center"
     android:orientation="horizontal">
 
+    <!-- Sort button -->
+    <RadioGroup
+        android:id="@+id/sort_button_group"
+        android:visibility="gone"
+        android:background="?attr/actionBarItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true">
+        <co.example.junjen.mobileinstagram.customLayouts.ToggleButton
+            android:id="@+id/sort_button"
+            android:layout_width="@dimen/sort_button_width"
+            android:layout_height="@dimen/sort_button_height"
+            android:button="@null"
+            android:background="@drawable/sort_selector"/>
+    </RadioGroup>
+
+    <!-- Back button -->
     <ImageButton android:src="@drawable/back_button"
         android:background="?attr/actionBarItemBackground"
         android:layout_width="wrap_content"
@@ -16,13 +35,15 @@
         android:visibility="gone"
         android:onClick="goBack"/>
 
+    <!-- Fragment title -->
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/title_width"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_centerInParent="true"
         android:id="@+id/action_bar_title"
         android:text="Action Bar Title"
+        android:singleLine="true"
         android:textColor="#ffffff"
         android:textStyle="bold"/>
 

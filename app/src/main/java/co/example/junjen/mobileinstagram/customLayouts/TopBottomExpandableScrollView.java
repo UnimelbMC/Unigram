@@ -12,6 +12,7 @@ import co.example.junjen.mobileinstagram.elements.Parameters;
  */
 public class TopBottomExpandableScrollView extends ExpandableScrollView {
 
+    private int topLevel;
     private TopScrollViewListener topScrollViewListener = null;
     private ScrollViewListener scrollViewListener = null;
     private int counter = 0;    // counter to prevent 2 consecutive cases of onScrollChanged
@@ -36,6 +37,10 @@ public class TopBottomExpandableScrollView extends ExpandableScrollView {
         this.scrollViewListener = scrollViewListener;
     }
 
+    public void setTopLevel(int top){
+        this.topLevel = top;
+    }
+
     // checks if top or bottom of a Scroll View has been reached
     @Override
     protected void onScrollChanged(int x, int y, int oldx, int oldy) {
@@ -54,7 +59,7 @@ public class TopBottomExpandableScrollView extends ExpandableScrollView {
 
         // refresh panel at top of scroll reached
         View view2 = getChildAt(getChildCount() - 1);
-        if (view2.getTop() < Parameters.userFeedFragmentTop) {
+        if (view2.getTop() < topLevel) {
             topScrollViewListener.onScrollTop(this, x, y, oldx, oldy);
         }
         super.onScrollChanged(x, y, oldx, oldy);

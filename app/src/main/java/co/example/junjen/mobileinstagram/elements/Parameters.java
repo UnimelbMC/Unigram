@@ -5,6 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
@@ -26,19 +30,25 @@ public class Parameters {
     public static ExpandableScrollView loginProfileView = null;
 
     // Titles
-    public static final String mainTitle = "UniGram";
-    public static final String commentsTitle = "COMMENTS";
-    public static final String likesTitle = "LIKERS";
-    public static final String followersTitle = "FOLLOWERS";
-    public static final String followingTitle = "FOLLOWING";
-    public static final String activityTitle = "ACTIVITY";
-    public static final String discoverTitle = "DISCOVER";
-    public static final String postTitle = "PHOTO";
+    public static final String mainTitleBuffer = "     ";
+    public static final String titleBuffer = "       ";
+    public static final String mainTitleText = "UniGram";
+    public static final String mainTitle = mainTitleBuffer+mainTitleText;
+    public static final String commentsTitle = titleBuffer+"COMMENTS";
+    public static final String likesTitle = titleBuffer+"LIKERS";
+    public static final String followersTitle = titleBuffer+"FOLLOWERS";
+    public static final String followingTitle = titleBuffer+"FOLLOWING";
+    public static final String activityTitle = titleBuffer+"ACTIVITY";
+    public static final String discoverTitle = titleBuffer+"DISCOVER";
+    public static final String postTitle = titleBuffer+"PHOTO";
     public static final float mainTitleSize = 20;
     public static final float subTitleSize = 15;
 
     // Login screen parameters
     public static final int splashScreenDuration = 2500;    // in milliseconds
+
+    // User feed parameters
+    public static final boolean default_sortByTime = true;
 
     // Post parameters
     public static final String default_postId = "#";
@@ -56,9 +66,18 @@ public class Parameters {
     public static final int loadCommentThreshold = 20;
     public static final int loadUserThreshold = 100;
     public static final int maxUsers = 300;
+    public static final String swipe_toast_message = "Post swiped!";
+
+    // Swipe parameters
+    public static final int SWIPE_MIN_DISTANCE = 120;
+    public static final int SWIPE_MAX_OFF_PATH = 50;
+    public static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    public static final String default_swipeText = "Swiped from ";
 
     // Discover parameters
-    public static final int default_suggestions = 5;
+    public static final int default_suggestions = 10;
+    public static final int default_usersToSearch = 10;
+    public static final int searchedUsersToReturn = 14;
 
     // Activity Feed parameters
     public static final String activityFollowing_key = "following";
@@ -103,11 +122,6 @@ public class Parameters {
     public static final String default_loginUserImageLink = "0";
     public static final String default_emptyUserImageLink = "1";
 
-    // Swipe parameters
-    public static final int SWIPE_MIN_DISTANCE = 120;
-    public static final int SWIPE_MAX_OFF_PATH = 50;
-    public static final int SWIPE_THRESHOLD_VELOCITY = 200;
-
     // Application helpers
     public static Context MainActivityContext = null;
     public static NavigationBar NavigationBarActivity = null;
@@ -119,11 +133,14 @@ public class Parameters {
     public static int loadingAnimationDelay = 0;
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
-    public static int userFeedFragmentTop;
-    public static int activityFollowingFragmentTop;
-    public static int activityYouFragmentTop;
-    public static int discoverFragmentTop;
     public static View NavigationBarView;
+
+    // Follow UI helper
+    public static final String follows_key = "follows";
+    public static Set<String> userIdToFollow = new HashSet<>();
+    public static Set<String> userIdToUnfollow = new HashSet<>();
+    public static Set<String> postIdToLike = new HashSet<>();
+    public static Set<String> postIdToUnlike = new HashSet<>();
 
     // Time constants
     public static final int minute = 60;
@@ -140,4 +157,10 @@ public class Parameters {
             titleTextView.setTextSize(titleSize);
         }
     }
+
+    //Device location params
+    public static double DEV_LATITUDE = -37.8138434;
+    public static double DEV_LONGITUDE = 144.9595481;
+    public static boolean LOC_DONE = false;
+
 }

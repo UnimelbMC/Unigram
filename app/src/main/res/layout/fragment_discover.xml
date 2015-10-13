@@ -1,7 +1,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context="co.example.junjen.mobileinstagram.DiscoverFragment">
@@ -33,6 +32,7 @@
 
         <LinearLayout
             android:id="@+id/discover_view"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

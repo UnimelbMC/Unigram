@@ -5,7 +5,7 @@
     android:paddingLeft="@dimen/post_margin"
     android:paddingRight="@dimen/post_margin">
 
-    <!-- User button -->
+    <!-- Like button -->
     <RadioGroup
         android:id="@+id/like_button_group"
         android:layout_width="wrap_content"
@@ -31,5 +31,33 @@
         android:src="@drawable/comment_button"
         android:layout_centerVertical="true"
         android:layout_margin="@dimen/post_margin"/>
+
+    <!-- Swipe tag -->
+    <RelativeLayout
+        android:id="@+id/swipe_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:layout_margin="@dimen/post_margin">
+        <ImageView
+            android:id="@+id/swipe_icon"
+            android:layout_width="@dimen/swipe_icon_width"
+            android:layout_height="@dimen/swipe_icon_width"
+            android:adjustViewBounds="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/swipe_tag"/>
+        <TextView
+            android:id="@+id/swipe_text"
+            android:layout_toRightOf="@id/swipe_icon"
+            android:layout_toEndOf="@id/swipe_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/post_margin"
+            android:text="@string/swipe_tag"/>
+    </RelativeLayout>
 
 </RelativeLayout>

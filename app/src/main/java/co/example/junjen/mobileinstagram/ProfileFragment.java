@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import java.lang.ref.WeakReference;
+
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
@@ -99,7 +101,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                 if(parts.length > 0){
                     profile = new Profile(parts[1]);
                 } else {
-                    profile = new Profile(Parameters.default_username);
+                    profile = new Profile("");
                 }
             } else if (!userId.equals(Parameters.loginUserId)){
                 Log.w("like", "profile creation through NETWORK");
@@ -107,7 +109,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
 
                 if (profile == null){
                     // this might mean the profile is private, hence search for user info only
-                    profile = NetParams.NETWORK.searchUserById(userId);
+                    profile = NetParams.NETWORK.searchUserProfileById(userId);
 
                     if (profile == null) {
                         // at this point it means current user has restricted access to this profile
@@ -140,8 +142,9 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     int height = location[1] + profileFragment.getChildAt(0).getHeight();
 
                     if (height <= screenHeight) {
-                        LayoutInflater inflater = LayoutInflater.from(getContext());
-                        profile.getPostIcons(inflater);
+                        WeakReference<LayoutInflater> weakInflater =
+                                new WeakReference<>(LayoutInflater.from(getContext()));
+                        profile.getPostIcons(weakInflater.get());
                     }
                 }
             });
@@ -156,8 +159,9 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         // load new posts if no posts are currently being loaded
         if(loadPosts){
             loadPosts = false;
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            profile.getPostIcons(inflater);
+            WeakReference<LayoutInflater> weakInflater =
+                    new WeakReference<>(LayoutInflater.from(getContext()));
+            profile.getPostIcons(weakInflater.get());
             loadPosts = true;
         }
     }
@@ -165,7 +169,8 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
     // sets the action bar title when in a profile fragment
     public void setTitle(){
         Parameters.setTitle(Parameters.NavigationBarActivity,
-                profile.getUsername().getUsername().toUpperCase(), Parameters.subTitleSize);
+                Parameters.titleBuffer+profile.getUsername().getUsername().toUpperCase(),
+                Parameters.subTitleSize);
         Parameters.NavigationBarActivity.activityFeedBar(false);
     }
 

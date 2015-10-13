@@ -1,14 +1,13 @@
 package co.example.junjen.mobileinstagram;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,11 +16,12 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
+import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.TopScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
@@ -50,6 +50,7 @@ public class UserFeedFragment extends Fragment
 
     private TopBottomExpandableScrollView userFeedFragment;
     private ViewGroup userFeedView;
+    private ToggleButton sortButton;
     private int postIndex = 0;
     private int postBottomCount = 0;
     private int postTopCount = 0;
@@ -59,14 +60,19 @@ public class UserFeedFragment extends Fragment
     private int currentHeight;
     private boolean refreshPost = false;
     private boolean initialised = false;
+    private boolean loadInitialFeed = true;
     private ArrayList<Post> allPosts = new ArrayList<>();
 
     // keep track of max and min id of last post generated to generate new set of posts
-    private String maxPostId;
-    private String minPostId;
+    private String maxPostId = null;
+    private String minPostId = null;
 
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts = true;
+
+    // sort flag
+    private boolean showPostByTime = true;
+    private boolean prevSortWasTime = true;
 
     private OnFragmentInteractionListener mListener;
 
@@ -115,6 +121,29 @@ public class UserFeedFragment extends Fragment
 
         // initialise userFeedFragment if not created yet
         if(userFeedFragment == null){
+
+            ActionBar actionBar = Parameters.NavigationBarActivity.getSupportActionBar();
+            if(actionBar != null) {
+                // bind sortButton click to sort flag
+                sortButton = (ToggleButton)
+                        actionBar.getCustomView().findViewById(R.id.sort_button);
+                // default checked to sort by time
+                sortButton.setChecked(Parameters.default_sortByTime);
+                sortButton.setOnClickListener(new View.OnClickListener() {
+                    // Handle clicks for sort button
+                    @Override
+                    public void onClick(View v) {
+                        if(!Parameters.dummyData){
+                            if (sortButton.isChecked()) {
+                                showPostByTime = true;
+                            } else {
+                                showPostByTime = false;
+                            }
+                            updateUserFeedView();
+                        }
+                    }
+                });
+            }
 
             userFeedFragment = (TopBottomExpandableScrollView)
                     inflater.inflate(R.layout.fragment_top_bottom_expandable_scroll_view, container, false);
@@ -187,7 +216,7 @@ public class UserFeedFragment extends Fragment
                 if (!initialised) {
                     returnToTop(userFeedFragmentTop, Parameters.refreshReturnDelay);
                     initialised = true;
-                    Parameters.userFeedFragmentTop = userFeedFragmentTop;
+                    userFeedFragment.setTopLevel(userFeedFragmentTop);
                 }
             }
         });
@@ -254,7 +283,8 @@ public class UserFeedFragment extends Fragment
     // loads a chunk of posts on the user feed view
     private void loadUserFeedPosts() {
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         View postView;
         ArrayList<Post> userFeed;
@@ -266,6 +296,11 @@ public class UserFeedFragment extends Fragment
             if (userFeed.size() > 0){
                 //Posts earlier than last
                 maxPostId = userFeed.get(uFSize - 1).getPostId();
+                if(loadInitialFeed) {
+                    //Posts after first
+                    minPostId = userFeed.get(0).getPostId();
+                    loadInitialFeed = false;
+                }
             }
         } else {
             userFeed = new ArrayList<>();
@@ -274,7 +309,7 @@ public class UserFeedFragment extends Fragment
             }
         }
         for (Post post : userFeed) {
-            postView = post.getPostView(inflater);
+            postView = post.getPostView(weakInflater.get());
 
             // if post is from dummyData
             if (Parameters.dummyData) {
@@ -282,7 +317,7 @@ public class UserFeedFragment extends Fragment
                         postView.findViewById(R.id.post_header_time_since);
                 timeSinceText.setText(Integer.toString(postBottomCount) + "s");
             }
-            if(postView != null){
+            if(postView != null && showPostByTime){
                 userFeedView.addView(postView, postIndex + 1);
             }
             postBottomCount++;
@@ -291,7 +326,7 @@ public class UserFeedFragment extends Fragment
         allPosts.addAll(userFeed);
 
         if(!Parameters.dummyData) {
-            updateTimeSince();
+            updateUserFeedView();
         }
     }
 
@@ -302,7 +337,8 @@ public class UserFeedFragment extends Fragment
         // to the user feed view
         refreshPost = false;
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         View postView;
         ArrayList<Post> userFeed;
@@ -325,7 +361,7 @@ public class UserFeedFragment extends Fragment
         int size = userFeed.size();
         postTopCount += size;
         for (Post post : userFeed) {
-            postView = post.getPostView(inflater);
+            postView = post.getPostView(weakInflater.get());
 
             // if post is from dummyData
             if (Parameters.dummyData) {
@@ -333,7 +369,7 @@ public class UserFeedFragment extends Fragment
                         postView.findViewById(R.id.post_header_time_since);
                 timeSinceText.setText(Integer.toString(-postTopCount + i) + "s");
             }
-            if(postView != null){
+            if(postView != null && showPostByTime){
                 userFeedView.addView(postView, i + 1);
             }
             i++;
@@ -342,13 +378,49 @@ public class UserFeedFragment extends Fragment
         allPosts.addAll(0, userFeed);
 
         if(!Parameters.dummyData) {
-            updateTimeSince();
+            updateUserFeedView();
         }
     }
 
     // update time since posted of all posts
-    private void updateTimeSince(){
+    private void updateUserFeedView(){
+
+        // re-sort by location
+        if(!showPostByTime){
+            Log.v("sort", "showByLoc");
+            Post.sortPostByLocation(allPosts);
+            prevSortWasTime = false;
+            userFeedView.removeAllViews();
+            for (Post post : allPosts) {
+                if (post.getLocation() != null){
+                    Log.v("sort",Double.toString(post.getLocDiff()));
+                }else{
+                    Log.v("sort",post.getUsername().getUsername());
+                }
+                userFeedView.addView(post.getPostView());
+            }
+            userFeedView.addView(refresh, 0);
+        }
+        // re-sort by time if needed
+        else if(showPostByTime && !prevSortWasTime){
+            prevSortWasTime = true;
+            Post.sortPostByTime(allPosts);
+            userFeedView.removeAllViews();
+            for (Post post : allPosts){
+                if (post.getLocation() != null){
+                    Log.v("sort",Double.toString(post.getLocDiff()));
+                }else{
+                    Log.v("sort",post.getUsername().getUsername());
+                }
+                userFeedView.addView(post.getPostView());
+            }
+            userFeedView.addView(refresh, 0);
+        }
+
         for (Post post : allPosts){
+            if(post.getLocation()!= null){
+                Log.v("DIFF",Double.toString(post.getLocDiff()));
+            }
             TimeSince timeSince = post.getTimeSince();
 
             // update post time since
@@ -379,10 +451,14 @@ public class UserFeedFragment extends Fragment
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(allPosts != null){
+            for(Post post : allPosts){
+                post.checkLikeButton();
+            }
         }
     }
 
@@ -402,19 +478,19 @@ public class UserFeedFragment extends Fragment
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if(item.getItemId()==R.id.action_swipe){
-            Toast.makeText(getActivity(),"userfeedfragment",Toast.LENGTH_LONG).show();
-
-//            Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-//            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-            return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        if(item.getItemId()==R.id.action_swipe){
+//            Toast.makeText(getActivity(),"userfeedfragment",Toast.LENGTH_LONG).show();
+//
+////            Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+////            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+//            return true;
+//
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
     // Bluetooth swipe action

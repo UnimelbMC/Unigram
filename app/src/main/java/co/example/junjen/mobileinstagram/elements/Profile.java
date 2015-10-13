@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.UsersFragment;
@@ -49,15 +50,17 @@ public class Profile implements Serializable{
     public Profile(String userCount){
         // test constructor to create 'empty' Profile objects
 
+        String imageLink = Parameters.default_emptyUserImageLink;
         if(userCount.equals(Parameters.default_username) ||
                 userCount.equals(Parameters.default_userId) ||
                 userCount.equals("")){
             userCount = "";
+            imageLink = Parameters.default_loginUserImageLink;
         }
 
         this.username = new Username(Parameters.default_userId + userCount,
                 Parameters.default_username + userCount);
-        this.userImage = new Image(Parameters.default_image);
+        this.userImage = new Image(imageLink);
         this.profName = Parameters.default_profName + userCount;
         this.profDescrp = Parameters.default_profDescrp;
 
@@ -118,11 +121,9 @@ public class Profile implements Serializable{
         /** Fixed parameters **/
 
         // User image
-        if(!this.userImage.getImageString().equals(Parameters.default_image)) {
-            UserImageView userImage = (UserImageView)
-                    profileView.findViewById(R.id.profile_user_image);
-            Image.setImage(userImage, this.userImage);
-        }
+        UserImageView userImage = (UserImageView)
+                profileView.findViewById(R.id.profile_user_image);
+        Image.setImage(userImage, this.userImage);
 
         // Profile name
         TextView profName = (TextView) profileView.findViewById(R.id.profile_name);
@@ -151,9 +152,10 @@ public class Profile implements Serializable{
                 if(Parameters.dummyData) {
                     int i;
                     for (i = 0; i < 50; i++) {
-                        String username = Parameters.default_username + i;
-                        followers.add(new User(Parameters.default_userId, username,
-                                Parameters.default_emptyUserImageLink, Parameters.default_profName));
+                        followers.add(new User(Parameters.default_userId + (i + 1),
+                                Parameters.default_username + (i + 1),
+                                Parameters.default_emptyUserImageLink,
+                                Parameters.default_profName));
                     }
                 } else {
                     followers = NetParams.NETWORK.getFollowers();
@@ -190,9 +192,9 @@ public class Profile implements Serializable{
                 @Override
                 public void onClick(View v) {
                     if (followButton.isChecked()) {
-                        updateFollowingCount(true);
+                        updateFollowingCount(true, username.getUserId());
                     } else {
-                        updateFollowingCount(false);
+                        updateFollowingCount(false, username.getUserId());
                     }
                 }
             });
@@ -226,13 +228,25 @@ public class Profile implements Serializable{
                 if(Parameters.dummyData) {
                     int i;
                     for (i = 0; i < 50; i++) {
-                        String username = Parameters.default_username + i;
-                        following.add(new User(Parameters.default_userId, username,
-                                Parameters.default_emptyUserImageLink, Parameters.default_profName));
+                        following.add(new User(Parameters.default_userId + (i + 1),
+                                Parameters.default_username + (i + 1),
+                                Parameters.default_emptyUserImageLink,
+                                Parameters.default_profName));
                     }
                 } else {
                     following = NetParams.NETWORK.getFollowing();
                 }
+
+                // update following list to remove users that current user has unfollowed
+                Iterator<User> iter = following.iterator();
+                User user;
+                while (iter.hasNext()){
+                    user = iter.next();
+                    if(Parameters.userIdToUnfollow.contains(user.getUsername().getUserId())){
+                        iter.remove();
+                    }
+                }
+
                 // display followers
                 Parameters.NavigationBarActivity.showFragment(UsersFragment.
                         newInstance(following, Parameters.followingTitle));
@@ -247,7 +261,7 @@ public class Profile implements Serializable{
     // builds and displays post icons in profile view
     public void getPostIcons(LayoutInflater inflater){
 
-        Log.w("test", Integer.toString(this.postCount)+","+Integer.toString(this.posts.size()));
+        Log.w("test", Integer.toString(this.postCount) + "," + Integer.toString(this.posts.size()));
 
         int postsSize = this.posts.size();
 
@@ -290,32 +304,52 @@ public class Profile implements Serializable{
         // get relationship of this user to current user and set toggle accordingly
         String following = NetParams.NETWORK.checkIfFollowing(userId);
 
-        if (following.equals("follows")){
+        if ((following.equals(Parameters.follows_key)
+                || Parameters.userIdToFollow.contains(userId))){
             checkFollowButton(followButton, true);
-        } else {
+        }
+        else if ((!following.equals(Parameters.follows_key)
+                || Parameters.userIdToUnfollow.contains(userId))){
             checkFollowButton(followButton, false);
         }
     }
 
     // update following counts as seen on current user profile if following or unfollowing a user
-    public static void updateFollowingCount(boolean follow){
+    public static void updateFollowingCount(boolean follow, String userId){
 
         int count = Parameters.loginProfile.getFollowingCount();
 
         if(follow){
+            Log.w("test", "add following count");
             Parameters.loginProfile.setFollowingCount(count + 1);
         } else {
+            Log.w("test", "subtract following count");
             Parameters.loginProfile.setFollowingCount(count - 1);
         }
         Parameters.loginProfile.buildFollowingCountView();
+        updateFollowLists(userId, follow);
+    }
+
+    // update users to follow or not follow
+    public static void updateFollowLists(String userId, boolean follow){
+        if (follow){
+            Parameters.userIdToUnfollow.remove(userId);
+            Parameters.userIdToFollow.add(userId);
+        }
+        else if (!follow){
+            Parameters.userIdToFollow.remove(userId);
+            Parameters.userIdToUnfollow.add(userId);
+        }
     }
 
     // updates follow button
     public static void checkFollowButton(ToggleButton followButton, boolean follow){
-        if(follow){
-            followButton.setChecked(true);
-        } else {
-            followButton.setChecked(false);
+        if(followButton != null) {
+            if (follow) {
+                followButton.setChecked(true);
+            } else {
+                ((RadioGroup) followButton.getParent()).clearCheck();
+            }
         }
     }
 

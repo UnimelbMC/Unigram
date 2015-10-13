@@ -14,8 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.text.NumberFormat;
@@ -58,7 +62,12 @@ public class Post implements Serializable{
     private RelativeLayout postView;
     private ToggleButton likeButton;
 
+    // swiped post source
+    private Username swipedFrom;
+
+    // helper variables
     private String liked = Parameters.checkLike;
+    private double locDiff = 10000;
 
     public Post(){
         // test constructor to create 'empty' Post objects
@@ -86,7 +95,7 @@ public class Post implements Serializable{
         for (i = 0; i < Parameters.default_likeCount; i++){
             userId = Parameters.default_userId + (i + 1);
             username = Parameters.default_username + (i + 1);
-            this.likes.add(new User(userId, username, Parameters.default_image,
+            this.likes.add(new User(userId, username, Parameters.default_emptyUserImageLink,
                     Parameters.default_profName));
         }
         // create empty comments
@@ -95,17 +104,30 @@ public class Post implements Serializable{
             username = Parameters.default_username + (i + 1);
             comment = Parameters.default_comment + (i + 1);
             this.comments.add(new Comment(userId, username,
-                    Parameters.default_image, comment, new TimeSince()));
+                    Parameters.default_emptyUserImageLink, comment, new TimeSince()));
         }
+
+        // check if post was liked or unliked
+        if(!Parameters.postIdToUnlike.contains(postId)) {
+            if (Parameters.postIdToLike.contains(postId)){
+                liked = Parameters.like;
+                this.likeCount++;
+                likes.add(0, Parameters.loginUser);
+            }
+        } else {
+            liked = Parameters.unlike;
+        }
+
     }
 
-    public Post(String postId, String userId, String userImage, String username, Location location,
+    // constructor for actual instagram post data
+    public Post(String postId, Username poster, String userImage, Location location,
                 String timeSince, String postImage, String caption, int likeCount, int commentCount,
                 ArrayList<User> likes, ArrayList<Comment> comments){
 
         this.postId = postId;
         this.userImage = new Image(userImage);
-        this.username = new Username(userId, username);
+        this.username = poster;
         this.location = location;
         this.timeSince = new TimeSince(timeSince);
         this.postImage = new Image(postImage);
@@ -114,107 +136,242 @@ public class Post implements Serializable{
         this.commentCount = commentCount;
         this.likes = likes;
         this.comments = comments;
+
+        // check if post was liked or unliked
+        if(!Parameters.postIdToUnlike.contains(postId)) {
+
+            // update values accordingly for UI purposes
+            boolean likedByLoginUser = NetParams.NETWORK.isPostLikedByLoginUser(postId);
+            if (Parameters.postIdToLike.contains(postId) || likedByLoginUser){
+                liked = Parameters.like;
+                if (Parameters.postIdToLike.contains(postId) && !likedByLoginUser){
+                    this.likeCount++;
+                }
+            }
+            if (NetParams.NETWORK.isPostLikedByLoginUser(postId)) {
+                liked = Parameters.like;
+            }
+        } else {
+            liked = Parameters.unlike;
+        }
+
+        if (this.location!= null){
+            locDiff = getDiff(location.getLatitude(),location.getLongitude());
+        }
     }
 
+    // constructor for swiped posts
+    public Post(String postId, Username poster, String userImage, Location location,
+                String timeSince, String postImage, String caption, Username swipedFrom){
+
+        this.postId = postId;
+        this.userImage = new Image(userImage);
+        this.username = poster;
+        this.location = location;
+        this.timeSince = new TimeSince(timeSince);
+        this.postImage = new Image(postImage);
+        this.caption = caption;
+
+        this.swipedFrom = swipedFrom;
+
+    }
+
+    // get full view of post
     public View getPostView(LayoutInflater inflater) {
 
-        try {
+        postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
-            postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
-            ArrayList<CharSequence> stringComponents = new ArrayList<>();
+        /** Fixed parameters **/
 
-            /** Fixed parameters **/
-
-            // User image
-            if (!this.userImage.getImageString().equals(Parameters.default_image)) {
-                UserImageView userImage = (UserImageView)
-                        postView.findViewById(R.id.post_header_user_image);
-                Image.setImage(userImage, this.userImage);
-            }
-
-            // Username
-            TextView username = (TextView) postView.findViewById(R.id.post_header_username);
-            username.setText("");   // remove default text
-            stringComponents.add(this.username.getUsernameLink());
-            StringFactory.stringBuilder(username, stringComponents);
-            stringComponents.clear();
-
-            // Time since posted
-            TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
-            timeSince.setText(this.timeSince.getTimeSinceDisplay());
-
-            // Post image
-            ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-            if (!this.postImage.getImageString().equals(Parameters.default_image)) {
-                Image.setImage(postImage, this.postImage);
-            }
-            // set listener to handle double tap likes on post image
-            new PostImageListener(postImage, this);
-
-            // Like Feedback
-            ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
-            ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
-            likeFeedback.setLayoutParams(layoutParams);
-            likeFeedback.setVisibility(View.INVISIBLE);
-
-            // Like Button
-            likeButton = (ToggleButton) postView.findViewById(R.id.like_button);
-            likeButton.setOnClickListener(new View.OnClickListener() {
-
-                // Handle clicks for like button
-                @Override
-                public void onClick(View v) {
-                    if (likeButton.isChecked()) {
-                        likePost(true);
-                    } else {
-                        likePost(false);
-                    }
-                }
-            });
-
-            // Comment Button
-            ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
-            commentButton.setOnClickListener(this.commentButtonOnClickListener());
-
-            /** Optional parameters **/
-
-            // TODO: Confirm for 'null' return type if optional params do not exist
-
-            // Location
-            TextView location = (TextView) postView.findViewById(R.id.post_header_location);
-            if (this.location != null) {
-                location.setText("");    // remove default text
-                stringComponents.add(this.location.getLocation());
-                StringFactory.stringBuilder(location, stringComponents);
-                stringComponents.clear();
-            } else {
-                location.setVisibility(View.GONE);
-            }
-
-            // Likes
-            if (likes != null) {
-                updateLikes();
-            }
-            checkLikeButton();
-
-            // Caption
-            TextView caption = (TextView) postView.findViewById(R.id.post_caption);
-            if (this.caption != null) {
-                caption.setText("");    // remove default text
-                stringComponents.add(this.username.getUsernameLink());
-                stringComponents.add(" " + this.caption);
-                StringFactory.stringBuilder(caption, stringComponents);
-                stringComponents.clear();
-            } else {
-                caption.setVisibility(View.GONE);
-            }
-
-            // Comments
-            buildCommentView(inflater);
-
-        } catch (InflateException e) {
-            Log.w("test", "InflateException at getPostView()");
+        // User image
+        if (!this.userImage.getImageString().equals(Parameters.default_image)) {
+            UserImageView userImage = (UserImageView)
+                    postView.findViewById(R.id.post_header_user_image);
+            Image.setImage(userImage, this.userImage);
         }
+
+        // Username
+        TextView username = (TextView) postView.findViewById(R.id.post_header_username);
+        username.setText("");   // remove default text
+        stringComponents.add(this.username.getUsernameLink());
+        StringFactory.stringBuilder(username, stringComponents);
+        stringComponents.clear();
+
+        // Time since posted
+        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+        timeSince.setText(this.timeSince.getTimeSinceDisplay());
+
+        // Post image
+        ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
+        if (!this.postImage.getImageString().equals(Parameters.default_image)) {
+            Image.setImage(postImage, this.postImage);
+        }
+        // set listener to handle double tap likes on post image
+        new PostImageListener(postImage, this);
+
+        // Like Feedback
+        ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
+        ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
+        likeFeedback.setLayoutParams(layoutParams);
+        likeFeedback.setVisibility(View.INVISIBLE);
+
+        // Like Button
+        likeButton = (ToggleButton) postView.findViewById(R.id.like_button);
+        likeButton.setOnClickListener(new View.OnClickListener() {
+
+            // Handle clicks for like button
+            @Override
+            public void onClick(View v) {
+                if (likeButton.isChecked()) {
+                    likePost(true);
+                } else {
+                    likePost(false);
+                }
+            }
+        });
+
+        // Comment Button
+        ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
+        commentButton.setOnClickListener(this.commentButtonOnClickListener());
+
+        /** Optional parameters **/
+
+        // TODO: Confirm for 'null' return type if optional params do not exist
+
+        // Location
+        TextView location = (TextView) postView.findViewById(R.id.post_header_location);
+        if (this.location != null) {
+            location.setText("");    // remove default text
+
+            String locText = this.location.getLocation();
+            if(locText.equals("")){
+                locText = "Lat: " + this.location.getLatitude() + ", " +
+                        "Long: " + this.location.getLongitude();
+            }
+
+            stringComponents.add(locText);
+            StringFactory.stringBuilder(location, stringComponents);
+            stringComponents.clear();
+        } else {
+            location.setVisibility(View.GONE);
+        }
+
+        // Likes
+        if (likes != null) {
+            updateLikes();
+        }
+
+        // check like button if post is from activity feed (list of current user's likes)
+        checkLikeButton();
+
+        // Caption
+        TextView caption = (TextView) postView.findViewById(R.id.post_caption);
+        if (this.caption != null) {
+            caption.setText("");    // remove default text
+            stringComponents.add(this.username.getUsernameLink());
+            stringComponents.add(" " + this.caption);
+            StringFactory.stringBuilder(caption, stringComponents);
+            stringComponents.clear();
+        } else {
+            caption.setVisibility(View.GONE);
+        }
+
+        // Comments
+        buildCommentView(inflater);
+
+        return postView;
+    }
+
+    // build minimal swiped post view
+    public View getSwipedPostView(LayoutInflater inflater) {
+
+        postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
+
+        /** Fixed parameters **/
+
+        // User image
+        if (!this.userImage.getImageString().equals(Parameters.default_image)) {
+            UserImageView userImage = (UserImageView)
+                    postView.findViewById(R.id.post_header_user_image);
+            Image.setImage(userImage, this.userImage);
+        }
+
+        // Username
+        TextView username = (TextView) postView.findViewById(R.id.post_header_username);
+        username.setText("");   // remove default text
+        stringComponents.add(this.username.getUsernameLink());
+        StringFactory.stringBuilder(username, stringComponents);
+        stringComponents.clear();
+
+        // Time since posted
+        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+        timeSince.setText(this.timeSince.getTimeSinceDisplay());
+
+        // Post image
+        ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
+        if (!this.postImage.getImageString().equals(Parameters.default_image)) {
+            Image.setImage(postImage, this.postImage);
+        }
+        // set listener to handle double tap likes on post image
+        new PostImageListener(postImage, this);
+
+        // Like Feedback
+        ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
+        ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
+        likeFeedback.setLayoutParams(layoutParams);
+        likeFeedback.setVisibility(View.INVISIBLE);
+
+        // Hide Like Comments
+        postView.findViewById(R.id.like_button_group).setVisibility(View.GONE);
+        postView.findViewById(R.id.comment_button).setVisibility(View.GONE);
+        postView.findViewById(R.id.post_comment_count).setVisibility(View.GONE);
+        postView.findViewById(R.id.post_comments).setVisibility(View.GONE);
+        postView.findViewById(R.id.like_count_line).setVisibility(View.GONE);
+
+        // Show Swipe Tag
+        RelativeLayout swipeTag = (RelativeLayout) postView.findViewById(R.id.swipe_tag);
+        swipeTag.setVisibility(View.VISIBLE);
+        TextView swipedFrom = (TextView) swipeTag.findViewById(R.id.swipe_text);
+        swipedFrom.setText("");   // remove default text
+        stringComponents.add(Parameters.default_swipeText);
+        stringComponents.add(this.swipedFrom.getUsernameLink());
+        StringFactory.stringBuilder(swipedFrom, stringComponents);
+        stringComponents.clear();
+
+        /** Optional parameters **/
+
+        // Location
+        TextView location = (TextView) postView.findViewById(R.id.post_header_location);
+        if (this.location != null) {
+            location.setText("");    // remove default text
+
+            String locText = this.location.getLocation();
+            if(locText.equals("")){
+                locText = "Lat: " + this.location.getLatitude() + ", " +
+                        "Long: " + this.location.getLongitude();
+            }
+
+            stringComponents.add(locText);
+            StringFactory.stringBuilder(location, stringComponents);
+            stringComponents.clear();
+        } else {
+            location.setVisibility(View.GONE);
+        }
+
+        // Caption
+        TextView caption = (TextView) postView.findViewById(R.id.post_caption);
+        if (this.caption != null) {
+            caption.setText("");    // remove default text
+            stringComponents.add(this.username.getUsernameLink());
+            stringComponents.add(" " + this.caption);
+            StringFactory.stringBuilder(caption, stringComponents);
+            stringComponents.clear();
+        } else {
+            caption.setVisibility(View.GONE);
+        }
+
         return postView;
     }
 
@@ -238,7 +395,9 @@ public class Post implements Serializable{
                     @Override
                     public void onClick(View v) {
 
-                        comments = NetParams.NETWORK.getCommentsByPostId(postId, false);
+                        if(!Parameters.dummyData) {
+                            comments = NetParams.NETWORK.getCommentsByPostId(postId, false);
+                        }
 
                         // display post's comments
                         Parameters.NavigationBarActivity.showFragment(CommentsFragment.
@@ -335,33 +494,61 @@ public class Post implements Serializable{
         }
     }
 
-    // updates list of Likes based or like button clicks or post image double taps
+    // updates list of Likes based on like button clicks or post image double taps
     public void likePost(boolean like){
-        if(like && liked.equals(Parameters.unlike) || !like && liked.equals(Parameters.like)) {
-
-            Iterator<User> iter;
-            for (iter = likes.listIterator(); iter.hasNext();) {
-                User thisUser = iter.next();
-                if (thisUser.getUsername().getUsername().equals(Parameters.loginUsername)) {
-                    if (!like) {
+        if(likeCount <= Parameters.likePreviewThreshold + 1) {
+            if (!like && liked.equals(Parameters.like)) {
+                Log.w("test", "unlike");
+                Iterator<User> iter;
+                for (iter = likes.listIterator(); iter.hasNext(); ) {
+                    User thisUser = iter.next();
+                    if (thisUser.getUsername().getUsername().equals(Parameters.loginUsername)) {
                         iter.remove();
+                        likeCount--;
                         liked = Parameters.unlike;
+                        updatePostLikeSet(postId, false);
                         updateLikes();
+                        break;
                     }
-                    break;
                 }
             }
-            if (like) {
+            else if (like && liked.equals(Parameters.unlike)) {
+                Log.w("test", "like");
                 likes.add(0, Parameters.loginUser);
+                likeCount++;
                 liked = Parameters.like;
+                updatePostLikeSet(postId, true);
                 updateLikes();
             }
+        } else {
+            if(like && !liked.equals(Parameters.like)){
+                likeCount++;
+                liked = Parameters.like;
+                updatePostLikeSet(postId, true);
+            } else {
+                likeCount--;
+                liked = Parameters.unlike;
+                updatePostLikeSet(postId, false);
+            }
+            updateLikes();
+        }
+    }
+
+    // update posts marked as liked or unliked
+    public void updatePostLikeSet(String postId, boolean add){
+        if(add){
+            Parameters.postIdToLike.add(postId);
+            Parameters.postIdToUnlike.remove(postId);
+        } else {
+            Parameters.postIdToUnlike.add(postId);
+            Parameters.postIdToLike.remove(postId);
         }
     }
 
     // update likes list and like button
     public void updateLikes(){
 
+        // check if current user liked this post
         if (liked.equals(Parameters.checkLike)){
             liked = Parameters.unlike;
             for(User user : likes){
@@ -376,6 +563,8 @@ public class Post implements Serializable{
         RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
 
         if (this.likeCount != 0){
+            likeLine.setVisibility(View.VISIBLE);
+            Log.w("test", "likecount: " + Integer.toString(this.likeCount));
             TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
             int likeCount = this.likeCount;
             int likeThreshold = Parameters.likePreviewThreshold;
@@ -389,7 +578,15 @@ public class Post implements Serializable{
                     @Override
                     public void onClick(View v) {
 
-                        likes = NetParams.NETWORK.getLikesByPostId(postId);
+                        if(!Parameters.dummyData) {
+                            likes = NetParams.NETWORK.getLikesByPostId(postId);
+
+                            if(liked.equals(Parameters.like)
+                                    && !likes.contains(Parameters.loginUser)){
+                                likes.add(0,Parameters.loginUser);
+                            }
+
+                        }
 
                         // display post's likes
                         Parameters.NavigationBarActivity.showFragment
@@ -404,6 +601,7 @@ public class Post implements Serializable{
                 likeCountText.setText("");  // remove default text
                 int i;
                 for (i = 0; i < likeCount; i++) {
+                    Log.w("test","add to like bar: "+this.likes.get(i).getUsername().getUsername());
                     stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
                     stringComponents.add(", ");
                 }
@@ -422,9 +620,10 @@ public class Post implements Serializable{
     // updates like button
     public void checkLikeButton(){
         if(liked.equals(Parameters.like)){
-            likeButton.setChecked(true);
+            ((RadioGroup) likeButton.getParent()).check(R.id.like_button);
+
         } else {
-            likeButton.setChecked(false);
+            ((RadioGroup) likeButton.getParent()).clearCheck();
         }
     }
 
@@ -466,33 +665,60 @@ public class Post implements Serializable{
         return commentButtonOnClickListener;
     }
     //Sort post list by location
-    public void sortPostByLocation(ArrayList<Post> list){
+    public static void  sortPostByLocation(ArrayList<Post> list){
+        Log.v("SORT","byloc");
         Collections.sort(list, new Comparator<Post>() {
             @Override
             public int compare(Post p1, Post p2) {
-                String t1 = p1.getLocation().getLocation();
-                String t2 = p2.getLocation().getLocation();
-                return t1.compareTo(t2);
-                //   return t1-t2; // Ascending
+
+                double t1 = p1.getLocDiff();
+                double t2 = p2.getLocDiff();
+
+                if (t1 < t2) return -1;
+                if (t1 > t2) return 1;
+               // return t1.compareTo(t2);
+                return 0; // Ascending
                 //return t2 - t1; // Descending
             }
         });
     }
     //Sort post list by time
-    public void sortPostByTime(ArrayList<Post> list){
+    public static void sortPostByTime(ArrayList<Post> list){
         Collections.sort(list, new Comparator<Post>() {
             @Override
             public int compare(Post p1, Post p2) {
                 String t1 = p1.getTimeSince().getTimeSince();
                 String t2 = p2.getTimeSince().getTimeSince();
-                return t1.compareTo(t2);
+                return t2.compareTo(t1);
                 //   return t1-t2; // Ascending
                 //return t2 - t1; // Descending
             }
         });
     }
 
-    //toString to convert to JSON
+    public double getLocDiff(){
+        return this.locDiff;
+    }
+    private double getDiff(double lat, double lon){
+        //Euclidean distance
+        double x1 = lat;
+        double y1 = lon;
+        double x2 = Parameters.DEV_LATITUDE;
+        double y2 = Parameters.DEV_LONGITUDE;
+        Log.v("sort",Double.toString(x1)+" "+ Double.toString(x2));
+        Log.v("sort",Double.toString(y1)+" "+ Double.toString(y2));
+        double  xDiff = Math.abs(x1-x2);
+        double  xSqr  = Math.pow(xDiff, 2);
+
+        double yDiff = Math.abs(y1-y2);
+        double ySqr = Math.pow(yDiff, 2);
+
+        double output   = Math.sqrt(xSqr + ySqr);
+        Log.v("sort - diff", Double.toString(output));
+        return output;
+    }
+    //toString to converto to JSON
+
     @Override
     public String toString() {
         return "Post [" +

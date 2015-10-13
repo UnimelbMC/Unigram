@@ -11,6 +11,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
@@ -105,6 +106,12 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
                 && Math.abs(velocityX) > Parameters.SWIPE_THRESHOLD_VELOCITY) {
 
             Log.w("test", "swiped");
+
+            // show toast feedback on swipe
+            CharSequence text = Parameters.swipe_toast_message;
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(Parameters.NavigationBarContext, text, duration);
+            toast.show();
 
             // TODO: bluetooth popup
 

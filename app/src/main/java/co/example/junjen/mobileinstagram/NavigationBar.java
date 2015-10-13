@@ -1,14 +1,17 @@
 package co.example.junjen.mobileinstagram;
 
-import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,18 +24,15 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeService;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
-import co.example.junjen.mobileinstagram.network.Bluetooth;
+import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
-import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 
 public class NavigationBar extends AppCompatActivity {
 
@@ -68,45 +68,57 @@ public class NavigationBar extends AppCompatActivity {
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
+    //Location sercvice
+    private LocationService mService;
+    private boolean mBound = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(MainActivity.mainActivity != null){
-            MainActivity.mainActivity.finish();
-        }
-        Parameters.NavigationBarActivity = this;
-        Parameters.NavigationBarContext = this.getApplicationContext();
-        Parameters.NavigationBarView = findViewById(navigationViewId);
-
-        // set custom action bar
-        actionBar = getSupportActionBar();
-        if(actionBar != null) {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionBar.setCustomView(R.layout.action_bar);
-
-            // bind backButton click to goBack() method
-            ImageButton backButton = (ImageButton)
-                    actionBar.getCustomView().findViewById(R.id.back_button);
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goBack();
-                }
-            });
-        }
-
-        setContentView(R.layout.activity_navigation_bar);
-
-        // get username and password
         if (savedInstanceState == null) {
+
+            // destroy main activity
+            if(MainActivity.mainActivity != null){
+                MainActivity.mainActivity.finish();
+            }
+
+            Parameters.NavigationBarActivity = this;
+            Parameters.NavigationBarContext = this.getApplicationContext();
+            Parameters.NavigationBarView = findViewById(navigationViewId);
+
+            //Init location service
+            initLocService();
+
+            // set custom action bar
+            actionBar = getSupportActionBar();
+            if(actionBar != null) {
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                actionBar.setCustomView(R.layout.action_bar);
+
+                // bind backButton click to goBack() method
+                ImageButton backButton = (ImageButton)
+                        actionBar.getCustomView().findViewById(R.id.back_button);
+                backButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goBack();
+                    }
+                });
+            }
+
+            setContentView(R.layout.activity_navigation_bar);
+
             // save current user profile
             if(Parameters.dummyData){
-                Parameters.loginProfile = new Profile(Parameters.default_username);
+                Parameters.loginProfile = new Profile("");
             } else {
                 Parameters.loginProfile = NetParams.NETWORK.getUserProfileInfo(
                         Parameters.login_key);
             }
+
+
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             Parameters.loginProfileView = Parameters.loginProfile.getProfileView(inflater);
             Parameters.loginUserId = Parameters.loginProfile.getUsername().getUserId();
@@ -137,6 +149,7 @@ public class NavigationBar extends AppCompatActivity {
             // set default fragment to User Feed
             RadioButton userFeedButton = (RadioButton) findViewById(userFeedButtonId);
             userFeedButton.setChecked(true);
+            showSortButton();   // show sort button
             getSupportFragmentManager().beginTransaction().
                     add(R.id.view1, userFeedHistory.get(0)).commit();
             prevNavButtonId = userFeedButtonId;
@@ -154,6 +167,13 @@ public class NavigationBar extends AppCompatActivity {
                 activityButton.setChecked(true);
             }
 
+            //BT testing
+
+
+
+
+
+
         } else {
             createFragments();
         }
@@ -170,30 +190,43 @@ public class NavigationBar extends AppCompatActivity {
                         ft.replace(navigationViewId,
                                 userFeedHistory.get(userFeedHistory.size() - 1));
                         prevNavButtonId = checkedId;
+
+                        // update action bar buttons
                         backButton(userFeedHistory);
+                        sortButton();
                         break;
                     case discoverButtonId:
                         ft.replace(navigationViewId,
                                 discoverHistory.get(discoverHistory.size() - 1));
                         prevNavButtonId = checkedId;
+
+                        // update action bar buttons
                         backButton(discoverHistory);
+                        sortButton();
                         break;
                     case cameraButtonId:
                         ft.replace(navigationViewId, cameraFragment);
                         cameraOn = true;
+                        sortButton();
                         break;
                     case activityFeedButtonId:
                         ArrayList<Fragment> activityHistory = getCurrentActivityFeed();
                         ft.replace(navigationViewId,
                                 activityHistory.get(activityHistory.size() - 1));
                         prevNavButtonId = checkedId;
+
+                        // update action bar buttons
                         backButton(activityHistory);
+                        sortButton();
                         break;
                     case profileButtonId:
                         ft.replace(navigationViewId,
                                 profileHistory.get(profileHistory.size() - 1));
                         prevNavButtonId = checkedId;
+
+                        // update action bar buttons
                         backButton(profileHistory);
+                        sortButton();
                         break;
                 }
                 ft.commit();
@@ -232,26 +265,25 @@ public class NavigationBar extends AppCompatActivity {
         switch (prevNavButtonId) {
             case userFeedButtonId:
                 userFeedHistory.add(fragment);
-                activityFeedBar(false);
                 break;
             case discoverButtonId:
                 discoverHistory.add(fragment);
-                activityFeedBar(false);
                 break;
             case activityFeedButtonId:
                 ArrayList<Fragment> activityHistory = getCurrentActivityFeed();
                 activityHistory.add(fragment);
-                activityFeedBar(false);
                 break;
             case profileButtonId:
                 profileHistory.add(fragment);
-                activityFeedBar(false);
                 break;
         }
+        // update UI bars and buttons
+        activityFeedBar(false);
+        sortButton();
     }
 
     // starts the loading animation on screen
-    private void loadingAnimation(){
+    private void loadingAnimation() {
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
@@ -269,22 +301,11 @@ public class NavigationBar extends AppCompatActivity {
     }
 
     // shows or hides activity feed bar
-    public void activityFeedBar(boolean show){
+    public void activityFeedBar(boolean show) {
         if(show){
             activityBar.setVisibility(View.VISIBLE);
         } else {
             activityBar.setVisibility(View.GONE);
-        }
-    }
-
-    // shows or hides back button on history count
-    public void backButton(ArrayList<Fragment> history){
-
-        // if history size is more than one then show back button, else hide it
-        if(history.size() > 1){
-            showBackButton();
-        } else {
-            hideBackButton();
         }
     }
 
@@ -310,12 +331,14 @@ public class NavigationBar extends AppCompatActivity {
 
     // update history when back button is clicked
     public void updateHistory(ArrayList<Fragment> history){
-        int size = 0;
+        int size;
 
         if(!cameraOn) {
+            // if not in Camera Fragment, replace and delete previous fragment
             replaceView(history.get(history.size() - 2));
             history.remove(history.size() - 1);
         } else {
+            // if in Camera Fragment, replace with previous fragment and check previous navigation
             cameraOn = false;
             RadioButton rb = (RadioButton) findViewById(prevNavButtonId);
             rb.setChecked(true);
@@ -327,6 +350,9 @@ public class NavigationBar extends AppCompatActivity {
         if (size == 1){
             hideBackButton();
         }
+
+        // show sort button if in main User Feed view
+        sortButton();
     }
 
     // create navigation fragments
@@ -350,6 +376,17 @@ public class NavigationBar extends AppCompatActivity {
         return activityHistory;
     }
 
+    // shows or hides back button on history count
+    public void backButton(ArrayList<Fragment> history){
+
+        // if history size is more than one then show back button, else hide it
+        if(history.size() > 1){
+            showBackButton();
+        } else {
+            hideBackButton();
+        }
+    }
+
     // show the back button on the action bar
     public void showBackButton(){
         if (actionBar != null){
@@ -361,6 +398,31 @@ public class NavigationBar extends AppCompatActivity {
     public void hideBackButton(){
         if (actionBar != null){
             actionBar.getCustomView().findViewById(R.id.back_button).setVisibility(View.GONE);
+        }
+    }
+
+    // shows or hides the sort button accordingly
+    public void sortButton(){
+        if(prevNavButtonId == userFeedButtonId && userFeedHistory.size() == 1){
+            showSortButton();
+        } else {
+            hideSortButton();
+        }
+    }
+
+    // show the sort button on the action bar
+    public void showSortButton(){
+        if (actionBar != null){
+            actionBar.getCustomView().
+                    findViewById(R.id.sort_button_group).setVisibility(View.VISIBLE);
+        }
+    }
+
+    // hide the sort button on the action bar
+    public void hideSortButton(){
+        if (actionBar != null){
+            actionBar.getCustomView().
+                    findViewById(R.id.sort_button_group).setVisibility(View.GONE);
         }
     }
 
@@ -451,13 +513,8 @@ public class NavigationBar extends AppCompatActivity {
                 myWebView.setWebViewClient(new LogoutWebViewClient());
                 myWebView.loadUrl(NetParams.LOGOUT_URL);
                 NetParams.ACCESS_TOKEN = null;
-                return true;
 
-            }
-            // Bluetooth action swipe
-            case R.id.action_swipe:{
 
-//                BluetoothSwipeService
                 return true;
 
             }
@@ -468,6 +525,7 @@ public class NavigationBar extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 //
 //    @Override
@@ -503,6 +561,38 @@ public class NavigationBar extends AppCompatActivity {
 //
 //
 //    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+    //Location Service
+    private void initLocService(){
+        //Init LocationService Service
+        Log.v("gps", "startService");
+        Intent intent = new Intent(this, LocationService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            LocationService.LocatioServicenBinder binder = (LocationService.LocatioServicenBinder) service;
+            Log.v("gps","newSercixeconn");
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
 
     // WebView client for logging out
     private class LogoutWebViewClient extends WebViewClient{
