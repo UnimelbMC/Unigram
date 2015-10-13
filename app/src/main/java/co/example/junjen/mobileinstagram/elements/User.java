@@ -52,7 +52,9 @@ public class User implements Serializable{
         StringFactory.stringBuilder(username, stringComponents);
         stringComponents.clear();
 
-        Profile.checkIfFollowing(this.username.getUserId(), followButton);
+        if(!Parameters.dummyData) {
+            Profile.checkIfFollowing(this.username.getUserId(), followButton);
+        }
 
         // set listener to followButton if user is not login user
         if(!this.username.getUsername().equals(Parameters.loginUsername)){

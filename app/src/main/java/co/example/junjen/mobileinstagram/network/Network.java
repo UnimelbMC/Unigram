@@ -374,14 +374,16 @@ public class Network {
 
     // check if current user is following a given user
     public String checkIfFollowing(String userId){
-        try {
-            Log.w("like", "network checkIfFollowing: "+userId);
-            if (!userId.startsWith(Parameters.default_userId)){
-                RelationshipFeed feed = instagram.getUserRelationship(userId);
-                return feed.getData().getOutgoingStatus();
+        if(!Parameters.dummyData) {
+            try {
+                Log.w("like", "network checkIfFollowing: " + userId);
+                if (!userId.startsWith(Parameters.default_userId)) {
+                    RelationshipFeed feed = instagram.getUserRelationship(userId);
+                    return feed.getData().getOutgoingStatus();
+                }
+            } catch (InstagramException e) {
+                e.printStackTrace();
             }
-        } catch (InstagramException e) {
-            e.printStackTrace();
         }
         return "";
     }

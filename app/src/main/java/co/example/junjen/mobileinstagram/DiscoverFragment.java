@@ -5,12 +5,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,6 +51,7 @@ public class DiscoverFragment extends Fragment implements TopScrollViewListener 
     private int refreshPoint;
     private boolean refreshPost = false;
     private boolean initialised = false;
+    private ArrayList<User> suggestedUsers = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -117,7 +120,7 @@ public class DiscoverFragment extends Fragment implements TopScrollViewListener 
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
         int i;
-        ArrayList<User> suggestedUsers = new ArrayList<>();
+        suggestedUsers = new ArrayList<>();
         User user;
 
         if(!Parameters.dummyData){
@@ -280,6 +283,21 @@ public class DiscoverFragment extends Fragment implements TopScrollViewListener 
 
         if (discoverFragment != null) {
             setTitle();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Log.w("test", "discover resume");
+
+        // update follow buttons on view resume
+        if(suggestedUsers != null){
+            for(User user : suggestedUsers){
+                ((RadioGroup) user.getFollowButton().getParent()).clearCheck();
+                user.updateFollowButton();
+            }
         }
     }
 
