@@ -1,18 +1,12 @@
 package co.example.junjen.mobileinstagram;
 
 import android.app.Activity;
-import android.gesture.GestureOverlayView;
 import android.os.Handler;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
 import android.os.StrictMode;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -37,11 +31,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.PrivilegedAction;
 
-import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
 import co.example.junjen.mobileinstagram.network.Network;
 
@@ -127,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
                 return true; // indicate event was handled
             }
         });
+
+        // set dummy data flag to false as default
+        Parameters.dummyData = false;
     }
 
     // action to take when login button is clicked
@@ -148,8 +144,15 @@ public class MainActivity extends AppCompatActivity {
                 myWebView.loadUrl(NetParams.AUTHORIZE_URL);
             }
         } else {
+            // update login screen to show dummy login
             TextView dummyDataFlag = (TextView) findViewById(R.id.dummy_data_flag);
-            dummyDataFlag.setText(Parameters.dummyDataGreeting);
+            dummyDataFlag.setText
+                    (Html.fromHtml("Hello <b>" + Parameters.dummyDataName.toUpperCase() + "</b>"));
+            Button loginButton = (Button) this.findViewById(R.id.login_button);
+            loginButton.setVisibility(View.GONE);
+            ImageView userImage = (ImageView) this.findViewById(R.id.login_user_image);
+            Image.setImage(userImage, new Image(Parameters.default_loginUserImageLink));
+
             startNavBar();
         }
     }

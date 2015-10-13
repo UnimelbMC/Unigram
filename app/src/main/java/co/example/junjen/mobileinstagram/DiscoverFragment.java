@@ -133,6 +133,9 @@ public class DiscoverFragment extends Fragment implements TopScrollViewListener 
                     discoverFragment.findViewById(R.id.discover_search_bar);
             searchBar.setOnClickListener(this.searchBarOnClickListener());
 
+            // set listener to return to top of scroll view if in refresh panel for too long
+            setScrollHeightListener();
+
             // loads suggested users
             loadSuggestedUsers();
         }
@@ -190,6 +193,23 @@ public class DiscoverFragment extends Fragment implements TopScrollViewListener 
 
         discoverScrollView.removeAllViews();
         loadSuggestedUsers();
+    }
+
+    // listener to keep track of post height
+    private void setScrollHeightListener(){
+        ViewTreeObserver vto = discoverScrollView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                // if view in refresh panel, return after a lengthy delay
+                int scrollY = discoverFragment.getScrollY();
+                if (scrollY < discoverFragmentTop) {
+                    // if new user feed loading, delay before returning to top of scroll view
+                    returnToTop(discoverFragmentTop, 2 * Parameters.refreshReturnDelay);
+                }
+            }
+        });
     }
 
     // initialise scroll view position using a global layout listener

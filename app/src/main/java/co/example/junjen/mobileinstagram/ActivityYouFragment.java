@@ -133,6 +133,9 @@ public class ActivityYouFragment extends Fragment
             // (after user's finger lifts off the screen)
             setReturnToTopListener();
 
+            // set listener to return to top of scroll view if in refresh panel for too long
+            setScrollHeightListener();
+
             // load initial chunk of user feed posts
             loadActivityYou();
         }
@@ -156,6 +159,23 @@ public class ActivityYouFragment extends Fragment
 
                 if (height <= screenHeight) {
                     loadActivityYou();
+                }
+            }
+        });
+    }
+
+    // listener to keep track of post height
+    private void setScrollHeightListener(){
+        ViewTreeObserver vto = activityYouView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                // if view in refresh panel, return after a lengthy delay
+                int scrollY = activityYouFragment.getScrollY();
+                if (scrollY < activityYouFragmentTop) {
+                    // if new user feed loading, delay before returning to top of scroll view
+                    returnToTop(activityYouFragmentTop, 2 * Parameters.refreshReturnDelay);
                 }
             }
         });

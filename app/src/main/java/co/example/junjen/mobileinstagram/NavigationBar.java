@@ -178,13 +178,6 @@ public class NavigationBar extends AppCompatActivity {
                 activityButton.setChecked(true);
             }
 
-            //BT testing
-
-
-
-
-
-
         } else {
             createFragments();
         }

@@ -1,5 +1,6 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,7 @@ public class Parameters {
     public static User loginUser = null;
     public static Profile loginProfile = null;
     public static ExpandableScrollView loginProfileView = null;
-    public static String dummyDataGreeting = "Hello ";
+    public static String dummyDataName = "Dummy";
 
     // Titles
     public static final String mainTitleBuffer = "     ";
@@ -77,6 +78,8 @@ public class Parameters {
     public static final int SWIPE_MAX_OFF_PATH = 50;
     public static final int SWIPE_THRESHOLD_VELOCITY = 200;
     public static final String default_swipeText = "Swiped from ";
+    public static boolean bluetoothOn;
+    public static BluetoothAdapter mBluetoothAdapter;
 
     // Discover parameters
     public static final int default_suggestions = 10;

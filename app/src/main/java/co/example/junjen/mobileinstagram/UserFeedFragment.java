@@ -8,13 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -148,7 +146,7 @@ public class UserFeedFragment extends Fragment
             setReturnToTopListener();
 
             // set user feed view listener to keep track of post height
-            setPostHeightListener();
+            setScrollHeightListener();
 
             // load initial chunk of user feed posts
             loadUserFeedPosts();
@@ -222,8 +220,8 @@ public class UserFeedFragment extends Fragment
         });
     }
 
-    // listener to keep track of post height
-    private void setPostHeightListener(){
+    // listener to keep track of post height as well as scroll position
+    private void setScrollHeightListener(){
         ViewTreeObserver vto = userFeedView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -235,6 +233,12 @@ public class UserFeedFragment extends Fragment
                     postHeights.add(post.getPostView().getTop());
                 }
 
+                // if view in refresh panel, return after a lengthy delay
+                int scrollY = userFeedFragment.getScrollY();
+                if (scrollY < userFeedFragmentTop) {
+                    // if new user feed loading, delay before returning to top of scroll view
+                    returnToTop(userFeedFragmentTop, 2 * Parameters.refreshReturnDelay);
+                }
             }
         });
     }
@@ -494,26 +498,4 @@ public class UserFeedFragment extends Fragment
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        if(item.getItemId()==R.id.action_swipe){
-//            Toast.makeText(getActivity(),"userfeedfragment",Toast.LENGTH_LONG).show();
-//
-////            Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-////            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-//            return true;
-//
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-
-    // Bluetooth swipe action
-
-
-
-
 }

@@ -87,7 +87,7 @@ public class BluetoothSwipeFragment extends Fragment{
     /**
      * Local Bluetooth adapter
      */
-    private BluetoothAdapter mBluetoothAdapter = null;
+    private BluetoothAdapter mBluetoothAdapter = Parameters.mBluetoothAdapter;
 
     /**
      * Member object for the Swipe services
@@ -113,11 +113,9 @@ public class BluetoothSwipeFragment extends Fragment{
         if (mBluetoothAdapter == null) {
             FragmentActivity activity = getActivity();
             Toast.makeText(activity, "Bluetooth is not available.", Toast.LENGTH_LONG).show();
-            activity.finish();
+            Parameters.bluetoothOn = false;
         }
     }
-
-
 
     @Override
     public void onStart() {
@@ -148,7 +146,7 @@ public class BluetoothSwipeFragment extends Fragment{
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (mSwipeService != null) {
+        if (mSwipeService != null && Parameters.bluetoothOn) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
             if (mSwipeService.getState() == BluetoothSwipeService.STATE_NONE) {
                 // Start the Bluetooth Swipe services
@@ -396,26 +394,36 @@ public class BluetoothSwipeFragment extends Fragment{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.secure_connect_scan: {
-                // Launch the DeviceListActivity to see devices and do scan
-                Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
-                return true;
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (mBluetoothAdapter != null) {
+            Parameters.bluetoothOn = true;
+
+            switch (item.getItemId()) {
+
+                case R.id.secure_connect_scan: {
+                    // Launch the DeviceListActivity to see devices and do scan
+                    Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+                    startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+                    return true;
+                }
+                case R.id.insecure_connect_scan: {
+                    // Launch the DeviceListActivity to see devices and do scan
+                    Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+                    startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+                    return true;
+                }
+                case R.id.discoverable: {
+                    // Ensure this device is discoverable by others
+                    ensureDiscoverable();
+                    return true;
+                }
             }
-            case R.id.insecure_connect_scan: {
-                // Launch the DeviceListActivity to see devices and do scan
-                Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-                return true;
-            }
-            case R.id.discoverable: {
-                // Ensure this device is discoverable by others
-                ensureDiscoverable();
-                return true;
-            }
+        }
+        else{
+            Toast.makeText(Parameters.NavigationBarActivity,
+                    "Bluetooth is not available.",Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
-        }
-
+    }
 }

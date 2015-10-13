@@ -19,6 +19,7 @@ import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScroll
 import co.example.junjen.mobileinstagram.customLayouts.TopScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.ActivityFollowing;
 import co.example.junjen.mobileinstagram.elements.Parameters;
+import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
@@ -133,6 +134,9 @@ public class ActivityFollowingFragment extends Fragment
             // (after user's finger lifts off the screen)
             setReturnToTopListener();
 
+            // set listener to return to top of scroll view if in refresh panel for too long
+            setScrollHeightListener();
+
             // load initial chunk of activity feed
             loadActivityFollowing();
 
@@ -156,6 +160,23 @@ public class ActivityFollowingFragment extends Fragment
 
                 if (height <= screenHeight) {
                     loadActivityFollowing();
+                }
+            }
+        });
+    }
+
+    // listener to keep track of post height
+    private void setScrollHeightListener(){
+        ViewTreeObserver vto = activityFollowingView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                // if view in refresh panel, return after a lengthy delay
+                int scrollY = activityFollowingFragment.getScrollY();
+                if (scrollY < activityFollowingFragmentTop) {
+                    // if new user feed loading, delay before returning to top of scroll view
+                    returnToTop(activityFollowingFragmentTop, 2 * Parameters.refreshReturnDelay);
                 }
             }
         });
