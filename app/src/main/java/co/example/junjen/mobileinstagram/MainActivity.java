@@ -88,14 +88,14 @@ public class MainActivity extends AppCompatActivity {
         // check if token is present
         checkToken();
 
-        if(savedInstanceState==null){
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            BluetoothSwipeFragment fragment = new BluetoothSwipeFragment();
-            transaction.replace(R.id.sample_content_fragment, fragment);
-            transaction.commit();
-
-        }
+//        if(savedInstanceState==null){
+//
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            BluetoothSwipeFragment fragment = new BluetoothSwipeFragment();
+//            transaction.replace(R.id.sample_content_fragment, fragment);
+//            transaction.commit();
+//
+//        }
 
     }
 

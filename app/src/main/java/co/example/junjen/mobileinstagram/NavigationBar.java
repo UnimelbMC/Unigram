@@ -28,6 +28,7 @@ import android.widget.RadioGroup;
 import java.io.File;
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
@@ -365,8 +366,10 @@ public class NavigationBar extends AppCompatActivity {
         activityFollowingHistory.add(new ActivityFollowingFragment());
         activityYouHistory.add(new ActivityYouFragment());
         profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
-        bluetoothSwipeFragment = new BluetoothSwipeFragment();
-        Parameters.bluetoothSwipeFragment = bluetoothSwipeFragment;
+        ft = getSupportFragmentManager().beginTransaction();
+        Parameters.bluetoothSwipeFragment = new BluetoothSwipeFragment();
+        ft.add(Parameters.bluetoothSwipeFragment, "bluetoothSwipeFragment");
+        ft.commit();
     }
 
     // gets the current activity feed
@@ -523,49 +526,10 @@ public class NavigationBar extends AppCompatActivity {
                 return true;
 
             }
-
-
-
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        switch (requestCode) {
-//            case REQUEST_CONNECT_DEVICE_SECURE:
-//                // When DeviceListActivity returns with a device to connect
-//                if (resultCode == Activity.RESULT_OK) {
-//                    connectDevice(data, true);
-//                }
-//                break;
-//            case REQUEST_CONNECT_DEVICE_INSECURE:
-//                // When DeviceListActivity returns with a device to connect
-//                if (resultCode == Activity.RESULT_OK) {
-//                    connectDevice(data, false);
-//                }
-//                break;
-//            case REQUEST_ENABLE_BT:
-//                // When the request to enable Bluetooth returns
-//                if (resultCode == Activity.RESULT_OK) {
-//                    // Bluetooth is now enabled, so set up a chat session
-//                    setupChat();
-//                } else {
-//                    // User did not enable Bluetooth or an error occurred
-//                    Log.d(TAG, "BT not enabled");
-//                    Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
-//                            Toast.LENGTH_SHORT).show();
-//                    getActivity().finish();
-//                }
-//        }
-//
-//
-//    }
 
     @Override
     protected void onDestroy() {
