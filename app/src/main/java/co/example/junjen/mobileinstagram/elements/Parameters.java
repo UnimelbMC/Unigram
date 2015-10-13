@@ -1,6 +1,7 @@
 package co.example.junjen.mobileinstagram.elements;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 
 /**
@@ -134,6 +136,7 @@ public class Parameters {
     public static int refreshReturnDelay = 2000;
     public static float refreshThreshold = 10;
     public static View NavigationBarView;
+    public static BluetoothSwipeFragment bluetoothSwipeFragment;
 
     // Follow UI helper
     public static final String follows_key = "follows";
