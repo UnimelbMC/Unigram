@@ -32,9 +32,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -479,14 +481,25 @@ public class BluetoothSwipeService {
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
             byte[] buffer = new byte[1024];
-            int bytes;
+            int bytes =0;
 
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
-                    // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
-
+                 //   int bytes = 0;
+                    boolean done = false;
+                   BufferedInputStream inBuffer ;
+                    while (!done) {
+                        // Read from the InputStream
+                        bytes = mmInStream.read(buffer);
+                        int offset = bytes - 11;
+                        byte[] eofByte = new byte[11];
+                        eofByte = Arrays.copyOfRange(buffer, offset, bytes);
+                        String message = new String(eofByte, 0, 11);
+                        if(message.equals("end of file")) {
+                            done = true;
+                        }
+                    }
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();

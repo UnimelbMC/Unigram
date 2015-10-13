@@ -195,33 +195,17 @@ public class BluetoothSwipeFragment extends Fragment{
         // Check that there's actually something to send
         if (message.length() > 0) {
 
-            int chunksize = 20;
+            int chunksize = 1024;
 
             // Get the message bytes and tell the BluetoothSwipeService to write
             byte[] send = message.getBytes();
-            int msgSize = send.length;
-            if (msgSize>chunksize) {
-                Log.v("MSG",Integer.toString(msgSize));
-                int packetsToSend = (int) Math.ceil(msgSize / chunksize);
-
-               // mSwipeService.write(Integer.toString(packetsToSend).getBytes());
-
-                byte[][] packets = new byte[packetsToSend][chunksize];
-                int start = 0;
-                for (int i = 0; i < packets.length; i++) {
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    packets[i] = Arrays.copyOfRange(send, start, start + chunksize);
-                    start += chunksize;
-                    mSwipeService.write(packets[i]);
-                }
-            }else{
-                mSwipeService.write(send);
+            mSwipeService.write(send);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
+            mSwipeService.write("done".getBytes());
             Toast.makeText(Parameters.NavigationBarActivity," Swoop! ", Toast.LENGTH_LONG).show();
 
             // Reset out string buffer to zero and clear the edit text field
@@ -313,7 +297,7 @@ public class BluetoothSwipeFragment extends Fragment{
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    Log.d(TAG,readMessage+" "+msg.arg1);
+                    Log.d(TAG,readMessage+" "+ msg.arg1);
                     Toast.makeText(getActivity(),Parameters.swipeReceivedMessage,Toast.LENGTH_LONG).show();
                     receiveMessage(readMessage);
                     break;
