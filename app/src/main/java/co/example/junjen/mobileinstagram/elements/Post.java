@@ -173,11 +173,9 @@ public class Post implements Serializable{
         this.username = poster;
         this.location = location;
         this.timeSince = new TimeSince(timeSince);
-        this.swipedPostImage =new Image(postImage);
+        this.swipedPostImage = new Image(postImage);
         this.caption = caption;
-
         this.swipedFrom = swipedFrom;
-
     }
 
     // get full view of post
@@ -315,7 +313,7 @@ public class Post implements Serializable{
 
         // Post image
         ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-       // Image.setSwipedImage(this.swipedPostImage, postImage);
+        Image.setImage(postImage, this.swipedPostImage);
 
         // set listener to handle double tap likes on post image
         new PostImageListener(postImage, this);
@@ -731,7 +729,7 @@ public class Post implements Serializable{
            lon = Double.toString(this.location.getLongitude());
        }
         String posImg =this.getPostImage().getImageString();// (postImage != null)? Arrays.toString(postImage): "";
-
+        Log.v("img",posImg);
         String mStringArray[] = { this.postId,this.username.getUserId(),this.username.toString(),this.userImage.getImageString(),locId,location,lat,lon,
             this.timeSince.getTimeSince(),posImg,this.caption,from.getUserId(),from.getUsername()};
 
@@ -768,7 +766,7 @@ public class Post implements Serializable{
         String postImage = json[9];
         String caption=json[10];
         Username swipedFrom = new Username(json[11],json[12]);
-
+        Log.v("tostr",postImage);
         return new Post(postId,poster,userImage,location,timeSince,postImage,caption,swipedFrom);
     }
 

@@ -217,6 +217,7 @@ public class BluetoothSwipeFragment extends Fragment{
 
     public void receiveMessage(String message){
         Post recvPost = Post.fromJson(message);
+   //     Log.v("tostr",recvPost.getPostImage().getImageString());
         Parameters.userFeedFragment.insertSwipedPost(recvPost);
     }
 

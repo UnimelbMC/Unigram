@@ -389,7 +389,7 @@ public class UserFeedFragment extends Fragment
             int i = 0;
             for (int height : postHeights) {
                 // if current scroll level matches user feed post's height, insert swiped post here
-                if (scrollY >= height) {
+                if (scrollY <= height) {
                     userFeedView.addView(swipedPostView, i + 1);
                     allPosts.add(i, swipedPost);
                     postIndex++;
