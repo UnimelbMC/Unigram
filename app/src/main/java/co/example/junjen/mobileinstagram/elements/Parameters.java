@@ -30,19 +30,25 @@ public class Parameters {
     public static ExpandableScrollView loginProfileView = null;
 
     // Titles
-    public static final String mainTitle = "UniGram";
-    public static final String commentsTitle = "COMMENTS";
-    public static final String likesTitle = "LIKERS";
-    public static final String followersTitle = "FOLLOWERS";
-    public static final String followingTitle = "FOLLOWING";
-    public static final String activityTitle = "ACTIVITY";
-    public static final String discoverTitle = "DISCOVER";
-    public static final String postTitle = "PHOTO";
+    public static final String mainTitleBuffer = "     ";
+    public static final String titleBuffer = "       ";
+    public static final String mainTitleText = "UniGram";
+    public static final String mainTitle = mainTitleBuffer+mainTitleText;
+    public static final String commentsTitle = titleBuffer+"COMMENTS";
+    public static final String likesTitle = titleBuffer+"LIKERS";
+    public static final String followersTitle = titleBuffer+"FOLLOWERS";
+    public static final String followingTitle = titleBuffer+"FOLLOWING";
+    public static final String activityTitle = titleBuffer+"ACTIVITY";
+    public static final String discoverTitle = titleBuffer+"DISCOVER";
+    public static final String postTitle = titleBuffer+"PHOTO";
     public static final float mainTitleSize = 20;
     public static final float subTitleSize = 15;
 
     // Login screen parameters
     public static final int splashScreenDuration = 2500;    // in milliseconds
+
+    // User feed parameters
+    public static final boolean default_sortByTime = true;
 
     // Post parameters
     public static final String default_postId = "#";
@@ -60,6 +66,7 @@ public class Parameters {
     public static final int loadCommentThreshold = 20;
     public static final int loadUserThreshold = 100;
     public static final int maxUsers = 300;
+    public static final String swipe_toast_message = "Post swiped!";
 
     // Discover parameters
     public static final int default_suggestions = 10;

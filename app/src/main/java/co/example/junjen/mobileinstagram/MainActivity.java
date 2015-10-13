@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setCustomView(R.layout.action_bar);
             TextView title = (TextView) getSupportActionBar().
                     getCustomView().findViewById(R.id.action_bar_title);
-            title.setText(Parameters.mainTitle);
+            title.setText(Parameters.mainTitleText);
             title.setTextSize(Parameters.mainTitleSize);
         }
 
@@ -258,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
             }
             // go to navigation screen
             startNavBar();
-
-            mainActivity.finish();
         }
     }
 

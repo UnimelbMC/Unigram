@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
+import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.TopScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
@@ -48,6 +50,7 @@ public class UserFeedFragment extends Fragment
 
     private TopBottomExpandableScrollView userFeedFragment;
     private ViewGroup userFeedView;
+    private ToggleButton sortButton;
     private int postIndex = 0;
     private int postBottomCount = 0;
     private int postTopCount = 0;
@@ -57,6 +60,7 @@ public class UserFeedFragment extends Fragment
     private int currentHeight;
     private boolean refreshPost = false;
     private boolean initialised = false;
+    private boolean loadInitialFeed = true;
     private ArrayList<Post> allPosts = new ArrayList<>();
 
     // keep track of max and min id of last post generated to generate new set of posts
@@ -66,10 +70,9 @@ public class UserFeedFragment extends Fragment
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts = true;
 
-    //TEST remember to change to false
-    private boolean showPostByLoc = false;
+    // sort flag
     private boolean showPostByTime = true;
-    private String prevSort = "time";
+    private boolean prevSortWasTime = true;
 
     private OnFragmentInteractionListener mListener;
 
@@ -118,6 +121,29 @@ public class UserFeedFragment extends Fragment
 
         // initialise userFeedFragment if not created yet
         if(userFeedFragment == null){
+
+            ActionBar actionBar = Parameters.NavigationBarActivity.getSupportActionBar();
+            if(actionBar != null) {
+                // bind sortButton click to sort flag
+                sortButton = (ToggleButton)
+                        actionBar.getCustomView().findViewById(R.id.sort_button);
+                // default checked to sort by time
+                sortButton.setChecked(Parameters.default_sortByTime);
+                sortButton.setOnClickListener(new View.OnClickListener() {
+                    // Handle clicks for sort button
+                    @Override
+                    public void onClick(View v) {
+                        if(!Parameters.dummyData){
+                            if (sortButton.isChecked()) {
+                                showPostByTime = true;
+                            } else {
+                                showPostByTime = false;
+                            }
+                            updateUserFeedView();
+                        }
+                    }
+                });
+            }
 
             userFeedFragment = (TopBottomExpandableScrollView)
                     inflater.inflate(R.layout.fragment_top_bottom_expandable_scroll_view, container, false);
@@ -270,6 +296,11 @@ public class UserFeedFragment extends Fragment
             if (userFeed.size() > 0){
                 //Posts earlier than last
                 maxPostId = userFeed.get(uFSize - 1).getPostId();
+                if(loadInitialFeed) {
+                    //Posts after first
+                    minPostId = userFeed.get(0).getPostId();
+                    loadInitialFeed = false;
+                }
             }
         } else {
             userFeed = new ArrayList<>();
@@ -286,7 +317,7 @@ public class UserFeedFragment extends Fragment
                         postView.findViewById(R.id.post_header_time_since);
                 timeSinceText.setText(Integer.toString(postBottomCount) + "s");
             }
-            if(postView != null){
+            if(postView != null && showPostByTime){
                 userFeedView.addView(postView, postIndex + 1);
             }
             postBottomCount++;
@@ -338,7 +369,7 @@ public class UserFeedFragment extends Fragment
                         postView.findViewById(R.id.post_header_time_since);
                 timeSinceText.setText(Integer.toString(-postTopCount + i) + "s");
             }
-            if(postView != null){
+            if(postView != null && showPostByTime){
                 userFeedView.addView(postView, i + 1);
             }
             i++;
@@ -353,11 +384,12 @@ public class UserFeedFragment extends Fragment
 
     // update time since posted of all posts
     private void updateUserFeedView(){
-        //Resort by location
-        if(showPostByLoc){
-            Log.v("sort","showByLoc");
+
+        // re-sort by location
+        if(!showPostByTime){
+            Log.v("sort", "showByLoc");
             Post.sortPostByLocation(allPosts);
-            prevSort = "loc";
+            prevSortWasTime = false;
             userFeedView.removeAllViews();
             for (Post post : allPosts) {
                 if (post.getLocation() != null){
@@ -365,12 +397,13 @@ public class UserFeedFragment extends Fragment
                 }else{
                     Log.v("sort",post.getUsername().getUsername());
                 }
-
                 userFeedView.addView(post.getPostView());
             }
-         //resort by time if needed
-        }else if(showPostByTime && !prevSort.equals("time")){
-            prevSort = "time";
+            userFeedView.addView(refresh, 0);
+        }
+        // re-sort by time if needed
+        else if(showPostByTime && !prevSortWasTime){
+            prevSortWasTime = true;
             Post.sortPostByTime(allPosts);
             userFeedView.removeAllViews();
             for (Post post : allPosts){
@@ -381,6 +414,7 @@ public class UserFeedFragment extends Fragment
                 }
                 userFeedView.addView(post.getPostView());
             }
+            userFeedView.addView(refresh, 0);
         }
 
         for (Post post : allPosts){

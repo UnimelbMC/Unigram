@@ -486,7 +486,7 @@ public class Post implements Serializable{
                 likeCountText.setText("");  // remove default text
                 int i;
                 for (i = 0; i < likeCount; i++) {
-                    Log.w("test","add: "+this.likes.get(i).getUsername().getUsername());
+                    Log.w("test","add to like bar: "+this.likes.get(i).getUsername().getUsername());
                     stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
                     stringComponents.add(", ");
                 }

@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_checked="true"
-        android:drawable="@drawable/sort_time_button"
+        android:drawable="@drawable/sort_location_button"
         />
-    <item android:drawable="@drawable/sort_location_button" />
+    <item android:drawable="@drawable/sort_time_button" />
 </selector>
