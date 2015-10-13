@@ -482,27 +482,12 @@ public class BluetoothSwipeService {
             Log.i(TAG, "BEGIN mConnectedThread");
             byte[] buffer = new byte[1024*1024];
             int bytes =0;
+            while(true){
+               try{
+                    bytes = mmInStream.read(buffer);
 
-            // Keep listening to the InputStream while connected
-            while (true) {
-                int byteNo;
-                try {
-                    byteNo = mmInStream.read(buffer);
-                    if (byteNo != -1) {
-                        //ensure DATAMAXSIZE Byte is read.
-                        int byteNo2 = byteNo;
-                        int bufferSize = 1024*1024;
-                        while(byteNo2 != bufferSize){
-                            bufferSize = bufferSize - byteNo2;
-                            byteNo2 = mmInStream.read(buffer,byteNo,bufferSize);
-                            if(byteNo2 == -1){
-                                break;
-                            }
-                            byteNo = byteNo+byteNo2;
-                        }
-                    }
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, byteNo, -1, buffer)
+                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
