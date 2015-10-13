@@ -189,18 +189,22 @@ public class DeviceListActivity extends Activity {
             = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
             // Cancel discovery because it's costly and we're about to connect
+            Log.d(TAG,"u just clicked connect to insecure or secure");
             mBtAdapter.cancelDiscovery();
 
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
+            Log.d(TAG, "this is MAC add" + address);
 
             // Create the result Intent and include the MAC address
             Intent intent = new Intent();
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+            Log.d(TAG, "EXtra DEV" + EXTRA_DEVICE_ADDRESS);
 
             // Set result and finish this Activity
             setResult(Activity.RESULT_OK, intent);
+//            Log.d(TAG, "ActivityREsult OK "+);
             finish();
         }
     };
