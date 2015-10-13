@@ -81,6 +81,7 @@ public class Parameters {
     public static final String default_swipeText = "Swiped from ";
     public static boolean bluetoothOn;
     public static BluetoothAdapter mBluetoothAdapter;
+    public static boolean swipeSender = false;
 
     // Discover parameters
     public static final int default_suggestions = 10;

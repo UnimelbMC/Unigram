@@ -108,7 +108,7 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
         if (Math.abs(e1.getX() - e2.getX()) > Parameters.SWIPE_MIN_DISTANCE
                 && Math.abs(velocityX) > Parameters.SWIPE_THRESHOLD_VELOCITY) {
 
-            if(Parameters.bluetoothSwipeFragment != null ) {
+            if(Parameters.bluetoothSwipeFragment != null && Parameters.swipeSender) {
                 byte[] img = Image.compressImage(postImageView);
                 String p = post.toJson( new Username(Parameters.loginUserId, Parameters.loginUsername));
                 Parameters.bluetoothSwipeFragment.sendMessage(p);
