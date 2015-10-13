@@ -33,6 +33,7 @@ import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 
 public class NavigationBar extends AppCompatActivity {
 

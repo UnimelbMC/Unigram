@@ -62,7 +62,7 @@ public class BluetoothSwipeFragment extends Fragment{
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
-//     Layout Views
+    // Layout Views
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
@@ -91,6 +91,11 @@ public class BluetoothSwipeFragment extends Fragment{
      * Member object for the Swipe services
      */
     private BluetoothSwipeService mSwipeService = null;
+
+    // constructor
+    public BluetoothSwipeFragment(){
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

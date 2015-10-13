@@ -117,7 +117,7 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
             // TODO: bluetooth popup
 
             if(Parameters.bluetoothSwipeFragment != null) {
-                Toast.makeText(Parameters.NavigationBarActivity);
+                Toast.makeText(Parameters.NavigationBarActivity,"swipe");
                 Parameters.bluetoothSwipeFragment.sendMessage("Hello world from Bluetooth!");
             }
 
