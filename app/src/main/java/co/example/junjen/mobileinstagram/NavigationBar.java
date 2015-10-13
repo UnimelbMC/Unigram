@@ -28,12 +28,21 @@ import android.widget.RadioGroup;
 import java.io.File;
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
 import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
+
+/**
+ *
+ * Created by junjen at 7/10/2015.
+ *
+ * Navigation activity for UniGram application. This is where the user navigates the application.
+ *
+ */
 
 public class NavigationBar extends AppCompatActivity {
 
@@ -366,11 +375,11 @@ public class NavigationBar extends AppCompatActivity {
         activityYouHistory.add(new ActivityYouFragment());
         profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        bluetoothSwipeFragment = new BluetoothSwipeFragment();
-        Parameters.bluetoothSwipeFragment = bluetoothSwipeFragment;
-        transaction.add(bluetoothSwipeFragment,"bluetooth");
-        transaction.commit();
+
+        ft = getSupportFragmentManager().beginTransaction();
+        Parameters.bluetoothSwipeFragment = new BluetoothSwipeFragment();
+        ft.add(Parameters.bluetoothSwipeFragment, "bluetoothSwipeFragment");
+        ft.commit();
 
     }
 
@@ -524,8 +533,8 @@ public class NavigationBar extends AppCompatActivity {
                 myWebView.loadUrl(NetParams.LOGOUT_URL);
                 NetParams.ACCESS_TOKEN = null;
                 return true;
-
-            }        }
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }

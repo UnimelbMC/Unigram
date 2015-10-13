@@ -10,11 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.util.Log;
 
 import java.util.ArrayList;
 
-import co.example.junjen.mobileinstagram.common.logger.Log;
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.customLayouts.ToggleButton;
@@ -192,8 +193,12 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
     public void onResume() {
         super.onResume();
 
+        Log.w("test", "user resume");
+
+        // update follow buttons on view resume
         if(users != null){
             for(User user : users){
+                ((RadioGroup) user.getFollowButton().getParent()).clearCheck();
                 user.updateFollowButton();
             }
         }

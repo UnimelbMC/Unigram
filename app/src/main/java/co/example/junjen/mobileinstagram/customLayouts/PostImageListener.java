@@ -107,7 +107,10 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
                 && Math.abs(velocityX) > Parameters.SWIPE_THRESHOLD_VELOCITY) {
 
             Log.w("test", "swiped");
-
+            if(Parameters.bluetoothSwipeFragment != null ) {
+                Toast.makeText(Parameters.NavigationBarActivity,"u r swipe", Toast.LENGTH_LONG).show();
+                Parameters.bluetoothSwipeFragment.sendMessage("Hello world from Bluetooth!");
+            }
             // show toast feedback on swipe
             CharSequence text = Parameters.swipe_toast_message;
             int duration = Toast.LENGTH_SHORT;
