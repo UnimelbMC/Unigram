@@ -207,6 +207,7 @@ public class BluetoothSwipeFragment extends Fragment{
 
     public void receiveMessage(String message){
         Post recvPost = Post.fromJson(message);
+        Parameters.userFeedFragment.insertSwipedPost(recvPost);
     }
 
     /**
@@ -292,9 +293,8 @@ public class BluetoothSwipeFragment extends Fragment{
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-
-
                     Toast.makeText(getActivity(),Parameters.swipeReceivedMessage,Toast.LENGTH_LONG).show();
+                    receiveMessage(readMessage);
 //                    mArra yAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
