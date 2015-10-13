@@ -33,6 +33,7 @@ import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 
 /**
  *
@@ -57,6 +58,7 @@ public class NavigationBar extends AppCompatActivity {
     private int navigationViewId = R.id.view1;
     private ActionBar actionBar;
     private View navigationBar;
+    private BluetoothSwipeFragment bluetoothSwipeFragment;
 
     // Button IDs
     private final int userFeedButtonId = R.id.userfeed_button;
@@ -371,6 +373,8 @@ public class NavigationBar extends AppCompatActivity {
         activityFollowingHistory.add(new ActivityFollowingFragment());
         activityYouHistory.add(new ActivityYouFragment());
         profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
+        bluetoothSwipeFragment = new BluetoothSwipeFragment();
+        Parameters.bluetoothSwipeFragment = bluetoothSwipeFragment;
     }
 
     // gets the current activity feed
@@ -502,6 +506,7 @@ public class NavigationBar extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_navigation_bar, menu);
+
         return true;
     }
 
