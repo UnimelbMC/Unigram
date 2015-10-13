@@ -46,5 +46,14 @@
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:onClick="loginButtonAction" />
 
+        <FrameLayout
+            android:id="@+id/sample_content_fragment"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0px" />
+
     </LinearLayout>
+
+
+
 </ScrollView>

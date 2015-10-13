@@ -34,7 +34,6 @@ import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
 
-
 public class NavigationBar extends AppCompatActivity {
 
     private FragmentTransaction ft;
@@ -118,6 +117,8 @@ public class NavigationBar extends AppCompatActivity {
                 Parameters.loginProfile = NetParams.NETWORK.getUserProfileInfo(
                         Parameters.login_key);
             }
+
+
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             Parameters.loginProfileView = Parameters.loginProfile.getProfileView(inflater);
             Parameters.loginUserId = Parameters.loginProfile.getUsername().getUserId();
@@ -165,6 +166,13 @@ public class NavigationBar extends AppCompatActivity {
                 RadioButton activityButton = (RadioButton) findViewById(buttonId);
                 activityButton.setChecked(true);
             }
+
+            //BT testing
+
+
+
+
+
 
         } else {
             createFragments();
@@ -505,13 +513,8 @@ public class NavigationBar extends AppCompatActivity {
                 myWebView.setWebViewClient(new LogoutWebViewClient());
                 myWebView.loadUrl(NetParams.LOGOUT_URL);
                 NetParams.ACCESS_TOKEN = null;
-                return true;
 
-            }
-            // Bluetooth action swipe
-            case R.id.action_swipe:{
 
-//                BluetoothSwipeService
                 return true;
 
             }
