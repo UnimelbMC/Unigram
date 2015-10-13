@@ -30,7 +30,6 @@ import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.TimeSince;
 import co.example.junjen.mobileinstagram.elements.User;
-import co.example.junjen.mobileinstagram.suggestion.Suggestion;
 
 /**
  * Created by Jaime on 10/4/2015.
@@ -202,6 +201,26 @@ public class Network {
         return thePosts;
     }
 
+    //Get arrayList of liked Posts for ActivityYou
+    public ArrayList<Post> getPostsLikedList(List<MediaFeedData> mediaFeeds,boolean thumb){
+        ArrayList<Post> thePosts = new ArrayList<>();
+        for (MediaFeedData thisPost : mediaFeeds) {
+            // omit posts that are in posts to unlike set (from UI clicks)
+            if(!Parameters.postIdToUnlike.contains(thisPost.getId())) {
+                Post post = buildPost(thisPost, thumb);
+                Parameters.postIdToLike.remove(post.getPostId());
+                thePosts.add(post);
+            }
+        }
+        // add posts that are in the posts to like set (from UI clicks)
+        for (String postId : Parameters.postIdToLike){
+            thePosts.add(0, getPostById(postId));
+        }
+
+        Log.v("NETWORK","size of the post from ingram"+Integer.toString(thePosts.size()));
+        return thePosts;
+    }
+
     //Get a media from instagram and return Post object for layout
     public Post getPostById(String postId){
         //  int postId, String userId, String userImage, String username, String location, String timeSince,
@@ -330,8 +349,12 @@ public class Network {
             List<UserFeedData> users = feed.getUserList();
             ArrayList<User> result = new ArrayList<>();
             for (UserFeedData u : users){
-                User newFollowing = new User(u.getId(), u.getUserName(),u.getProfilePictureUrl(),u.getFullName());
-                result.add(newFollowing);
+                // omit users to unfollow
+                if(!Parameters.userIdToUnfollow.contains(u.getId())) {
+                    User newFollowing = new User(u.getId(), u.getUserName(),
+                            u.getProfilePictureUrl(), u.getFullName());
+                    result.add(newFollowing);
+                }
             }
 
             return result;
@@ -467,7 +490,7 @@ public class Network {
 
             List<MediaFeedData> mediaFeeds = mediaFeed.getData();
             Log.v("NET LIKES",Integer.toString(mediaFeeds.size()));
-            return getPostsList(mediaFeeds, true);
+            return getPostsLikedList(mediaFeeds, true);
         } catch (InstagramException e) {
             e.printStackTrace();
             return null;
@@ -495,6 +518,17 @@ public class Network {
         } catch (InstagramException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public boolean isPostLikedByLoginUser(String postId){
+        boolean liked;
+        try {
+            liked = instagram.getMediaInfo(postId).getData().isUserHasLiked();
+            return liked;
+        } catch (InstagramException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

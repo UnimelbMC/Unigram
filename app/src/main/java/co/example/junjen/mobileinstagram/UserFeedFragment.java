@@ -296,8 +296,6 @@ public class UserFeedFragment extends Fragment
         if(!Parameters.dummyData) {
             updateUserFeedView();
         }
-        //updateUserFeedView();
-
     }
 
     // get new userfeed posts

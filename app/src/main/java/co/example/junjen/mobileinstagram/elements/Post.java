@@ -62,7 +62,7 @@ public class Post implements Serializable{
 
     private String liked = Parameters.checkLike;
 
-     private double locDiff = 10000;
+    private double locDiff = 10000;
 
     public Post(){
         // test constructor to create 'empty' Post objects
@@ -101,6 +101,18 @@ public class Post implements Serializable{
             this.comments.add(new Comment(userId, username,
                     Parameters.default_emptyUserImageLink, comment, new TimeSince()));
         }
+
+        // check if post was liked or unliked
+        if(!Parameters.postIdToUnlike.contains(postId)) {
+            if (Parameters.postIdToLike.contains(postId)){
+                liked = Parameters.like;
+                this.likeCount++;
+                likes.add(0, Parameters.loginUser);
+            }
+        } else {
+            liked = Parameters.unlike;
+        }
+
     }
 
     public Post(String postId, String userId, String userImage, String username, Location location,
@@ -118,6 +130,24 @@ public class Post implements Serializable{
         this.commentCount = commentCount;
         this.likes = likes;
         this.comments = comments;
+
+        // check if post was liked or unliked
+        if(!Parameters.postIdToUnlike.contains(postId)) {
+
+            // update values accordingly for UI purposes
+            boolean likedByLoginUser = NetParams.NETWORK.isPostLikedByLoginUser(postId);
+            if (Parameters.postIdToLike.contains(postId) || likedByLoginUser){
+                liked = Parameters.like;
+                if (Parameters.postIdToLike.contains(postId) && !likedByLoginUser){
+                    this.likeCount++;
+                }
+            }
+            if (NetParams.NETWORK.isPostLikedByLoginUser(postId)) {
+                liked = Parameters.like;
+            }
+        } else {
+            liked = Parameters.unlike;
+        }
 
         if (this.location!= null){
             locDiff = getDiff(location.getLatitude(),location.getLongitude());
@@ -361,6 +391,7 @@ public class Post implements Serializable{
                         iter.remove();
                         likeCount--;
                         liked = Parameters.unlike;
+                        updatePostLikeSet(postId, false);
                         updateLikes();
                         break;
                     }
@@ -371,17 +402,31 @@ public class Post implements Serializable{
                 likes.add(0, Parameters.loginUser);
                 likeCount++;
                 liked = Parameters.like;
+                updatePostLikeSet(postId, true);
                 updateLikes();
             }
         } else {
             if(like && !liked.equals(Parameters.like)){
                 likeCount++;
                 liked = Parameters.like;
+                updatePostLikeSet(postId, true);
             } else {
                 likeCount--;
                 liked = Parameters.unlike;
+                updatePostLikeSet(postId, false);
             }
             updateLikes();
+        }
+    }
+
+    // update posts marked as liked or unliked
+    public void updatePostLikeSet(String postId, boolean add){
+        if(add){
+            Parameters.postIdToLike.add(postId);
+            Parameters.postIdToUnlike.remove(postId);
+        } else {
+            Parameters.postIdToUnlike.add(postId);
+            Parameters.postIdToLike.remove(postId);
         }
     }
 

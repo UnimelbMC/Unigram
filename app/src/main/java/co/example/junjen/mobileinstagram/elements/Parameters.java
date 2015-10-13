@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import co.example.junjen.mobileinstagram.NavigationBar;
 import co.example.junjen.mobileinstagram.R;
@@ -62,7 +64,7 @@ public class Parameters {
     // Discover parameters
     public static final int default_suggestions = 10;
     public static final int default_usersToSearch = 10;
-    public static final int searchedUsersToReturn = 19;
+    public static final int searchedUsersToReturn = 14;
 
     // Activity Feed parameters
     public static final String activityFollowing_key = "following";
@@ -127,10 +129,10 @@ public class Parameters {
 
     // Follow UI helper
     public static final String follows_key = "follows";
-    public static ArrayList<String> usersToFollow = new ArrayList<>();
-    public static ArrayList<String> usersToUnfollow = new ArrayList<>();
-    public static ArrayList<String> postsToLike = new ArrayList<>();
-    public static ArrayList<String> postsToUnlike = new ArrayList<>();
+    public static Set<String> userIdToFollow = new HashSet<>();
+    public static Set<String> userIdToUnfollow = new HashSet<>();
+    public static Set<String> postIdToLike = new HashSet<>();
+    public static Set<String> postIdToUnlike = new HashSet<>();
 
     // Time constants
     public static final int minute = 60;

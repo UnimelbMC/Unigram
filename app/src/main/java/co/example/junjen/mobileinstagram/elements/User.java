@@ -1,12 +1,8 @@
 package co.example.junjen.mobileinstagram.elements;
 
-import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -95,9 +91,9 @@ public class User implements Serializable{
 
     // updates the follow button
     public void updateFollowButton(){
-        if(Parameters.usersToFollow.contains(username.getUserId())){
+        if(Parameters.userIdToFollow.contains(username.getUserId())){
             Profile.checkFollowButton(followButton, true);
-        } else if (Parameters.usersToUnfollow.contains(username.getUserId())){
+        } else if (Parameters.userIdToUnfollow.contains(username.getUserId())){
             Profile.checkFollowButton(followButton, false);
         }
     }

@@ -50,15 +50,17 @@ public class Profile implements Serializable{
     public Profile(String userCount){
         // test constructor to create 'empty' Profile objects
 
+        String imageLink = Parameters.default_emptyUserImageLink;
         if(userCount.equals(Parameters.default_username) ||
                 userCount.equals(Parameters.default_userId) ||
                 userCount.equals("")){
             userCount = "";
+            imageLink = Parameters.default_loginUserImageLink;
         }
 
         this.username = new Username(Parameters.default_userId + userCount,
                 Parameters.default_username + userCount);
-        this.userImage = new Image(Parameters.default_emptyUserImageLink);
+        this.userImage = new Image(imageLink);
         this.profName = Parameters.default_profName + userCount;
         this.profDescrp = Parameters.default_profDescrp;
 
@@ -119,11 +121,9 @@ public class Profile implements Serializable{
         /** Fixed parameters **/
 
         // User image
-        if(this.username.equals(Parameters.default_username)) {
-            UserImageView userImage = (UserImageView)
-                    profileView.findViewById(R.id.profile_user_image);
-            Image.setImage(userImage, this.userImage);
-        }
+        UserImageView userImage = (UserImageView)
+                profileView.findViewById(R.id.profile_user_image);
+        Image.setImage(userImage, this.userImage);
 
         // Profile name
         TextView profName = (TextView) profileView.findViewById(R.id.profile_name);
@@ -242,7 +242,7 @@ public class Profile implements Serializable{
                 User user;
                 while (iter.hasNext()){
                     user = iter.next();
-                    if(Parameters.usersToUnfollow.contains(user.getUsername().getUserId())){
+                    if(Parameters.userIdToUnfollow.contains(user.getUsername().getUserId())){
                         iter.remove();
                     }
                 }
@@ -305,13 +305,11 @@ public class Profile implements Serializable{
         String following = NetParams.NETWORK.checkIfFollowing(userId);
 
         if ((following.equals(Parameters.follows_key)
-                && !Parameters.usersToUnfollow.contains(userId))
-                || Parameters.usersToFollow.contains(userId)){
+                || Parameters.userIdToFollow.contains(userId))){
             checkFollowButton(followButton, true);
         }
         else if ((!following.equals(Parameters.follows_key)
-                && !Parameters.usersToFollow.contains(userId))
-                || Parameters.usersToUnfollow.contains(userId)){
+                || Parameters.userIdToUnfollow.contains(userId))){
             checkFollowButton(followButton, false);
         }
     }
@@ -329,22 +327,18 @@ public class Profile implements Serializable{
             Parameters.loginProfile.setFollowingCount(count - 1);
         }
         Parameters.loginProfile.buildFollowingCountView();
-        updateFollowLists(follow, userId);
+        updateFollowLists(userId, follow);
     }
 
     // update users to follow or not follow
-    public static void updateFollowLists(boolean follow, String userId){
+    public static void updateFollowLists(String userId, boolean follow){
         if (follow){
-            Parameters.usersToUnfollow.remove(userId);
-            if(!Parameters.usersToFollow.contains(userId)){
-                Parameters.usersToFollow.add(userId);
-            }
+            Parameters.userIdToUnfollow.remove(userId);
+            Parameters.userIdToFollow.add(userId);
         }
         else if (!follow){
-            Parameters.usersToFollow.remove(userId);
-            if(!Parameters.usersToUnfollow.contains(userId)){
-                Parameters.usersToUnfollow.add(userId);
-            }
+            Parameters.userIdToFollow.remove(userId);
+            Parameters.userIdToUnfollow.add(userId);
         }
     }
 

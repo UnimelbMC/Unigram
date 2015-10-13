@@ -61,11 +61,6 @@ public class TimeSince implements Serializable{
             convertedTime = (int) Math.floor(time/minute);
             formattedTime = Integer.toString(convertedTime) + "m";
         }
-
-        if(time < 0){
-            formattedTime = "-" + formattedTime;
-        }
-
         return formattedTime;
     }
 
