@@ -98,6 +98,7 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
         return true;
     }
 
+    // handle swipe motion for swipe to send
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (Math.abs(e1.getY() - e2.getY()) > Parameters.SWIPE_MAX_OFF_PATH)
@@ -106,7 +107,10 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
                 && Math.abs(velocityX) > Parameters.SWIPE_THRESHOLD_VELOCITY) {
 
             Log.w("test", "swiped");
-
+            if(Parameters.bluetoothSwipeFragment != null ) {
+                Toast.makeText(Parameters.NavigationBarActivity,"u r swipe", Toast.LENGTH_LONG).show();
+                Parameters.bluetoothSwipeFragment.sendMessage("Hello world from Bluetooth!");
+            }
             // show toast feedback on swipe
             CharSequence text = Parameters.swipe_toast_message;
             int duration = Toast.LENGTH_SHORT;
@@ -114,6 +118,11 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
             toast.show();
 
             // TODO: bluetooth popup
+
+            if(Parameters.bluetoothSwipeFragment != null) {
+                Toast.makeText(Parameters.NavigationBarActivity,"swipe",Toast.LENGTH_LONG).show();
+                Parameters.bluetoothSwipeFragment.sendMessage("Hello world from Bluetooth!");
+            }
 
         }
         return super.onFling(e1, e2, velocityX, velocityY);

@@ -28,11 +28,21 @@ import android.widget.RadioGroup;
 import java.io.File;
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
 import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
+
+/**
+ *
+ * Created by junjen at 7/10/2015.
+ *
+ * Navigation activity for UniGram application. This is where the user navigates the application.
+ *
+ */
 
 public class NavigationBar extends AppCompatActivity {
 
@@ -49,6 +59,7 @@ public class NavigationBar extends AppCompatActivity {
     private int navigationViewId = R.id.view1;
     private ActionBar actionBar;
     private View navigationBar;
+    private BluetoothSwipeFragment bluetoothSwipeFragment;
 
     // Button IDs
     private final int userFeedButtonId = R.id.userfeed_button;
@@ -363,6 +374,13 @@ public class NavigationBar extends AppCompatActivity {
         activityFollowingHistory.add(new ActivityFollowingFragment());
         activityYouHistory.add(new ActivityYouFragment());
         profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
+
+
+        ft = getSupportFragmentManager().beginTransaction();
+        Parameters.bluetoothSwipeFragment = new BluetoothSwipeFragment();
+        ft.add(Parameters.bluetoothSwipeFragment, "bluetoothSwipeFragment");
+        ft.commit();
+
     }
 
     // gets the current activity feed
@@ -465,7 +483,7 @@ public class NavigationBar extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.hide();
             }
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.show();
@@ -494,6 +512,7 @@ public class NavigationBar extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_navigation_bar, menu);
+
         return true;
     }
 
@@ -513,54 +532,12 @@ public class NavigationBar extends AppCompatActivity {
                 myWebView.setWebViewClient(new LogoutWebViewClient());
                 myWebView.loadUrl(NetParams.LOGOUT_URL);
                 NetParams.ACCESS_TOKEN = null;
-
-
                 return true;
-
             }
-
-
-
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        switch (requestCode) {
-//            case REQUEST_CONNECT_DEVICE_SECURE:
-//                // When DeviceListActivity returns with a device to connect
-//                if (resultCode == Activity.RESULT_OK) {
-//                    connectDevice(data, true);
-//                }
-//                break;
-//            case REQUEST_CONNECT_DEVICE_INSECURE:
-//                // When DeviceListActivity returns with a device to connect
-//                if (resultCode == Activity.RESULT_OK) {
-//                    connectDevice(data, false);
-//                }
-//                break;
-//            case REQUEST_ENABLE_BT:
-//                // When the request to enable Bluetooth returns
-//                if (resultCode == Activity.RESULT_OK) {
-//                    // Bluetooth is now enabled, so set up a chat session
-//                    setupChat();
-//                } else {
-//                    // User did not enable Bluetooth or an error occurred
-//                    Log.d(TAG, "BT not enabled");
-//                    Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
-//                            Toast.LENGTH_SHORT).show();
-//                    getActivity().finish();
-//                }
-//        }
-//
-//
-//    }
 
     @Override
     protected void onDestroy() {

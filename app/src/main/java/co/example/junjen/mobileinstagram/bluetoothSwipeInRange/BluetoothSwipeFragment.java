@@ -27,29 +27,35 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import co.example.junjen.mobileinstagram.R;
+import co.example.junjen.mobileinstagram.elements.Parameters;
 //import co.example.junjen.mobileinstagram.common.logger.Log;
 import android.util.Log;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
-public class BluetoothSwipeFragment extends Fragment {
+public class BluetoothSwipeFragment extends Fragment{
 
     private static final String TAG = "BluetoothSwipeFragment";
 
@@ -58,8 +64,8 @@ public class BluetoothSwipeFragment extends Fragment {
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
-//     Layout Views
-    private ListView mConversationView;
+    // Layout Views
+    private ListView mPostView;
     private EditText mOutEditText;
     private Button mSendButton;
 
@@ -88,6 +94,14 @@ public class BluetoothSwipeFragment extends Fragment {
      */
     private BluetoothSwipeService mSwipeService = null;
 
+    private BluetoothSwipeFragment bluetoothSwipeFragment;
+    private boolean click = true;
+
+    // constructor
+    public BluetoothSwipeFragment(){
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +116,7 @@ public class BluetoothSwipeFragment extends Fragment {
             activity.finish();
         }
     }
+
 
 
     @Override
@@ -141,24 +156,12 @@ public class BluetoothSwipeFragment extends Fragment {
             }
         }
     }
-//_______________________________
-//here the layout for the swipe post
-// _______________________________
-
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-//                             @Nullable Bundle savedInstanceState) {
-//        return inflater.inflate(R.layout.fragment_bluetooth_swipe, container, false);
-//    }
 
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        mConversationView = (ListView) view.findViewById(R.id.in);
-//        mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
-//        mSendButton = (Button) view.findViewById(R.id.button_send);
-//    }
+    }
 
     /**
      * Set up the UI and background operations for Swipe.
@@ -170,7 +173,9 @@ public class BluetoothSwipeFragment extends Fragment {
         // Initialize the array adapter for the conversation thread
         mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
 
-//        mConversationView.setAdapter(mArrayAdapter);
+//        Toast.makeText(getActivity(), )
+
+//        mSwipeView.setAdapter(mArrayAdapter);
 //
 //        // Initialize the compose field with a listener for the return key
 //        mOutEditText.setOnEditorActionListener(mWriteListener);
@@ -198,7 +203,7 @@ public class BluetoothSwipeFragment extends Fragment {
     /**
      * Makes this device discoverable.
      */
-    private void ensureDiscoverable() {
+    public void ensureDiscoverable() {
         if (mBluetoothAdapter.getScanMode() !=
                 BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
             Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -212,7 +217,7 @@ public class BluetoothSwipeFragment extends Fragment {
      *
      * @param message A string of text to send.
      */
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mSwipeService.getState() != BluetoothSwipeService.STATE_CONNECTED) {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
@@ -226,8 +231,8 @@ public class BluetoothSwipeFragment extends Fragment {
             mSwipeService.write(send);
 
             // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
+//            mOutStringBuffer.setLength(0);
+//            mOutEditText.setText(mOutStringBuffer);
         }
     }
 
@@ -314,7 +319,8 @@ public class BluetoothSwipeFragment extends Fragment {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    mArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    Toast.makeText(getActivity(),readMessage,Toast.LENGTH_LONG).show();
+//                    mArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -335,17 +341,23 @@ public class BluetoothSwipeFragment extends Fragment {
     };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.d(TAG, "onActivityResult1");
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
+                Log.d(TAG,"onActivityResult2");
                 // When DeviceListActivity returns with a device to connect
                 Log.d(TAG,"resultCOde "+resultCode+"activity result OK "+ Activity.RESULT_OK);
                 if (resultCode == Activity.RESULT_OK) {
+                    Log.d(TAG,"onActivityResult3");
                     connectDevice(data, true);
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
+                Log.d(TAG,"onActivityResult4");
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
+                    Log.d(TAG,"onActivityResult5");
                     connectDevice(data, false);
                 }
                 break;
@@ -380,13 +392,10 @@ public class BluetoothSwipeFragment extends Fragment {
         mSwipeService.connect(device, secure);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.bluetooth_swipe, menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.secure_connect_scan: {
                 // Launch the DeviceListActivity to see devices and do scan
@@ -399,14 +408,14 @@ public class BluetoothSwipeFragment extends Fragment {
                 Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
                 return true;
-        }
+            }
             case R.id.discoverable: {
                 // Ensure this device is discoverable by others
                 ensureDiscoverable();
                 return true;
             }
         }
-        return false;
+        return super.onOptionsItemSelected(item);
         }
 
-        }
+}

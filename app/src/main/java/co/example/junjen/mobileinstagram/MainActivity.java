@@ -44,6 +44,14 @@ import co.example.junjen.mobileinstagram.network.NetParams;
 import co.example.junjen.mobileinstagram.network.Network;
 
 
+/**
+ *
+ * Created by junjen at 7/10/2015.
+ *
+ * Main activity for UniGram application. This is where the user logs in to the application.
+ *
+ */
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -88,14 +96,14 @@ public class MainActivity extends AppCompatActivity {
         // check if token is present
         checkToken();
 
-        if(savedInstanceState==null){
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            BluetoothSwipeFragment fragment = new BluetoothSwipeFragment();
-            transaction.replace(R.id.sample_content_fragment, fragment);
-            transaction.commit();
-
-        }
+//        if(savedInstanceState==null){
+//
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            BluetoothSwipeFragment fragment = new BluetoothSwipeFragment();
+//            transaction.replace(R.id.sample_content_fragment, fragment);
+//            transaction.commit();
+//
+//        }
 
     }
 
