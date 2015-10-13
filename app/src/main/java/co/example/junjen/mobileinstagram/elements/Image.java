@@ -57,7 +57,7 @@ public class Image implements Serializable {
         return out.toByteArray();
 
     }
-    public static void decodeImage(byte[] imgByte, ImageView image){
+    public static void setSwipedImage(byte[] imgByte, ImageView image){
         Bitmap bmp;
         if(imgByte!=null && image != null) {
             bmp = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
