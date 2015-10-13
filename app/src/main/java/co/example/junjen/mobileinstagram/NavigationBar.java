@@ -1,14 +1,17 @@
 package co.example.junjen.mobileinstagram;
 
-import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,18 +24,16 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeService;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
 import co.example.junjen.mobileinstagram.elements.User;
-import co.example.junjen.mobileinstagram.network.Bluetooth;
+import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
-import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
+
 
 public class NavigationBar extends AppCompatActivity {
 
@@ -68,6 +69,11 @@ public class NavigationBar extends AppCompatActivity {
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
+    //Location sercvice
+    private LocationService mService;
+    private boolean mBound = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +84,9 @@ public class NavigationBar extends AppCompatActivity {
         Parameters.NavigationBarActivity = this;
         Parameters.NavigationBarContext = this.getApplicationContext();
         Parameters.NavigationBarView = findViewById(navigationViewId);
+
+        //Init location service
+        initLocService();
 
         // set custom action bar
         actionBar = getSupportActionBar();
@@ -469,6 +478,7 @@ public class NavigationBar extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
 //
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -503,6 +513,38 @@ public class NavigationBar extends AppCompatActivity {
 //
 //
 //    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+    //Location Service
+    private void initLocService(){
+        //Init LocationService Service
+        Log.v("gps", "startService");
+        Intent intent = new Intent(this, LocationService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            LocationService.LocatioServicenBinder binder = (LocationService.LocatioServicenBinder) service;
+            Log.v("gps","newSercixeconn");
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
 
     // WebView client for logging out
     private class LogoutWebViewClient extends WebViewClient{

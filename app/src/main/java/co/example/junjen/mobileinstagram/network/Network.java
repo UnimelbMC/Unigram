@@ -43,6 +43,7 @@ public class Network {
     private Instagram instagram;
     private UserInfoData thisUserData;
     private ArrayList<Post> fakePost = new ArrayList<>();
+    private boolean first = true;
 
     public Network() {
         instagram = new Instagram(NetParams.ACCESS_TOKEN);
@@ -174,7 +175,15 @@ public class Network {
     public ArrayList<Post> getUserFeed(String minId, String maxId){
 
         try {
-            MediaFeed feed = instagram.getUserFeeds(maxId, minId, Parameters.postsToLoad);
+
+            MediaFeed feed;
+           /* if(first){
+                feed = instagram.getUserFeeds();
+                first = false;
+            }else{*/
+                feed = instagram.getUserFeeds(maxId, minId, Parameters.postsToLoad);
+            //}
+
             List<MediaFeedData> userFeed = feed.getData();
             return getPostsList(userFeed,false);
         } catch (InstagramException e) {
@@ -210,7 +219,7 @@ public class Network {
     // creates Post object based on post data
     public Post buildPost(MediaFeedData postData, boolean thumb){
 
-        Location loc = null;
+        Location loc = null;// new Location();
         String cap = null;
         String imgUrl;
         if (postData.getLocation()!= null){

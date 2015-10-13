@@ -1,6 +1,9 @@
 package co.example.junjen.mobileinstagram.elements;
 
+import android.util.Log;
+
 import java.io.Serializable;
+
 
 /**
  * Created by junjen on 2/10/2015.
@@ -35,25 +38,17 @@ public class Location implements Serializable{
         this.longitude = longitude;
     }
 
+
     public String getLocation() {
         return location;
     }
 
-    public double getLatitude() {
+    public double getLatitude(){
         return latitude;
     }
 
-    public double getLongitude() {
+    public double getLongitude(){
         return longitude;
     }
 
-    // TODO: convert location from Data Object to appropriate variables
-
-    public static double locationDiff(Location locationFrom, Location locationTo){
-        // TODO: method for calculating location difference
-
-        double locationDiff = 0;
-
-        return locationDiff;
-    }
 }

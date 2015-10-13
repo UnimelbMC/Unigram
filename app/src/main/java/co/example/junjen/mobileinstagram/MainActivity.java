@@ -1,12 +1,16 @@
 package co.example.junjen.mobileinstagram;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.support.v7.app.ActionBar;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
-import android.os.StrictMode;
-import android.support.v7.app.AppCompatActivity;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.StrictMode;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,8 +36,10 @@ import java.io.ObjectOutputStream;
 
 import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-import co.example.junjen.mobileinstagram.network.Network;
+import co.example.junjen.mobileinstagram.network.LocationService;
 import co.example.junjen.mobileinstagram.network.NetParams;
+import co.example.junjen.mobileinstagram.network.Network;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     int loginClickInBrowserCount = 0;
     int urlCount = 0;
     int splashScreenDuration = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         // check if token is present
         checkToken();
+
     }
 
     // action to take when login button is clicked
@@ -98,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             myWebView.loadUrl(NetParams.AUTHORIZE_URL);
         }
     }
+
 
     // WebView client for login sessions
     private class LoginWebViewClient extends WebViewClient{
@@ -301,12 +310,22 @@ public class MainActivity extends AppCompatActivity {
         checkToken();
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
-        Log.v("start", "2");
+
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    /*    if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }*/
+    }
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.w("test", "main activity saved");
@@ -330,4 +349,5 @@ public class MainActivity extends AppCompatActivity {
 
         super.onDestroy();
     }
+
 }
