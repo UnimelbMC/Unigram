@@ -71,7 +71,8 @@ public class Parameters {
     public static final int loadCommentThreshold = 20;
     public static final int loadUserThreshold = 100;
     public static final int maxUsers = 300;
-    public static final String swipe_toast_message = "Post swiped!";
+    public static final String swipeSentMessage = "Post swiped!";
+    public static final String swipeReceivedMessage = "Swiped received!";
 
     // Swipe parameters
     public static final int SWIPE_MIN_DISTANCE = 120;
