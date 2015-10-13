@@ -229,7 +229,7 @@ public class Network {
         // get likes
         int likeCount = postData.getLikes().getCount();
         ArrayList<User> likes = new ArrayList<>();
-        if (likeCount <= Parameters.likePreviewThreshold){
+        if (likeCount <= Parameters.likePreviewThreshold + 1){
             likes = getLikesByPostId(postData.getId());
         }
 

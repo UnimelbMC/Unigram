@@ -102,7 +102,7 @@ public class NavigationBar extends AppCompatActivity {
         if (savedInstanceState == null) {
             // save current user profile
             if(Parameters.dummyData){
-                Parameters.loginProfile = new Profile(Parameters.default_username);
+                Parameters.loginProfile = new Profile("");
             } else {
                 Parameters.loginProfile = NetParams.NETWORK.getUserProfileInfo(
                         Parameters.login_key);

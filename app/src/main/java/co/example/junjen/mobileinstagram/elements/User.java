@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -25,6 +26,8 @@ public class User implements Serializable{
     private Image userImage;
     private String profName;
 
+    private ToggleButton followButton;
+
     public User(String count){
         this.username = new Username(Parameters.default_userId + count,
                 Parameters.default_username + count);
@@ -38,51 +41,66 @@ public class User implements Serializable{
         this.profName = profName;
     }
 
-    public static void buildUserElement(final User user, View userElement){
+    public void buildUserElement(View userElement){
 
         ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
         ImageView userImage = (ImageView) userElement.findViewById(R.id.user_user_image);
-        final TextView username = (TextView) userElement.findViewById(R.id.user_username);
+        TextView username = (TextView) userElement.findViewById(R.id.user_username);
         TextView profName = (TextView) userElement.findViewById(R.id.user_prof_name);
-        final ToggleButton followButton = (ToggleButton)
+        followButton = (ToggleButton)
                 userElement.findViewById(R.id.user_follow_button);
 
-
         username.setText("");   // remove default text
-        stringComponents.add(user.getUsername().getUsernameLink());
+        stringComponents.add(this.username.getUsernameLink());
         StringFactory.stringBuilder(username, stringComponents);
         stringComponents.clear();
 
-        Profile.checkIfFollowing(user.getUsername().getUserId(), followButton);
+        Profile.checkIfFollowing(this.username.getUserId(), followButton);
 
-        // set listener to followButton
-        followButton.setOnClickListener(new View.OnClickListener() {
+        // set listener to followButton if user is not login user
+        if(!this.username.getUsername().equals(Parameters.loginUsername)){
+            followButton.setOnClickListener(followOnClickListener());
+        } else {
+            ((RadioGroup) followButton.getParent()).setVisibility(View.GONE);
+        }
 
-            // Handle clicks for like button
-            @Override
-            public void onClick(View v) {
-                if (followButton.isChecked()) {
-                    Profile.updateFollowingCount(true, user.getUsername().getUserId());
-                } else {
-                    Profile.updateFollowingCount(false, user.getUsername().getUserId());
-                }
-            }
-        });
 
         // set user image
-        Image.setImage(userImage, user.getUserImage());
+        Image.setImage(userImage, this.userImage);
 
         // set user profile name
-        String text = user.getProfName();
+        String text = this.profName;
         if (text == null || text.equals("")) {
             profName.setVisibility(View.GONE);
         } else {
             profName.setText(text);
         }
-
     }
 
+    // listener for follow button
+    public View.OnClickListener followOnClickListener(){
+        View.OnClickListener followOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (followButton.isChecked()) {
+                    Profile.updateFollowingCount(true, User.this.getUsername().getUserId());
+                } else {
+                    Profile.updateFollowingCount(false, User.this.getUsername().getUserId());
+                }
+            }
+        };
+        return followOnClickListener;
+    }
+
+    // updates the follow button
+    public void updateFollowButton(){
+        if(Parameters.usersToFollow.contains(username.getUserId())){
+            Profile.checkFollowButton(followButton, true);
+        } else if (Parameters.usersToUnfollow.contains(username.getUserId())){
+            Profile.checkFollowButton(followButton, false);
+        }
+    }
 
     public Username getUsername() {
         return username;
@@ -94,5 +112,9 @@ public class User implements Serializable{
 
     public String getProfName() {
         return profName;
+    }
+
+    public ToggleButton getFollowButton() {
+        return followButton;
     }
 }

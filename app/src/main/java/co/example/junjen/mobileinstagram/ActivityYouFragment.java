@@ -255,12 +255,14 @@ public class ActivityYouFragment extends Fragment
             // TODO: update method
             activityFeed = NetParams.NETWORK.getMediaUserLikes(Long.parseLong(maxPostId), count);
 
-            int aFsize = activityFeed.size();
-            if (activityFeed.size() > 0){
-                //Posts earlier than last
-                String temp = activityFeed.get(aFsize - 1).getPostId();
-                String[] stringArray = temp.split("_");
-                maxPostId = stringArray[0];
+            if (activityFeed != null) {
+                int aFsize = activityFeed.size();
+                if (activityFeed.size() > 0) {
+                    //Posts earlier than last
+                    String temp = activityFeed.get(aFsize - 1).getPostId();
+                    String[] stringArray = temp.split("_");
+                    maxPostId = stringArray[0];
+                }
             }
         } else {
             activityFeed = new ArrayList<>();

@@ -244,12 +244,14 @@ public class ActivityFollowingFragment extends Fragment
             //Pass the date as strings min/max
             activityFeed = NetParams.NETWORK.getActivityFeedFollowing(null, null);
 
-            int aFsize = activityFeed.size();
-            if (activityFeed.size() > 0){
-                //Posts earlier than last
-                int size = activityFeed.get(aFsize - 1).getPostIcons().size();
-                maxTimeSince = activityFeed.get(aFsize - 1).getPostIcons().get(size - 1).
-                        getTimeSince().getTimeSince();
+            if (activityFeed != null) {
+                int aFsize = activityFeed.size();
+                if (activityFeed.size() > 0) {
+                    //Posts earlier than last
+                    int size = activityFeed.get(aFsize - 1).getPostIcons().size();
+                    maxTimeSince = activityFeed.get(aFsize - 1).getPostIcons().get(size - 1).
+                            getTimeSince().getTimeSince();
+                }
             }
         } else {
             activityFeed = new ArrayList<>();

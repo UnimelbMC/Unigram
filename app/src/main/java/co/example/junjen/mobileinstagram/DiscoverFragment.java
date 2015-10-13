@@ -175,7 +175,7 @@ public class DiscoverFragment extends Fragment implements TopScrollViewListener 
             // build user view components
             View userElement = inflater.inflate(R.layout.user_element, discoverScrollView, false);
             user = suggestedUsers.get(i);
-            User.buildUserElement(user, userElement);
+            user.buildUserElement(userElement);
 
             discoverScrollView.addView(userElement);
         }

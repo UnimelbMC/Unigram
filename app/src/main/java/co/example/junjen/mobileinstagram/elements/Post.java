@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -86,7 +88,7 @@ public class Post implements Serializable{
         for (i = 0; i < Parameters.default_likeCount; i++){
             userId = Parameters.default_userId + (i + 1);
             username = Parameters.default_username + (i + 1);
-            this.likes.add(new User(userId, username, Parameters.default_image,
+            this.likes.add(new User(userId, username, Parameters.default_emptyUserImageLink,
                     Parameters.default_profName));
         }
         // create empty comments
@@ -95,7 +97,7 @@ public class Post implements Serializable{
             username = Parameters.default_username + (i + 1);
             comment = Parameters.default_comment + (i + 1);
             this.comments.add(new Comment(userId, username,
-                    Parameters.default_image, comment, new TimeSince()));
+                    Parameters.default_emptyUserImageLink, comment, new TimeSince()));
         }
     }
 
@@ -118,7 +120,7 @@ public class Post implements Serializable{
 
     public View getPostView(LayoutInflater inflater) {
 
-        try {
+//        try {
 
             postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
             ArrayList<CharSequence> stringComponents = new ArrayList<>();
@@ -184,7 +186,14 @@ public class Post implements Serializable{
             TextView location = (TextView) postView.findViewById(R.id.post_header_location);
             if (this.location != null) {
                 location.setText("");    // remove default text
-                stringComponents.add(this.location.getLocation());
+
+                String locText = this.location.getLocation();
+                if(locText.equals("")){
+                    locText = "Lat: " + this.location.getLatitude() + ", " +
+                            "Long: " + this.location.getLongitude();
+                }
+
+                stringComponents.add(locText);
                 StringFactory.stringBuilder(location, stringComponents);
                 stringComponents.clear();
             } else {
@@ -195,6 +204,8 @@ public class Post implements Serializable{
             if (likes != null) {
                 updateLikes();
             }
+
+            // check like button if post is from activity feed (list of current user's likes)
             checkLikeButton();
 
             // Caption
@@ -212,9 +223,9 @@ public class Post implements Serializable{
             // Comments
             buildCommentView(inflater);
 
-        } catch (InflateException e) {
-            Log.w("test", "InflateException at getPostView()");
-        }
+//        } catch (InflateException e) {
+//            Log.w("test", "InflateException at getPostView()");
+//        }
         return postView;
     }
 
@@ -238,7 +249,9 @@ public class Post implements Serializable{
                     @Override
                     public void onClick(View v) {
 
-                        comments = NetParams.NETWORK.getCommentsByPostId(postId, false);
+                        if(!Parameters.dummyData) {
+                            comments = NetParams.NETWORK.getCommentsByPostId(postId, false);
+                        }
 
                         // display post's comments
                         Parameters.NavigationBarActivity.showFragment(CommentsFragment.
@@ -335,33 +348,46 @@ public class Post implements Serializable{
         }
     }
 
-    // updates list of Likes based or like button clicks or post image double taps
+    // updates list of Likes based on like button clicks or post image double taps
     public void likePost(boolean like){
-        if(like && liked.equals(Parameters.unlike) || !like && liked.equals(Parameters.like)) {
-
-            Iterator<User> iter;
-            for (iter = likes.listIterator(); iter.hasNext();) {
-                User thisUser = iter.next();
-                if (thisUser.getUsername().getUsername().equals(Parameters.loginUsername)) {
-                    if (!like) {
+        if(likeCount <= Parameters.likePreviewThreshold + 1) {
+            if (!like && liked.equals(Parameters.like)) {
+                Log.w("test", "unlike");
+                Iterator<User> iter;
+                for (iter = likes.listIterator(); iter.hasNext(); ) {
+                    User thisUser = iter.next();
+                    if (thisUser.getUsername().getUsername().equals(Parameters.loginUsername)) {
                         iter.remove();
+                        likeCount--;
                         liked = Parameters.unlike;
                         updateLikes();
+                        break;
                     }
-                    break;
                 }
             }
-            if (like) {
+            else if (like && liked.equals(Parameters.unlike)) {
+                Log.w("test", "like");
                 likes.add(0, Parameters.loginUser);
+                likeCount++;
                 liked = Parameters.like;
                 updateLikes();
             }
+        } else {
+            if(like && !liked.equals(Parameters.like)){
+                likeCount++;
+                liked = Parameters.like;
+            } else {
+                likeCount--;
+                liked = Parameters.unlike;
+            }
+            updateLikes();
         }
     }
 
     // update likes list and like button
     public void updateLikes(){
 
+        // check if current user liked this post
         if (liked.equals(Parameters.checkLike)){
             liked = Parameters.unlike;
             for(User user : likes){
@@ -376,6 +402,8 @@ public class Post implements Serializable{
         RelativeLayout likeLine = (RelativeLayout) postView.findViewById(R.id.like_count_line);
 
         if (this.likeCount != 0){
+            likeLine.setVisibility(View.VISIBLE);
+            Log.w("test", "likecount: " + Integer.toString(this.likeCount));
             TextView likeCountText = (TextView) postView.findViewById(R.id.like_count);
             int likeCount = this.likeCount;
             int likeThreshold = Parameters.likePreviewThreshold;
@@ -389,7 +417,15 @@ public class Post implements Serializable{
                     @Override
                     public void onClick(View v) {
 
-                        likes = NetParams.NETWORK.getLikesByPostId(postId);
+                        if(!Parameters.dummyData) {
+                            likes = NetParams.NETWORK.getLikesByPostId(postId);
+
+                            if(liked.equals(Parameters.like)
+                            && !likes.contains(Parameters.loginUser)){
+                                likes.add(0,Parameters.loginUser);
+                            }
+
+                        }
 
                         // display post's likes
                         Parameters.NavigationBarActivity.showFragment
@@ -404,6 +440,7 @@ public class Post implements Serializable{
                 likeCountText.setText("");  // remove default text
                 int i;
                 for (i = 0; i < likeCount; i++) {
+                    Log.w("test","add: "+this.likes.get(i).getUsername().getUsername());
                     stringComponents.add(this.likes.get(i).getUsername().getUsernameLink());
                     stringComponents.add(", ");
                 }
@@ -422,9 +459,10 @@ public class Post implements Serializable{
     // updates like button
     public void checkLikeButton(){
         if(liked.equals(Parameters.like)){
-            likeButton.setChecked(true);
+            ((RadioGroup) likeButton.getParent()).check(R.id.like_button);
+
         } else {
-            likeButton.setChecked(false);
+            ((RadioGroup) likeButton.getParent()).clearCheck();
         }
     }
 

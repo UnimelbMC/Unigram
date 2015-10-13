@@ -113,6 +113,7 @@ public class PostFragment extends Fragment {
     private void setTitle(){
         Parameters.setTitle(Parameters.NavigationBarActivity, Parameters.postTitle,
                 Parameters.subTitleSize);
+        Parameters.NavigationBarActivity.activityFeedBar(false);
     }
 
     @Override

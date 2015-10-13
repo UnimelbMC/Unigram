@@ -99,7 +99,7 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                 if(parts.length > 0){
                     profile = new Profile(parts[1]);
                 } else {
-                    profile = new Profile(Parameters.default_username);
+                    profile = new Profile("");
                 }
             } else if (!userId.equals(Parameters.loginUserId)){
                 Log.w("like", "profile creation through NETWORK");

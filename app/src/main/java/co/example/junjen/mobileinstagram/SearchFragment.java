@@ -138,7 +138,7 @@ public class SearchFragment extends Fragment {
             // build user view components
             View userElement = inflater.inflate(R.layout.user_element, searchScrollView, false);
             user = users.get(i);
-            User.buildUserElement(user, userElement);
+            user.buildUserElement(userElement);
 
             searchScrollView.addView(userElement);
         }

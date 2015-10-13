@@ -39,6 +39,14 @@ public class Location implements Serializable{
         return location;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
     // TODO: convert location from Data Object to appropriate variables
 
     public static double locationDiff(Location locationFrom, Location locationTo){

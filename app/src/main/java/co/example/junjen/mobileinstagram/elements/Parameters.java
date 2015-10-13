@@ -126,8 +126,11 @@ public class Parameters {
     public static View NavigationBarView;
 
     // Follow UI helper
+    public static final String follows_key = "follows";
     public static ArrayList<String> usersToFollow = new ArrayList<>();
     public static ArrayList<String> usersToUnfollow = new ArrayList<>();
+    public static ArrayList<String> postsToLike = new ArrayList<>();
+    public static ArrayList<String> postsToUnlike = new ArrayList<>();
 
     // Time constants
     public static final int minute = 60;
