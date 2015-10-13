@@ -94,6 +94,8 @@ public class UserFeedFragment extends Fragment
         // initialise userFeedFragment if not created yet
         if(userFeedFragment == null){
 
+            Parameters.userFeedFragment = this;
+
             ActionBar actionBar = Parameters.NavigationBarActivity.getSupportActionBar();
             if(actionBar != null) {
                 // bind sortButton click to sort flag
@@ -229,7 +231,7 @@ public class UserFeedFragment extends Fragment
 
                 postHeights.clear();
 
-                for(Post post : allPosts){
+                for (Post post : allPosts) {
                     postHeights.add(post.getPostView().getTop());
                 }
 
@@ -381,16 +383,20 @@ public class UserFeedFragment extends Fragment
         WeakReference<LayoutInflater> weakInflater =
                 new WeakReference<>(LayoutInflater.from(getContext()));
         View swipedPostView = swipedPost.getSwipedPostView(weakInflater.get());
-        int scrollY = userFeedFragment.getLastScrollY();
-        int i = 0;
-        for(int height : postHeights){
-            if (scrollY >= height){
-                userFeedView.addView(swipedPostView, i + 1);
-                allPosts.add(i, swipedPost);
-                postIndex++;
-                break;
+
+        if(userFeedFragment != null) {
+            int scrollY = userFeedFragment.getLastScrollY();
+            int i = 0;
+            for (int height : postHeights) {
+                // if current scroll level matches user feed post's height, insert swiped post here
+                if (scrollY >= height) {
+                    userFeedView.addView(swipedPostView, i + 1);
+                    allPosts.add(i, swipedPost);
+                    postIndex++;
+                    break;
+                }
+                i++;
             }
-            i++;
         }
     }
 

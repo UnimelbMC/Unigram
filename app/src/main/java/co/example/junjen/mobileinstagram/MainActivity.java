@@ -1,6 +1,7 @@
 package co.example.junjen.mobileinstagram;
 
 import android.app.Activity;
+import android.gesture.GestureOverlayView;
 import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -15,6 +16,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
@@ -96,15 +98,35 @@ public class MainActivity extends AppCompatActivity {
         // check if token is present
         checkToken();
 
-//        if(savedInstanceState==null){
-//
-//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//            BluetoothSwipeFragment fragment = new BluetoothSwipeFragment();
-//            transaction.replace(R.id.sample_content_fragment, fragment);
-//            transaction.commit();
-//
-//        }
+        // set dummy data option in empty profile image through double tap
+        final ImageView profileImage = (ImageView) findViewById(R.id.login_user_image);
+        final TextView dummyDataFlag = (TextView) findViewById(R.id.dummy_data_flag);
+        profileImage.setClickable(true);
+        GestureDetector.SimpleOnGestureListener mGestureListener =
+                new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if(Parameters.dummyData){
+                    Parameters.dummyData = false;
+                    dummyDataFlag.setVisibility(View.INVISIBLE);
+                } else {
+                    Parameters.dummyData = true;
+                    dummyDataFlag.setVisibility(View.VISIBLE);
+                }
+                return super.onDoubleTap(e);
+            }
+        };
+        final GestureDetector mGestureDetector =
+                new GestureDetector( this.getApplicationContext(), mGestureListener, null, true );
+        profileImage.setOnTouchListener(new View.OnTouchListener() {
 
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mGestureDetector.onTouchEvent(event);
+                profileImage.invalidate();
+                return true; // indicate event was handled
+            }
+        });
     }
 
     // action to take when login button is clicked
@@ -112,17 +134,23 @@ public class MainActivity extends AppCompatActivity {
 
         Log.w("test", "login button clicked");
 
-        // check for token
-        checkToken();
+        if(!Parameters.dummyData) {
+            // check for token
+            checkToken();
 
-        // if no access token found, go to browser to authenticate
-        if (NetParams.ACCESS_TOKEN == null) {
+            // if no access token found, go to browser to authenticate
+            if (NetParams.ACCESS_TOKEN == null) {
 
-            WebView myWebView = new WebView(getApplicationContext());
-            myWebView.clearFormData();
-            setContentView(myWebView);
-            myWebView.setWebViewClient(new LoginWebViewClient());
-            myWebView.loadUrl(NetParams.AUTHORIZE_URL);
+                WebView myWebView = new WebView(getApplicationContext());
+                myWebView.clearFormData();
+                setContentView(myWebView);
+                myWebView.setWebViewClient(new LoginWebViewClient());
+                myWebView.loadUrl(NetParams.AUTHORIZE_URL);
+            }
+        } else {
+            TextView dummyDataFlag = (TextView) findViewById(R.id.dummy_data_flag);
+            dummyDataFlag.setText(Parameters.dummyDataGreeting);
+            startNavBar();
         }
     }
 
@@ -209,12 +237,8 @@ public class MainActivity extends AppCompatActivity {
         // Note : An empty token can be define as follows -
 
         final Token EMPTY_TOKEN = null;
-        // Validate your user against Instagram
-        //String authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
         // Getting the Access Token
         Verifier verifier = new Verifier(code);
-//        NetParams.ACCESS_TOKEN = service.getAccessToken(EMPTY_TOKEN, verifier);
-//        Log.v("TEST_ACCESS", NetParams.ACCESS_TOKEN.toString());
 
         // writing ACCESS_TOKEN to access token file
         try {
