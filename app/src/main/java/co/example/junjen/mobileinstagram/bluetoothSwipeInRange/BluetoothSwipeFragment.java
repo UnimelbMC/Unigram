@@ -111,8 +111,6 @@ public class BluetoothSwipeFragment extends Fragment{
         }
     }
 
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -216,25 +214,20 @@ public class BluetoothSwipeFragment extends Fragment{
         }
     }
 
+
+
+    /**
+     * Receive a message and create a post and insert it into a swipe post.
+     *
+     * @param message A string of text to receive
+     */
+
     public void receiveMessage(String message){
         Post recvPost = Post.fromJson(message);
         Parameters.userFeedFragment.insertSwipedPost(recvPost);
     }
 
-    /**
-     * The action listener for the EditText widget, to listen for the return key
-     */
-//    private TextView.OnEditorActionListener mWriteListener
-//            = new TextView.OnEditorActionListener() {
-//        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-//            // If the action is a key-up event on the return key, send the message
-//            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-//                String message = view.getText().toString();
-//                sendMessage(message);
-//            }
-//            return true;
-//        }
-//    };
+
 
     /**
      * Updates the status on the action bar.
@@ -307,7 +300,6 @@ public class BluetoothSwipeFragment extends Fragment{
                     Log.d(TAG,readMessage+" "+ msg.arg1);
                     Toast.makeText(getActivity(),Parameters.swipeReceivedMessage,Toast.LENGTH_LONG).show();
                     receiveMessage(readMessage);
-//                    mArra yAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -326,6 +318,7 @@ public class BluetoothSwipeFragment extends Fragment{
             }
         }
     };
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
