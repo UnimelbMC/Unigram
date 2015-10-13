@@ -402,19 +402,19 @@ public class UserFeedFragment extends Fragment
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if(item.getItemId()==R.id.action_swipe){
-            Toast.makeText(getActivity(),"userfeedfragment",Toast.LENGTH_LONG).show();
-
-//            Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-//            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-            return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        if(item.getItemId()==R.id.action_swipe){
+//            Toast.makeText(getActivity(),"userfeedfragment",Toast.LENGTH_LONG).show();
+//
+////            Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+////            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+//            return true;
+//
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
     // Bluetooth swipe action

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
+import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeFragment;
 import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.BluetoothSwipeService;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Profile;
@@ -153,6 +154,13 @@ public class NavigationBar extends AppCompatActivity {
                 RadioButton activityButton = (RadioButton) findViewById(buttonId);
                 activityButton.setChecked(true);
             }
+
+            //BT testing
+
+
+
+
+
 
         } else {
             createFragments();
@@ -451,13 +459,8 @@ public class NavigationBar extends AppCompatActivity {
                 myWebView.setWebViewClient(new LogoutWebViewClient());
                 myWebView.loadUrl(NetParams.LOGOUT_URL);
                 NetParams.ACCESS_TOKEN = null;
-                return true;
 
-            }
-            // Bluetooth action swipe
-            case R.id.action_swipe:{
 
-//                BluetoothSwipeService
                 return true;
 
             }
