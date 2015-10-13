@@ -13,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import co.example.junjen.mobileinstagram.elements.Image;
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
+import co.example.junjen.mobileinstagram.elements.Username;
 
 /**
  * Created by junjen on 9/10/2015.
@@ -106,24 +108,14 @@ public class PostImageListener extends GestureDetector.SimpleOnGestureListener {
         if (Math.abs(e1.getX() - e2.getX()) > Parameters.SWIPE_MIN_DISTANCE
                 && Math.abs(velocityX) > Parameters.SWIPE_THRESHOLD_VELOCITY) {
 
-            Log.w("test", "swiped");
             if(Parameters.bluetoothSwipeFragment != null ) {
-                Toast.makeText(Parameters.NavigationBarActivity,"u r swipe", Toast.LENGTH_LONG).show();
-                Parameters.bluetoothSwipeFragment.sendMessage("Hello world from Bluetooth!");
+                byte[] img = Image.compressImage(postImageView);
+                String p = post.toJson(img, new Username(Parameters.loginUserId, Parameters.loginUsername));
+//                Parameters.bluetoothSwipeFragment.sendMessage("Hello world from Bluetooth!");
+                Parameters.bluetoothSwipeFragment.sendMessage(p);
+
+
             }
-            // show toast feedback on swipe
-            CharSequence text = Parameters.swipe_toast_message;
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(Parameters.NavigationBarContext, text, duration);
-            toast.show();
-
-            // TODO: bluetooth popup
-
-            if(Parameters.bluetoothSwipeFragment != null) {
-                Toast.makeText(Parameters.NavigationBarActivity,"swipe",Toast.LENGTH_LONG).show();
-                Parameters.bluetoothSwipeFragment.sendMessage("Hello world from Bluetooth!");
-            }
-
         }
         return super.onFling(e1, e2, velocityX, velocityY);
     }

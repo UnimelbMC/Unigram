@@ -1,4 +1,6 @@
 /*
+ *  Based on the code in android:
+ *          http://developer.android.com/samples/BluetoothChat/index.html
  * Copyright (C) 2014 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *
  */
 
 package co.example.junjen.mobileinstagram.bluetoothSwipeInRange;
@@ -24,32 +28,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.GestureDetectorCompat;
-import android.view.GestureDetector;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import co.example.junjen.mobileinstagram.R;
 import co.example.junjen.mobileinstagram.elements.Parameters;
-//import co.example.junjen.mobileinstagram.common.logger.Log;
+import co.example.junjen.mobileinstagram.elements.Post;
+
 import android.util.Log;
 
 /**
@@ -158,11 +150,6 @@ public class BluetoothSwipeFragment extends Fragment{
     }
 
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
-    }
-
     /**
      * Set up the UI and background operations for Swipe.
      */
@@ -173,25 +160,6 @@ public class BluetoothSwipeFragment extends Fragment{
         // Initialize the array adapter for the conversation thread
         mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
 
-//        Toast.makeText(getActivity(), )
-
-//        mSwipeView.setAdapter(mArrayAdapter);
-//
-//        // Initialize the compose field with a listener for the return key
-//        mOutEditText.setOnEditorActionListener(mWriteListener);
-
-        // Initialize the gesture listener for the swipe
-//        mSendButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                // Send a message using content of the edit text widget
-//                View view = getView();
-//                if (null != view) {
-////                    TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
-////                    String message = textView.getText().toString();
-////                    sendMessage(message);
-//                }
-//            }
-//        });
 
         // Initialize the BluetoothSwipeService to perform bluetooth connections
         mSwipeService = new BluetoothSwipeService(getActivity(), mHandler);
@@ -229,11 +197,16 @@ public class BluetoothSwipeFragment extends Fragment{
             // Get the message bytes and tell the BluetoothSwipeService to write
             byte[] send = message.getBytes();
             mSwipeService.write(send);
+            Toast.makeText(Parameters.NavigationBarActivity," Swoop! ", Toast.LENGTH_LONG).show();
 
             // Reset out string buffer to zero and clear the edit text field
 //            mOutStringBuffer.setLength(0);
 //            mOutEditText.setText(mOutStringBuffer);
         }
+    }
+
+    public void receiveMessage(String message){
+        Post recvPost = Post.fromJson(message);
     }
 
     /**
@@ -319,8 +292,10 @@ public class BluetoothSwipeFragment extends Fragment{
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    Toast.makeText(getActivity(),readMessage,Toast.LENGTH_LONG).show();
-//                    mArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+
+
+                    Toast.makeText(getActivity(),Parameters.swipeReceivedMessage,Toast.LENGTH_LONG).show();
+//                    mArra yAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
