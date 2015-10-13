@@ -65,6 +65,7 @@ public class UserFeedFragment extends Fragment
 
     // flag to check if posts are being loaded before loading new ones
     private boolean loadPosts = true;
+
     //TEST remember to change to false
     private boolean showPostByLoc = false;
     private boolean showPostByTime = true;

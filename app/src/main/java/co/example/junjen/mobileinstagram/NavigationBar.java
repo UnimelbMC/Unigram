@@ -373,6 +373,20 @@ public class NavigationBar extends AppCompatActivity {
         }
     }
 
+    // show the sort button on the action bar
+    public void showSortButton(){
+        if (actionBar != null){
+            actionBar.getCustomView().findViewById(R.id.sort_button).setVisibility(View.VISIBLE);
+        }
+    }
+
+    // hide the sort button on the action bar
+    public void hideSortButton(){
+        if (actionBar != null){
+            actionBar.getCustomView().findViewById(R.id.sort_button).setVisibility(View.GONE);
+        }
+    }
+
     // destroy the access token
     public void clearToken(){
         File file = new File(NetParams.ACCESS_TOKEN_FILEPATH);

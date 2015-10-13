@@ -5,7 +5,7 @@
     android:paddingLeft="@dimen/post_margin"
     android:paddingRight="@dimen/post_margin">
 
-    <!-- User button -->
+    <!-- Like button -->
     <RadioGroup
         android:id="@+id/like_button_group"
         android:layout_width="wrap_content"
