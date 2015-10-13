@@ -168,7 +168,7 @@ public class BluetoothSwipeFragment extends Fragment {
 
 
         // Initialize the array adapter for the conversation thread
-//        mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
+        mConversationArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.message);
 
 //        mConversationView.setAdapter(mConversationArrayAdapter);
 //
@@ -288,6 +288,7 @@ public class BluetoothSwipeFragment extends Fragment {
         public void handleMessage(Message msg) {
             FragmentActivity activity = getActivity();
             switch (msg.what) {
+
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothSwipeService.STATE_CONNECTED:
@@ -344,7 +345,7 @@ public class BluetoothSwipeFragment extends Fragment {
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
                 // When DeviceListActivity returns with a device to connect
-                if (resultCode -1 == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     connectDevice(data, false);
                 }
                 break;
