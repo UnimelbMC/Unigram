@@ -201,9 +201,6 @@ public class BluetoothSwipeFragment extends Fragment{
 
             Toast.makeText(Parameters.NavigationBarActivity," Swoop! ", Toast.LENGTH_LONG).show();
 
-            // Reset out string buffer to zero and clear the edit text field
-//            mOutStringBuffer.setLength(0);
-//            mOutEditText.setText(mOutStringBuffer);
         }
     }
 
@@ -315,11 +312,8 @@ public class BluetoothSwipeFragment extends Fragment{
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        Log.d(TAG, "onActivityResult1");
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE_SECURE:
-                Log.d(TAG,"onActivityResult2");
                 // When DeviceListActivity returns with a device to connect
                 Log.d(TAG,"resultCOde "+resultCode+"activity result OK "+ Activity.RESULT_OK);
                 if (resultCode == Activity.RESULT_OK) {
