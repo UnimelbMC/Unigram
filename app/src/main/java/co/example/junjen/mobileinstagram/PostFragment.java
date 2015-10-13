@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.ref.WeakReference;
+
 import co.example.junjen.mobileinstagram.elements.Parameters;
 import co.example.junjen.mobileinstagram.elements.Post;
 import co.example.junjen.mobileinstagram.network.NetParams;
@@ -92,7 +94,8 @@ public class PostFragment extends Fragment {
             }
 
             postFragment = (ViewGroup) inflater.inflate(R.layout.fragment_post, container, false);
-            View postView = post.getPostView(inflater);
+            WeakReference<LayoutInflater> weakInflater = new WeakReference<>(inflater);
+            View postView = post.getPostView(weakInflater.get());
             if (postView != null) {
 
                 postFragment.addView(postView);

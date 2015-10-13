@@ -120,112 +120,107 @@ public class Post implements Serializable{
 
     public View getPostView(LayoutInflater inflater) {
 
-//        try {
+        postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
+        ArrayList<CharSequence> stringComponents = new ArrayList<>();
 
-            postView = (RelativeLayout) inflater.inflate(R.layout.post, null, false);
-            ArrayList<CharSequence> stringComponents = new ArrayList<>();
+        /** Fixed parameters **/
 
-            /** Fixed parameters **/
+        // User image
+        if (!this.userImage.getImageString().equals(Parameters.default_image)) {
+            UserImageView userImage = (UserImageView)
+                    postView.findViewById(R.id.post_header_user_image);
+            Image.setImage(userImage, this.userImage);
+        }
 
-            // User image
-            if (!this.userImage.getImageString().equals(Parameters.default_image)) {
-                UserImageView userImage = (UserImageView)
-                        postView.findViewById(R.id.post_header_user_image);
-                Image.setImage(userImage, this.userImage);
+        // Username
+        TextView username = (TextView) postView.findViewById(R.id.post_header_username);
+        username.setText("");   // remove default text
+        stringComponents.add(this.username.getUsernameLink());
+        StringFactory.stringBuilder(username, stringComponents);
+        stringComponents.clear();
+
+        // Time since posted
+        TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
+        timeSince.setText(this.timeSince.getTimeSinceDisplay());
+
+        // Post image
+        ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
+        if (!this.postImage.getImageString().equals(Parameters.default_image)) {
+            Image.setImage(postImage, this.postImage);
+        }
+        // set listener to handle double tap likes on post image
+        new PostImageListener(postImage, this);
+
+        // Like Feedback
+        ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
+        ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
+        likeFeedback.setLayoutParams(layoutParams);
+        likeFeedback.setVisibility(View.INVISIBLE);
+
+        // Like Button
+        likeButton = (ToggleButton) postView.findViewById(R.id.like_button);
+        likeButton.setOnClickListener(new View.OnClickListener() {
+
+            // Handle clicks for like button
+            @Override
+            public void onClick(View v) {
+                if (likeButton.isChecked()) {
+                    likePost(true);
+                } else {
+                    likePost(false);
+                }
+            }
+        });
+
+        // Comment Button
+        ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
+        commentButton.setOnClickListener(this.commentButtonOnClickListener());
+
+        /** Optional parameters **/
+
+        // TODO: Confirm for 'null' return type if optional params do not exist
+
+        // Location
+        TextView location = (TextView) postView.findViewById(R.id.post_header_location);
+        if (this.location != null) {
+            location.setText("");    // remove default text
+
+            String locText = this.location.getLocation();
+            if(locText.equals("")){
+                locText = "Lat: " + this.location.getLatitude() + ", " +
+                        "Long: " + this.location.getLongitude();
             }
 
-            // Username
-            TextView username = (TextView) postView.findViewById(R.id.post_header_username);
-            username.setText("");   // remove default text
-            stringComponents.add(this.username.getUsernameLink());
-            StringFactory.stringBuilder(username, stringComponents);
+            stringComponents.add(locText);
+            StringFactory.stringBuilder(location, stringComponents);
             stringComponents.clear();
+        } else {
+            location.setVisibility(View.GONE);
+        }
 
-            // Time since posted
-            TextView timeSince = (TextView) postView.findViewById(R.id.post_header_time_since);
-            timeSince.setText(this.timeSince.getTimeSinceDisplay());
+        // Likes
+        if (likes != null) {
+            updateLikes();
+        }
 
-            // Post image
-            ImageView postImage = (ImageView) postView.findViewById(R.id.post_image);
-            if (!this.postImage.getImageString().equals(Parameters.default_image)) {
-                Image.setImage(postImage, this.postImage);
-            }
-            // set listener to handle double tap likes on post image
-            new PostImageListener(postImage, this);
+        // check like button if post is from activity feed (list of current user's likes)
+        checkLikeButton();
 
-            // Like Feedback
-            ImageView likeFeedback = (ImageView) postView.findViewById(R.id.like_feedback);
-            ViewGroup.LayoutParams layoutParams = likeFeedback.getLayoutParams();
-            likeFeedback.setLayoutParams(layoutParams);
-            likeFeedback.setVisibility(View.INVISIBLE);
+        // Caption
+        TextView caption = (TextView) postView.findViewById(R.id.post_caption);
+        if (this.caption != null) {
+            caption.setText("");    // remove default text
+            stringComponents.add(this.username.getUsernameLink());
+            stringComponents.add(" " + this.caption);
+            StringFactory.stringBuilder(caption, stringComponents);
+            stringComponents.clear();
+        } else {
+            caption.setVisibility(View.GONE);
+        }
 
-            // Like Button
-            likeButton = (ToggleButton) postView.findViewById(R.id.like_button);
-            likeButton.setOnClickListener(new View.OnClickListener() {
+        // Comments
+        buildCommentView(inflater);
 
-                // Handle clicks for like button
-                @Override
-                public void onClick(View v) {
-                    if (likeButton.isChecked()) {
-                        likePost(true);
-                    } else {
-                        likePost(false);
-                    }
-                }
-            });
-
-            // Comment Button
-            ImageView commentButton = (ImageView) postView.findViewById(R.id.comment_button);
-            commentButton.setOnClickListener(this.commentButtonOnClickListener());
-
-            /** Optional parameters **/
-
-            // TODO: Confirm for 'null' return type if optional params do not exist
-
-            // Location
-            TextView location = (TextView) postView.findViewById(R.id.post_header_location);
-            if (this.location != null) {
-                location.setText("");    // remove default text
-
-                String locText = this.location.getLocation();
-                if(locText.equals("")){
-                    locText = "Lat: " + this.location.getLatitude() + ", " +
-                            "Long: " + this.location.getLongitude();
-                }
-
-                stringComponents.add(locText);
-                StringFactory.stringBuilder(location, stringComponents);
-                stringComponents.clear();
-            } else {
-                location.setVisibility(View.GONE);
-            }
-
-            // Likes
-            if (likes != null) {
-                updateLikes();
-            }
-
-            // check like button if post is from activity feed (list of current user's likes)
-            checkLikeButton();
-
-            // Caption
-            TextView caption = (TextView) postView.findViewById(R.id.post_caption);
-            if (this.caption != null) {
-                caption.setText("");    // remove default text
-                stringComponents.add(this.username.getUsernameLink());
-                stringComponents.add(" " + this.caption);
-                StringFactory.stringBuilder(caption, stringComponents);
-                stringComponents.clear();
-            } else {
-                caption.setVisibility(View.GONE);
-            }
-
-            // Comments
-            buildCommentView(inflater);
-
-//        } catch (InflateException e) {
-//            Log.w("test", "InflateException at getPostView()");
-//        }
         return postView;
     }
 
@@ -421,7 +416,7 @@ public class Post implements Serializable{
                             likes = NetParams.NETWORK.getLikesByPostId(postId);
 
                             if(liked.equals(Parameters.like)
-                            && !likes.contains(Parameters.loginUser)){
+                                    && !likes.contains(Parameters.loginUser)){
                                 likes.add(0,Parameters.loginUser);
                             }
 

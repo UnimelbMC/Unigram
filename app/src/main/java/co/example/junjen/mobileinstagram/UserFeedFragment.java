@@ -17,6 +17,7 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.bluetoothSwipeInRange.DeviceListActivity;
@@ -254,7 +255,8 @@ public class UserFeedFragment extends Fragment
     // loads a chunk of posts on the user feed view
     private void loadUserFeedPosts() {
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         View postView;
         ArrayList<Post> userFeed;
@@ -274,7 +276,7 @@ public class UserFeedFragment extends Fragment
             }
         }
         for (Post post : userFeed) {
-            postView = post.getPostView(inflater);
+            postView = post.getPostView(weakInflater.get());
 
             // if post is from dummyData
             if (Parameters.dummyData) {
@@ -302,7 +304,8 @@ public class UserFeedFragment extends Fragment
         // to the user feed view
         refreshPost = false;
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         View postView;
         ArrayList<Post> userFeed;
@@ -325,7 +328,7 @@ public class UserFeedFragment extends Fragment
         int size = userFeed.size();
         postTopCount += size;
         for (Post post : userFeed) {
-            postView = post.getPostView(inflater);
+            postView = post.getPostView(weakInflater.get());
 
             // if post is from dummyData
             if (Parameters.dummyData) {

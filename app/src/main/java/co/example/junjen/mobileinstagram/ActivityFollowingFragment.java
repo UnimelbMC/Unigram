@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.TopBottomExpandableScrollView;
@@ -234,7 +235,8 @@ public class ActivityFollowingFragment extends Fragment
     // loads a chunk of activityFollowing on the activity view
     private void loadActivityFollowing() {
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<LayoutInflater>(LayoutInflater.from(getContext()));
         int i;
         View activityView;
         ArrayList<ActivityFollowing> activityFeed;
@@ -260,7 +262,7 @@ public class ActivityFollowingFragment extends Fragment
             }
         }
         for (ActivityFollowing activity : activityFeed) {
-            activity.buildActivityView(inflater);
+            activity.buildActivityView(weakInflater.get());
             activityView = activity.getActivityView();
 
             // if activity is from dummyData
@@ -289,7 +291,8 @@ public class ActivityFollowingFragment extends Fragment
         // to the activity view
         refreshActivity = false;
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<LayoutInflater>(LayoutInflater.from(getContext()));
         int i;
         View activityView;
         ArrayList<ActivityFollowing> activityFeed;
@@ -313,7 +316,7 @@ public class ActivityFollowingFragment extends Fragment
         int size = activityFeed.size();
         activityTopCount += size;
         for (ActivityFollowing activity : activityFeed) {
-            activity.buildActivityView(inflater);
+            activity.buildActivityView(weakInflater.get());
             activityView = activity.getActivityView();
 
             // if activity is from dummyData

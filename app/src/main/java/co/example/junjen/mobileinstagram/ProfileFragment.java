@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import java.lang.ref.WeakReference;
+
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
 import co.example.junjen.mobileinstagram.customLayouts.ScrollViewListener;
 import co.example.junjen.mobileinstagram.elements.Parameters;
@@ -140,8 +142,9 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
                     int height = location[1] + profileFragment.getChildAt(0).getHeight();
 
                     if (height <= screenHeight) {
-                        LayoutInflater inflater = LayoutInflater.from(getContext());
-                        profile.getPostIcons(inflater);
+                        WeakReference<LayoutInflater> weakInflater =
+                                new WeakReference<>(LayoutInflater.from(getContext()));
+                        profile.getPostIcons(weakInflater.get());
                     }
                 }
             });
@@ -156,8 +159,9 @@ public class ProfileFragment extends Fragment implements ScrollViewListener{
         // load new posts if no posts are currently being loaded
         if(loadPosts){
             loadPosts = false;
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            profile.getPostIcons(inflater);
+            WeakReference<LayoutInflater> weakInflater =
+                    new WeakReference<>(LayoutInflater.from(getContext()));
+            profile.getPostIcons(weakInflater.get());
             loadPosts = true;
         }
     }

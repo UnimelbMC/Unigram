@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import co.example.junjen.mobileinstagram.customLayouts.ExpandableScrollView;
@@ -246,7 +247,8 @@ public class ActivityYouFragment extends Fragment
     // loads a chunk of activityFollowing on the activity view
     private void loadActivityYou() {
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         ArrayList<Post> activityFeed;
         int count = Parameters.activityYouIconsPerRow * Parameters.activityYouRowsToLoad;
@@ -276,7 +278,7 @@ public class ActivityYouFragment extends Fragment
             post.setLiked(Parameters.like);
         }
 
-        Post.buildPostIcons(inflater, activityYouFragmentView, activityFeed,
+        Post.buildPostIcons(weakInflater.get(), activityYouFragmentView, activityFeed,
                 Parameters.activityYouIconsPerRow, Parameters.activityYouRowsToLoad);
 
         allActivityYou.addAll(activityFeed);
@@ -289,7 +291,8 @@ public class ActivityYouFragment extends Fragment
         // to the activity view
         refreshActivity = false;
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        WeakReference<LayoutInflater> weakInflater =
+                new WeakReference<>(LayoutInflater.from(getContext()));
         int i;
         ArrayList<Post> activityFeed;
         int count = Parameters.activityYouIconsPerRow * Parameters.activityYouRowsToLoad;
@@ -318,7 +321,7 @@ public class ActivityYouFragment extends Fragment
 
         allActivityYou.addAll(0, activityFeed);
         activityYouFragmentView.removeAllViews();
-        Post.buildPostIcons(inflater, activityYouFragmentView, allActivityYou,
+        Post.buildPostIcons(weakInflater.get(), activityYouFragmentView, allActivityYou,
                 Parameters.activityYouIconsPerRow, Parameters.activityYouRowsToLoad);
     }
 
