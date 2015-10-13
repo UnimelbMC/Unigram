@@ -365,8 +365,13 @@ public class NavigationBar extends AppCompatActivity {
         activityFollowingHistory.add(new ActivityFollowingFragment());
         activityYouHistory.add(new ActivityYouFragment());
         profileHistory.add(ProfileFragment.newInstance(Parameters.loginUserId, false));
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         bluetoothSwipeFragment = new BluetoothSwipeFragment();
         Parameters.bluetoothSwipeFragment = bluetoothSwipeFragment;
+        transaction.add(bluetoothSwipeFragment,"bluetooth");
+        transaction.commit();
+
     }
 
     // gets the current activity feed
@@ -469,7 +474,7 @@ public class NavigationBar extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.hide();
             }
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.show();
@@ -518,54 +523,12 @@ public class NavigationBar extends AppCompatActivity {
                 myWebView.setWebViewClient(new LogoutWebViewClient());
                 myWebView.loadUrl(NetParams.LOGOUT_URL);
                 NetParams.ACCESS_TOKEN = null;
-
-
                 return true;
 
-            }
-
-
-
-        }
+            }        }
 
         return super.onOptionsItemSelected(item);
     }
-
-
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        switch (requestCode) {
-//            case REQUEST_CONNECT_DEVICE_SECURE:
-//                // When DeviceListActivity returns with a device to connect
-//                if (resultCode == Activity.RESULT_OK) {
-//                    connectDevice(data, true);
-//                }
-//                break;
-//            case REQUEST_CONNECT_DEVICE_INSECURE:
-//                // When DeviceListActivity returns with a device to connect
-//                if (resultCode == Activity.RESULT_OK) {
-//                    connectDevice(data, false);
-//                }
-//                break;
-//            case REQUEST_ENABLE_BT:
-//                // When the request to enable Bluetooth returns
-//                if (resultCode == Activity.RESULT_OK) {
-//                    // Bluetooth is now enabled, so set up a chat session
-//                    setupChat();
-//                } else {
-//                    // User did not enable Bluetooth or an error occurred
-//                    Log.d(TAG, "BT not enabled");
-//                    Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
-//                            Toast.LENGTH_SHORT).show();
-//                    getActivity().finish();
-//                }
-//        }
-//
-//
-//    }
 
     @Override
     protected void onDestroy() {

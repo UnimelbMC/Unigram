@@ -433,10 +433,6 @@ public class BluetoothSwipeFragment extends Fragment{
         mSwipeService.connect(device, secure);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.bluetooth_swipe, menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -460,7 +456,7 @@ public class BluetoothSwipeFragment extends Fragment{
                 return true;
             }
         }
-        return false;
+        return super.onOptionsItemSelected(item);
         }
 
 }
