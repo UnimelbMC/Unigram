@@ -812,4 +812,8 @@ public class Post implements Serializable{
     public Location getLocation(){
         return this.location;
     }
+
+    public ToggleButton getLikeButton(){
+        return likeButton;
+    }
 }

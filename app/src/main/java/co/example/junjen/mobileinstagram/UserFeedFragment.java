@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -479,6 +480,7 @@ public class UserFeedFragment extends Fragment
 
         if(allPosts != null){
             for(Post post : allPosts){
+                ((RadioGroup) post.getLikeButton().getParent()).clearCheck();
                 post.checkLikeButton();
             }
         }

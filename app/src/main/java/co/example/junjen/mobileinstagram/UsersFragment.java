@@ -188,7 +188,7 @@ public class UsersFragment extends Fragment implements ScrollViewListener{
         Log.w("test", "user resume");
 
         // update follow buttons on view resume
-        if(users != null){
+        if(users != null && !title.equals(Parameters.followingTitle)){
             for(User user : users){
                 ((RadioGroup) user.getFollowButton().getParent()).clearCheck();
                 user.updateFollowButton();
